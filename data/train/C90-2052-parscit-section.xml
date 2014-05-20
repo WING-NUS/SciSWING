@@ -1,0 +1,1126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<algorithms version="110505">
+<algorithm name="SectLabel" version="110505">
+<variant no="0" confidence="0.000028">
+<title confidence="0.620703">
+Reversible Unification Based Machine Translation
+</title>
+<note confidence="0.7187734">
+Gertjan van Noord
+OTS RUU Trans 10
+3512 JK Utrecht
+vannoordktihutruu59.13ITnet
+March 28, 1990
+</note>
+<sectionHeader confidence="0.863946" genericHeader="abstract">
+Abstract
+</sectionHeader>
+<bodyText confidence="0.999763153846154">
+In this paper it will be shown how unification grammars
+can be used to build a reversible machine translation
+system.
+Unification grammars are often used to define the re-
+lation between strings and meaning representations in
+a declarative way. Such grammars are sometimes used
+in a bidirectional way, thus the same grammar is used
+for both parsing and generation. In this paper I will
+show how to use bidirectional unification grammars to
+define r(st.i:r.sible relations between language dependent
+meaning representations. Furthermore it is shown how
+to obtain a completely reversible MT system using a.
+series of (bidirectional) unification grammars.
+</bodyText>
+<sectionHeader confidence="0.889007" genericHeader="method">
+I Introduction
+</sectionHeader>
+<bodyText confidence="0.999950733333334">
+The notion of a reversible MT system was first ex-
+pressed by tandsbergen [11]. Such a system will in
+1;rinciple produce a set of possible translations, by em-
+ploying linguistic knowledge only. Choosing the best
+translation from the set of linguistically possible trans-
+lations will usually require other sources of knowledge,
+either incorporated in the system or provided (interac-
+tively) by the user. The relation &amp;apos;possible translation&amp;apos; is
+symmetric whereas the relation &amp;apos;best translation&amp;apos; is not.
+Thus an MT system may consist of a reversible core,
+implementing the symmetric relation &amp;apos;possible transla-
+tion&amp;apos;, and additional components (not necessarily re-
+versible) to select the best translation.
+Not only is it possible to build reversible (modules of)
+MT systems; it has also been claimed that reversible
+systems are preferable. For example Isabelle [6] claims
+that. reversible MT systems are to be preferred to oth-
+ers because in reversible MT systems a better under-
+standing of the translation relation is achieved; such
+systems will eventually exhibit better practical perfor-
+mance. Moreover, the arguments in favour of using
+bidirectional grammars in NLP, such as those given in
+11, 8] carry over to translation as well.
+Because of the declarative nature of unification- and
+logic grammar formalisms grammars written in these
+formalisms are increasingly used In a bidirectional way,
+thus the same grammar is used for both parsing and
+generation. Some recent developments are reported in
+[3, 24, 16, 21, 2, 18, 19, 22, 20].
+In this paper I will show how to use such bidirec-
+tional unification grammars to build a completely re-
+versible, multilingual, MT system. For each language
+there is a unification grammar that defines a reversible
+relation between strings and language dependent mean-
+ing representations (logical forms). Moreover, for each
+language pair (or set of languages) there is a unifica-
+tion grammar that defines a reversible relation between
+such language dependent logical forms. Translation is
+thus defined by a series of three unification grammars.
+A specific version of the system that is described
+here is implemented as the core of the experimental
+MiMo2 translation system [23]. This system aims at
+translating international news items on Teletext. Apart
+from unification grammars the system uses a bidirec-
+tional two-level orthography component. Language de-
+pendent meanings are represented as .sintple predicate
+argument structures with softie extra labels indicating
+&amp;apos;universal&amp;apos; meaning such as tense and aspect. The cur-
+rent system (November 1989) includes grammars for
+Dutch, Spanish and English.
+The paper is set up as follows. In section 2, I will
+give some examples that show how bidirectional uni-
+fication grammars can be used to define relations be-
+tween logical forms of different languages. In section 3,
+reversibility is defined in terms of symmetry and com-
+putability. Possible approaches to obtain reversibility
+are discussed. In section 4, 1 will compare the current
+approach with some other approaches in the unification
+based translation paradigm and discuss some problems
+and future directions.
+</bodyText>
+<sectionHeader confidence="0.956107" genericHeader="method">
+2 Unification-based Transfer
+</sectionHeader>
+<bodyText confidence="0.999979">
+In this section I will give some examples of the use of
+a unification grammar (in PATR II [17] notation) to
+define the relation between language dependent logi-
+cal forms. For illustrative purposes I will assume log-
+ical forms are represented by feature structures con-
+sisting of the attributes pred, argi, arg2 together with
+some attributes representing &amp;apos;universal&amp;apos; meanings such
+as tense, aspect, number and parson; I will not touch
+upon issues such as quantification and modification.
+The logical forms of English and Spanish are labeled by
+the attributes gb and .sp respectively. As an example
+</bodyText>
+<page confidence="0.996954">
+299
+</page>
+<bodyText confidence="0.8725405">
+the logical form of &amp;apos;The army opened lire at the civil-
+ians&amp;apos; is represented as in figure 1. Such feature struc-
+</bodyText>
+<figureCaption confidence="0.969661">
+Figure 1: An example of a logical form
+</figureCaption>
+<equation confidence="0.995278428571429">
+pred = open_f ire_at
+{
+pred = army
+number sg
+argl
+arg2 =
+[ pnruendib=erc =iv i ,
+</equation>
+<bodyText confidence="0.8472025">
+tures will often be related in a straightforward way to
+a Spanish equivalent, except for the value of the prod
+attributes. A very simple rule in PAM II style may
+look as in figure 2. This rule simply states that the
+</bodyText>
+<figureCaption confidence="0.986263">
+Figure 2: A simple rule
+</figureCaption>
+<equation confidence="0.997500142857143">
+0 —± 1 2 3
+(0 gb prod) = (1 gb)
+(0 gb argl) = (2 gb)
+(0 gb arg2) = (3 gb)
+(0 sp prod) = (1 sp)
+(0 sp argl) = (2 sp)
+(0 sp arg2) = (3 sp)
+</equation>
+<bodyText confidence="0.9991658">
+translation of a logical form is composed of the transla-
+tion of its arguments. If the rule applies to the feature
+structure in 1 the three daughters of the rule will be
+instantiated as in figure 3, and the value of sp will be
+bound to the sp values of these daughters. An example
+</bodyText>
+<figureCaption confidence="0.991336">
+Figure 3: Three instantiations
+</figureCaption>
+<equation confidence="0.955058">
+[ gb = open_f ire_ai
+[ gb = [pred = civilian
+number = pi
+[ gb [ pred = army
+number =.- sg
+</equation>
+<bodyText confidence="0.9998135">
+of the rule for the first daughter will be a lexical entry
+and looks as in figure 4. The simple English expression
+&amp;apos;army&amp;apos; has to be translated as a complex expression in.
+Spanish: fuerza militar&amp;apos;. The rule will look as in 5
+where it is assumed that the construction is analyzed
+in Spanish as an ordinary noun-adjective construction,
+and where the logical form of the adjective takes the
+logical form of the noun as its argument. The transla-
+tion for &amp;apos;civilian&amp;apos; is defined in a similar rule (although
+the translation of &amp;apos;number&amp;apos; is different). Note that this
+example of complex transfer is similar to the famous
+&amp;apos;schimmel - grey horse&amp;apos; cases. As a result of the rule
+</bodyText>
+<figureCaption confidence="0.972952">
+Figure 4: A lexical entry
+</figureCaption>
+<equation confidence="0.725624">
+0
+(0 gb) = open...f ire_at
+(0 sp) = romper_el_fuego_a
+</equation>
+<figureCaption confidence="0.835158">
+Figure 5: A rule for luerza
+</figureCaption>
+<figure confidence="0.5719004">
+0
+(0 gb prod) = army
+(0 sp pred prod) = militar•
+(0 sp argl pred) fuerza
+(0 sp argl number) = (0 gb number)
+</figure>
+<figureCaption confidence="0.570929">
+applications the feature structure in figure 1 will get
+instantiated to the feature structure in 6, from which
+the generator generates the string &amp;apos;La fuerza militar
+romp io el fuego a la poblacion civil&amp;apos;.
+Figure 6: The feature structure after transfer
+</figureCaption>
+<equation confidence="0.993286928571429">
+[pr ed = army I
+number = sg
+arg 2 = pr ed
+1114712ber = pl
+pred = romper uego_a
+pred = pred = mititar
+ar1 =peed = f uerza
+cry =
+number = .99
+- peed = I pred
+arg2 =peed = poblacio
+= n
+arg
+L ;lumber sg
+</equation>
+<bodyText confidence="0.999988384615385">
+In the foregoing examples the relation between logi-
+cal forms is rather straightforward. Note however that
+the full power of a unification grammar can be used to
+settle more difficult translation cases, because different
+attributes can be used to represent the &amp;apos;translational
+syntax&amp;apos;. For instance we can build a tree as value of
+the attribute tree to represent the derivational history
+of the translation process. Or we can &amp;apos;thread&amp;apos; informa-
+tion through different nodes to be able to make transla-
+tions dependent on each other. Translation parameters
+such as style and subject field can be percolated as at-
+tributes of nodes to obtain consistent translations; but
+these attributes themselves need not be translated.
+</bodyText>
+<sectionHeader confidence="0.818981" genericHeader="method">
+3 Reversible Unification
+Grammars
+</sectionHeader>
+<bodyText confidence="0.999960285714286">
+A unification grammar defined in formalisms such as
+PATE. II and DCG [12] usually defines a relation be-
+tween a string of words and a logical form. In sign-
+based approaches such as UCG [26] and IIPSG [14] this
+string of words is not assigned a privileged status but
+is the value of one of the attributes of a feature struc-
+ture. I will assume a formalism similar to PATE.
+</bodyText>
+<equation confidence="0.5768005">
+gb
+Sb
+pred open_fire_at
+arg 1 =
+</equation>
+<page confidence="0.8575095">
+2
+300
+</page>
+<bodyText confidence="0.999875375">
+but without the context-free base; the string is repre-
+sented as the value of one of the attributes of a feature
+structure. Thus more generally, unification grammars
+define relations between the values of two (or morel)
+attributes - for example the relation between the value
+of the attributes string and if, or between the value of
+the attributes sp and gb; these relations are all relations
+between feature structures.
+</bodyText>
+<subsectionHeader confidence="0.993344">
+3.1 Reversibility
+</subsectionHeader>
+<bodyText confidence="0.99728152">
+I will call a binary relation reversible if the relation is
+symmetric and computable. Both symmetry and com-
+putability will be explained in the following subsec-
+tions. A grammar G is reversible for a relation R if 1?
+is reversible and defined by G. For example, a grammar
+that relates strings to logical forms is reversible if both
+the parsing and generation problem is computable, and
+the relation between strings and logical forms is sym-
+metric; the parsing problem is computable if for a given
+string all corresponding logical forms can be enumer-
+ated by some terminating procedure; such a procedure
+should halt if the given string does not have a corre-
+sponding logical form. Thus: reversible = symmetric +
+computable. Note that reversibility as defined here is
+different from bidirectionality. The latter merely says
+that grammars are to be used in two directions, but
+does not state how the two directions relate.
+It is easy to see that a composition of reversible re-
+lations is a a reversible relation too; i.e. if some fea-
+ture structure Ii is related to some feature structure
+fn via the reversible relations Ri(fi, fi+i), each de-
+fined by some reversible grammar Gi, then le (fi, In)
+is reversible. Thus an MT system that defines a rela-
+tion R(. a, St) via the relations R1(s,,, la), 112(1,, It) and
+R3(11, Si) is reversible if R1,2,3 are reversible.
+</bodyText>
+<subsubsectionHeader confidence="0.34947">
+3.1.1 Symmetry
+</subsubsectionHeader>
+<bodyText confidence="0.964223738095239">
+A relation R C A xB is symmetric ill R(a, b) implies
+1?(b, a&amp;apos;) where a and a&amp;apos; are equivalent. For an MT sys-
+tem we want to define &amp;apos;equivalence&amp;apos; in such a way that
+the translation relation is a symmetric relation between
+strings. However, strings are feature structures thus we
+must define equivalence for feature structures to obtain
+this effect.
+Unification grammars as they are commonly used
+implement a rather weak notion of equivalence between
+feature structures: feature structures a and b are equiv-
+alent if they can
+Definition 1 (Weak equivalence)
+Two feature structures fi, f2 are weakly equivalent iff
+f2 exists.
+If feature structures are taken to stand for all their
+ground instances this yields an acceptable version
+of synysetry. Moreover, under the assumption that
+1Note that it is possible to define a unification grammar
+that relates several language dependent logical forms; in this
+approach a multilingual transfer system consists of only one
+transfer grammar.
+feature structures which represent strings are always
+ground (i.e. these feature structures cannot be ex-
+tended), this results in a symmetric relation between
+(feature structures that represent) strings.
+It is also possible to define a &amp;apos;strong&amp;apos; notion of equiv-
+alence for feature structures that does not rely on this
+assumption.
+Definition 2 (Strong equivalence) Two feature
+structures f2 are strongly equivalent (fi f2) if
+12 E fi and ft E 12.
+A grammar that defines a computable relation between
+two attributes under the strong definition of equiva-
+lence might be called strongly reversible. Similarly a
+weakly reversible grammar is reversible under a weak
+definition of equivalence. Again these results can be
+generalized to a series of unification grammars. The
+strong version of equivalence can be motivated on the
+ground that it may be easier to obtain computability;
+this is the topic of the next subsection. In section 3.2
+I will discuss possible relaxations of the strong version
+of equivalence to obtain &amp;apos;mildly&amp;apos; reversible grammars.
+</bodyText>
+<subsubsectionHeader confidence="0.75987">
+3.1.2 Computability
+</subsubsectionHeader>
+<bodyText confidence="0.999633527777778">
+A relation RC A xB is computable if for a given
+a E A the set {b E B1R(a,b)} can be enumerated by
+some terminating procedure. To discuss computabil-
+ity it is useful to look a bit more careful at the re-
+lations we are interested in. These relations are all
+binary relations between feature structures. However,
+in the case of the relation between strings and logical
+forms, strings will always be related to logical forms and
+logical forms will be related to strings. Similarly for
+the relation between Dutch and Spanish logical forms.
+Clearly, the domain and range of the relation is struc-
+tured and can be partioned into two sets A and B,
+for example the set of feature structures representing
+strings and the set of feature structures representing
+logical forms. The relation RCAUBxAUBcan be
+partitioned similarly into the relations rCAx 13 and
+its inverse, r1 C B x A. The problem to compute R
+is now replaced by two problems: the computation of
+r and For example the problem to compute the
+relation between logical forms and strings consists of
+the parsing- and generation problem. It is now possi-
+ble to incorporate the notion of equivalence, to obtain
+a definition of a parser, generator and translator. For
+example, an algorithm that computes the foregoing re-
+lation r will enumerate for a given features structure
+/1 all feature structures 12, such that r(f3, f2) and fi
+and h are equivalent. In the case of strong equivalence
+this implies that Ii C f3 (completeness), and h C Ii
+(coherence). In other words, the input should not be
+extended (coherence) and should completely be derived
+(completeness). This usage of the terms completeness
+and coherence was introduced in [24]. In the following
+I will discuss ways to obtain computability of one such
+partition.
+It is well known that relations defined by unrestricted
+unification grammars are not computable in general as
+</bodyText>
+<page confidence="0.9776705">
+3
+301
+</page>
+<bodyText confidence="0.999734559322034">
+such grammars have Turing power [13]; it is thus not
+decidable whether the relation is defined for some given
+input. Usually some constraint on grammars is defined
+to remedy this. For example the off-line-parsability
+constraint [13, 5] ensures that the recognition problem
+is solvable. Moreover this constraint also implies that
+the parsing problem as defined here is computable; i.e.
+the proof procedure will always terminate (because the
+constraint implies that there is a limit to the depth of
+possible parse trees for all strings of a given length).
+However the off-line-parsability constraint assumes
+a context-free base of the formalism. A generalization
+of the off-line-parsability constraint for any binary re-
+lation defined by unification grammars will consist of
+three parts; the first and third of these parts are usually
+implicit in the case of parsing.
+First, the value of the input must be built in a well-
+behaved compositional way. For example in the case of
+parsing: each daughter of a rule dominates part of the
+string dominated by the mother of that rule. Similarly
+for transfer and generation: each daughter of a rule
+has a value for If that is part of the value of If of the
+mother.
+Second, a special condition is defined for rules where
+the input value of the mother is the same as the in-
+put value of one of the daughters. For parsing such
+rules have exactly one daughter. A chain of applica-
+tions of such rules is disallowed by some constraint or
+other; this is the core of most definitions of the off-
+line parsability.constraint. For example in [13] such a
+chain is disallowed as the principal functor of a term
+may only occur once in a chain. For a slightly more
+general definition, cf. [5]. For generation and transfer
+a similar constraint can be defined. In the terminology
+of [18, 19] the &amp;apos;head&amp;apos; of a rule is a daughter with the
+same logical form as its mother. A chain of these heads
+must be disallowed.
+Third, the input should not get extended during the
+proof procedure. In the case of parsing this is achieved
+easily because the input is ground 2. For generation
+and transfer this is not necessarily the case. This is the
+point where the usefulness of the coherence condition
+comes in; the coherence requirement explicitly states
+that extension of the input is not allowed. For this
+reason strong reversiblity may be easier to obtain than
+weak reversibility. In the next subsection I will discuss
+two relaxations of strong symmetry that will not affect
+the computability properties discussed here.
+Generalizing the terminology introduced by [13] a
+proof procedure is strongly stable if it always termi-
+nates for grammars that adhere to a generalized off-line
+parsability constraint. In [15] a general proof procedure
+for DCG based on head-driven generation [18, 19, 22]
+is defined that is strongly stable for a specific instanti-
+ation of the generalized off-line parsability constraint.
+2Note that this is the reason that most DCG parsers
+expect that the input value of the string has an atomic
+tail, i.e. parse([ john, kisses, maryb p) will work fine, but
+parseqjohn, kisses, mary14 X) will cause problems.
+</bodyText>
+<subsectionHeader confidence="0.999337">
+3.2 Possible relaxations
+</subsectionHeader>
+<bodyText confidence="0.999936125">
+it is easy to see that the completeness and coherence
+requirements make life hard for the rulewriter as she/he
+needs to know exactly what the possible values of in-
+puts are for some component. It is possible to relax the
+completeness and coherence requirement in two ways
+that will not affect the reversibility properties between
+strings. The usefulness of these relaxations depends on
+the analyses a user wishes to define.
+</bodyText>
+<subsubsectionHeader confidence="0.783574">
+3.2.1 Cyclic and non-cyclic attributes
+</subsubsectionHeader>
+<bodyText confidence="0.97619">
+The first relaxation assumes that there is a sort sys-
+tem defined for feature structures that makes it pos-
+sible to make a distinction between cyclic and non-
+cyclic attributes (cf. [5]). For the moment a non-
+cyclic attribute may be defined as an attribute with
+a finite number of possible values (i.e. it is not recur-
+sive). For example the attributes aryl and arg2 will
+be cyclic whereas number will be non-cyclic. The com-
+pleteness and coherence condition is restricted to cyclic
+attributes. As the proof procedure can only further in-
+stantiate non-cyclic attributes no termination problems
+occur because there are only a finite number of possi-
+bilities to do tins. The definition of &amp;apos;equivalence&amp;apos; for
+feature structures is now slightly changed. To define
+this properly it is necessary to define the notion non-
+cyclic extension. A non-cyclic extension of a feature
+structure only instantiates non-cyclic attributes. This
+results in the following definition of equivalence:
+Definition 3 (Non-cyclic equivalent) Two feature
+structures ft, f2 are non-cyclic equivalent if ff21
+where A are non-cyclic extensions of fn.
+It will be clear that the usefulness of this definition
+depends heavily on the style of grammar writing that
+is used. Note that it is of course also possible to declare
+for each non-cyclic attribute whether the completeness
+and coherence requirements hold.
+</bodyText>
+<subsubsectionHeader confidence="0.615111">
+3.2.2 Reentrancies
+</subsubsectionHeader>
+<bodyText confidence="0.999917947368421">
+The second relaxation is not without ramifications for
+the organization of a transfer grammar. This relax-
+ation has to do with reentrancies in feature structures.
+Some constructions such as control verbs and relative
+clauses may be represented using reentrancies; for ex-
+ample &amp;apos;the soldiers tried to shoot the president&amp;apos; may
+be represented by a feature structure where the first
+argument of &amp;apos;try&amp;apos; is reentrant with the first argument
+of &amp;apos;shoot&amp;apos;, cf. figure 7. The translation of such logical
+forms to Dutch equivalents can be defined as in rule 8.
+In this rule the reentrancy is explicitly mentioned for
+two reasons. The first reason is simply that in the
+case of different possible translations of aryl we want
+the same translation for both aryl and the embedded
+aryl. Note that the translation of &amp;apos;soldier&amp;apos; into Dutch
+can be both `soldaat&amp;apos; or `militair&amp;apos;. Tithe reentrancy is
+not mentioned the system has to try to generate from
+four different Dutch logical forms, two of which without
+matching aryl&amp;apos;s.
+</bodyText>
+<page confidence="0.982341">
+4
+302
+</page>
+<figureCaption confidence="0.9997335">
+Figure 7: A logical form containing reentrancy
+Figure 8: Translating subject control
+</figureCaption>
+<equation confidence="0.998749222222222">
+0 1 2 3
+(0 gb pred) = (1 gb)
+(0 ni pred) = (1 up)
+(0 gb argl) = (0 gb arg2 argl)
+(0 ni argl) (0 nl arg2 argl)
+(0 gb argl) = (2 gb)
+(0 ni arg1) = (2 up)
+(0 gb arg2) = (3 gb)
+(0 arg2) = (3 up)
+</equation>
+<bodyText confidence="0.999838941176471">
+The reentrancy is also mentioned because this is re-
+quired by the completeness condition. It is possible to
+relax the completeness and coherence condition with
+respect to these reentrancies, again without affecting
+the reversibility properties of the system by slightly
+changing the definition of equivalence. There is a trade-
+off between simplicity of the transfer grammar (in the
+presence of this relaxation) and the efficiency of the
+system. In the case of this relaxation the system will
+eventually find the good translations, but it may take a
+while. On the other hand, if we are to mention all (pos-
+sibly unbounded) reentrancies explicitly then the trans-
+fer grammar will have to be complicated by a threading
+mechanism to derive such reentrancies. Again, the spe-
+cific use of reentrancies in the logical forms that are de-
+fined will determine whether this relaxation is desired
+or not.
+</bodyText>
+<sectionHeader confidence="0.987397" genericHeader="method">
+4 Final remarks
+</sectionHeader>
+<bodyText confidence="0.999984576923077">
+The objective to build a reversible MT system using
+a series of unification grammars is similar to the ob-
+jective of the CRITTER system as expressed in [3, 7],
+and the work of Zajac in [25]. Instead of using unifica-
+tion grammars CRITTER uses logic grammars; Zajac
+uses a type system including an inheritance mechanism
+to define transfer-like rules. In these two approaches
+less attention is being paid to an exact definition of re-
+versibility; although our work may be compatible with
+these approaches.
+A somewhat different approach is advocated in [9].
+In that approach a system is described where an LFC
+grammar for some source language is augmented with
+equations that define (part of) the target level repre-
+sentations. A generator derives from this partial de-
+scription a string according to some LEG grammar of
+the target language. Instead of a series of three gram-
+mars this architecture thus assumes two grammars, one
+of which both defines the source language and the rela-
+tion with the target language. The translation relation
+is not only defined between logical forms but may relate
+all levels of representation ( c-structure, f-structure,
+a-structure). Although in this approach monolingual
+grammars may be used in a bidirectional way it is un-
+clear whether the translation equations can be used
+bidirectionally 3 .
+An important problem for the approach advocated
+here is the problem of logical form equivalence. Shieber
+[16] noted that unification grammars usually define
+a relation between strings and some canonical logical
+form. Depending on the nature of logical forms that
+are being used, several representations of a logical form
+may have the same `meaning&amp;apos;; just as in first order
+predicate calculus the formulas pV q and qV p are logi-
+cally equivalent; a unification grammar will not know of
+these equivalences and, consequently, all equivalences
+have to be defined separately (if such equivalents are
+thought of as being translational equivalents); for ex-
+ample in a transfer grammar two rules may be defined
+to translate p V q into both p&amp;apos; V q&amp;apos; and q&amp;apos; V p&amp;apos; if these
+formulas are thought of as being equivalent. Of course
+this technique can only be applied if the number of
+equivalences is finite. It is not possible to define that p
+is equivalent with for any even number of
+The approach discussed so far can be extended just
+as unification grammars for parsing and generation
+have been extended. Apart from equational constraints
+it will be useful to add others such as disjunction and
+negation. Moreover it seems useful to allow some ver-
+sion of universal constraints or some inheritance mech-
+anism to be able to express generalizations and excep-
+tions more easily.
+</bodyText>
+<sectionHeader confidence="0.985942" genericHeader="acknowledgments">
+Acknowledgements
+</sectionHeader>
+<bodyText confidence="0.9971585">
+I want to thank joke Dorrepaal, Pim van der Eijk,
+Maria Florenza, Dirk lleylen, Steven Krauwer, Jan
+Landsbergen, Michael Moortga,t, Herbert Ruessink and
+Louis des Tombe. I was supported by the Euro-
+pean Community and the NBI3I through the Eurotra
+project.
+</bodyText>
+<sectionHeader confidence="0.997937" genericHeader="references">
+References
+</sectionHeader>
+<reference confidence="0.9981859">
+[1] Douglas E. Appelt. Bidirectional grammars and the
+design of natural language generation systems. In The-
+oretical Issues in Natural Language Processing 3, 1987.
+[2] Jonathan Calder, Mike Reape, and Henk Zeevat. An
+algorithm for generation in unification categorial gram-
+mar. In Fourth Conference of the European Chapter of
+the Association for Computational Linguistics, 1989.
+[3] Marc Dymetman and Pierre Isabelle. Reversible logic
+grammars for machine translation. In Proceedings of
+the Second International Conference on Theoretical
+</reference>
+<footnote confidence="0.71828">
+3Although parsing of LFG&amp;apos;s is decidable no such result
+is available for generation; note furthermore that according
+to [9] extension is allowed during generation.
+</footnote>
+<figure confidence="0.995878888888889">
+pred = try
+argl =1:11
+pred = soldier 1
+number = pl
+pred = shoot
+argl = n3
+arg2 = pred = president 1
+number = sg
+gb= arg2 =
+</figure>
+<page confidence="0.761805">
+5
+303
+</page>
+<reference confidence="0.999338595505618">
+and Methodological issues in Machine Translation of
+Natural Languages, 1988.
+[4] Barbara Grosz, Karen Sparck Jones, and Bonny Lynn
+Webber, editors. Readings in Natural Language Pro-
+cessing. Morgan Kaufmann, 1986.
+[5] Andrew Haas. A generalization of the offline parsable
+grammars. In 27th Annual Meeting of the Association
+for Computational Linguistics, 1989.
+[6] Pierre Isabelle. Towards reversible MT systems. In MT
+Summit II, 1989.
+[7] Pierre Isabelle, Marc Dymetman, arid Elliott Macklo-
+vitch. CRITTER: a translation system for agricultural
+market reports, In Proceedings of the 12th Interna-
+tional Conference on Computational Linguistics, Bu-
+dapest, 1988.
+[8] Paul S. Jacobs. Achieving bidirectionality. In Proceed-
+ings of the 12th International Conference on Compu-
+tational Linguistics, 1988.
+[91 Ronald Kaplan, Klaus Netter, Jiirgen Wedekind, and
+Annie Zaenen. Translation by structural correspon-
+dences. In Fourth Conference of the European Chap-
+ter of the Association for Computational Linguistics,
+1989.
+[10] Margaret King, editor. Machine Translation, the State
+of the Art. Edinburgh University Press, 1987.
+[11] Jan Landsbergen. Isomorphic grammars and their use
+in the Rosetta translation system, 1984. paper pre-
+sented at the tutorial on Machine Translation, Lugano
+1984, Also appears in [10].
+[12] Fernando C.N. Pereira and David Warren. Definite
+clause grammars for language analysis - a survey of the
+formalism and a comparison with augmented transition
+networks. Artificial Intelligence, 13, 1980. reprinted in
+[4].
+[13] Fernando C.N. Pereira and David Warren. Parsing as
+deduction. In 21st Annual Meeting of the Association
+for Computational Linguistics, 1983.
+[14] Carl Pollard and Ivan Sag. Information Based Syntax
+and Semantics. Center for the Study of Language and
+Information Stanford, 1987.
+[15] Herbert Ruessink and Gertjan van Noord. Remarks on
+the bottom-up generation algorithm. Technical report,
+Department of Linguistics, OTS RUU Utrecht, 1989.
+[16] Stuart M. Shieber. A uniform architecture for parsing
+and generation. In Proceedings of the 12th Interna-
+tional Conference on Computational Linguistics, 1988.
+[17] Stuart M. Shieber, Hans Uszkoreit, Fernando C.N.
+Pereira, J. Robinson, and M. Tyson. The formalism
+and implementation of PATR-II. In B. J. Grosz and
+NI. E. Stickel, editors, Research on Interactive Acqui-
+sition and Use of Knowledge. SRI report, 1983.
+[18] Stuart NI. Shieber, Gertjan van Noord, Robert C.
+Moore, and Fernando C.N. Pereira. A semantic-head-
+driven generation algorithm for unification based for-
+malisms. hi 27th Annual Meeting of the Association
+for Computational Linguistics, 1989.
+[19] Stuart NI. Shieber, Gertjan van Noord, Robert C.
+Moore, and Fernando C.N. Pereira. Semantic-head-
+driven generation. Computational Linguistics, 1990.
+To appear.
+[20] Tomek Strzalkowski. Automated inversion of a unifica-
+tion parser into a unification generator. Technical re-
+port, Courant Institute of Mathematical Sciences, New
+York University, 1989. technical report 465.
+[21] Gertjan van Noord. BUG: A directed bottom-up gen-
+erator for unification based formalisms. Working Pa-
+pers in Natural Language Processing, Katholieke Uni-
+versiteit Leuven, Stichting Taattechnologie Utrecht, 4,
+1989.
+[22] Gertjan van Noord. An overview of head-driven
+bottom-up generation. In Robert Dale, Chris Mellish,
+and Michael Zock, editors, Current Research in Natu-
+ral Language Generation. 1990.
+[23] Gertjan van Noord, Joke Dorrepaal, Louis des Tanabe,
+and Pim van der Eijk. The MiMo2 research system.
+OTS RUU Utrecht.
+[24] Jiirgen Wedekind. Generation as structure driven
+derivation. In Proceedings of the 12th International
+Conference on Computational Linguistics, 1988.
+[25] Remi Zajac. A transfer model using a typed feature
+structure rewriting system with inheritence, ln 27th
+Annual Meeting of the Association for Computational
+Linguistics, 1989.
+[26] Henk Zeevat, Ewan Klein, and Jo Calder. Unification
+cat egorial grammar. In Nicholas Haddock, Ewan Klein,
+and Glyn Morrill, editors, Categorial Grammar, Uni-
+fication Grammar and Parsing. Centre for Cognitive
+Science, 1987. Volume 1 of Working Papers in Cogni-
+tive Science.
+</reference>
+<page confidence="0.9870785">
+6
+304
+</page>
+</variant>
+</algorithm>
+<algorithm name="ParsHed" version="110505">
+<variant no="0" confidence="0.673206">
+<title confidence="0.999948">Reversible Unification Based Machine Translation</title>
+<author confidence="0.995155">Gertjan van</author>
+<affiliation confidence="0.876831">OTS RUU Trans</affiliation>
+<address confidence="0.919203">3512 JK</address>
+<email confidence="0.842522">vannoordktihutruu59.13ITnet</email>
+<date confidence="0.994248">March 28, 1990</date>
+<abstract confidence="0.9936365">In this paper it will be shown how unification grammars be used to build a translation system. Unification grammars are often used to define the relation between strings and meaning representations in a declarative way. Such grammars are sometimes used in a bidirectional way, thus the same grammar is used for both parsing and generation. In this paper I will show how to use bidirectional unification grammars to between language dependent meaning representations. Furthermore it is shown how to obtain a completely reversible MT system using a. series of (bidirectional) unification grammars.</abstract>
+</variant>
+</algorithm>
+<algorithm name="ParsCit" version="110505">
+<citationList>
+<citation valid="true">
+<authors>
+<author>Douglas E Appelt</author>
+</authors>
+<title>Bidirectional grammars and the design of natural language generation systems.</title>
+<date>1987</date>
+<journal>In Theoretical Issues in Natural Language Processing</journal>
+<volume>3</volume>
+<marker>[1]</marker>
+<rawString>Douglas E. Appelt. Bidirectional grammars and the design of natural language generation systems. In Theoretical Issues in Natural Language Processing 3, 1987.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Jonathan Calder</author>
+<author>Mike Reape</author>
+<author>Henk Zeevat</author>
+</authors>
+<title>An algorithm for generation in unification categorial grammar.</title>
+<date>1989</date>
+<booktitle>In Fourth Conference of the European Chapter of the Association for Computational Linguistics,</booktitle>
+<contexts>
+<context position="2339" citStr="[3, 24, 16, 21, 2, 18, 19, 22, 20]" startWordPosition="352" endWordPosition="360"> are to be preferred to others because in reversible MT systems a better understanding of the translation relation is achieved; such systems will eventually exhibit better practical performance. Moreover, the arguments in favour of using bidirectional grammars in NLP, such as those given in 11, 8] carry over to translation as well. Because of the declarative nature of unification- and logic grammar formalisms grammars written in these formalisms are increasingly used In a bidirectional way, thus the same grammar is used for both parsing and generation. Some recent developments are reported in [3, 24, 16, 21, 2, 18, 19, 22, 20]. In this paper I will show how to use such bidirectional unification grammars to build a completely reversible, multilingual, MT system. For each language there is a unification grammar that defines a reversible relation between strings and language dependent meaning representations (logical forms). Moreover, for each language pair (or set of languages) there is a unification grammar that defines a reversible relation between such language dependent logical forms. Translation is thus defined by a series of three unification grammars. A specific version of the system that is described here is </context>
+</contexts>
+<marker>[2]</marker>
+<rawString>Jonathan Calder, Mike Reape, and Henk Zeevat. An algorithm for generation in unification categorial grammar. In Fourth Conference of the European Chapter of the Association for Computational Linguistics, 1989.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Marc Dymetman</author>
+<author>Pierre Isabelle</author>
+</authors>
+<title>Reversible logic grammars for machine translation.</title>
+<date>1988</date>
+<booktitle>In Proceedings of the Second International Conference on Theoretical and Methodological issues in Machine Translation of Natural Languages,</booktitle>
+<contexts>
+<context position="2339" citStr="[3, 24, 16, 21, 2, 18, 19, 22, 20]" startWordPosition="352" endWordPosition="360"> are to be preferred to others because in reversible MT systems a better understanding of the translation relation is achieved; such systems will eventually exhibit better practical performance. Moreover, the arguments in favour of using bidirectional grammars in NLP, such as those given in 11, 8] carry over to translation as well. Because of the declarative nature of unification- and logic grammar formalisms grammars written in these formalisms are increasingly used In a bidirectional way, thus the same grammar is used for both parsing and generation. Some recent developments are reported in [3, 24, 16, 21, 2, 18, 19, 22, 20]. In this paper I will show how to use such bidirectional unification grammars to build a completely reversible, multilingual, MT system. For each language there is a unification grammar that defines a reversible relation between strings and language dependent meaning representations (logical forms). Moreover, for each language pair (or set of languages) there is a unification grammar that defines a reversible relation between such language dependent logical forms. Translation is thus defined by a series of three unification grammars. A specific version of the system that is described here is </context>
+<context position="21135" citStr="[3, 7]" startWordPosition="3556" endWordPosition="3557"> of this relaxation the system will eventually find the good translations, but it may take a while. On the other hand, if we are to mention all (possibly unbounded) reentrancies explicitly then the transfer grammar will have to be complicated by a threading mechanism to derive such reentrancies. Again, the specific use of reentrancies in the logical forms that are defined will determine whether this relaxation is desired or not. 4 Final remarks The objective to build a reversible MT system using a series of unification grammars is similar to the objective of the CRITTER system as expressed in [3, 7], and the work of Zajac in [25]. Instead of using unification grammars CRITTER uses logic grammars; Zajac uses a type system including an inheritance mechanism to define transfer-like rules. In these two approaches less attention is being paid to an exact definition of reversibility; although our work may be compatible with these approaches. A somewhat different approach is advocated in [9]. In that approach a system is described where an LFC grammar for some source language is augmented with equations that define (part of) the target level representations. A generator derives from this partia</context>
+</contexts>
+<marker>[3]</marker>
+<rawString>Marc Dymetman and Pierre Isabelle. Reversible logic grammars for machine translation. In Proceedings of the Second International Conference on Theoretical and Methodological issues in Machine Translation of Natural Languages, 1988.</rawString>
+</citation>
+<citation valid="true">
+<date>1986</date>
+<booktitle>Readings in Natural Language Processing.</booktitle>
+<editor>Barbara Grosz, Karen Sparck Jones, and Bonny Lynn Webber, editors.</editor>
+<publisher>Morgan Kaufmann,</publisher>
+<marker>[4]</marker>
+<rawString>Barbara Grosz, Karen Sparck Jones, and Bonny Lynn Webber, editors. Readings in Natural Language Processing. Morgan Kaufmann, 1986.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Andrew Haas</author>
+</authors>
+<title>A generalization of the offline parsable grammars.</title>
+<date>1989</date>
+<booktitle>In 27th Annual Meeting of the Association for Computational Linguistics,</booktitle>
+<contexts>
+<context position="14022" citStr="[13, 5]" startWordPosition="2357" endWordPosition="2358">s, the input should not be extended (coherence) and should completely be derived (completeness). This usage of the terms completeness and coherence was introduced in [24]. In the following I will discuss ways to obtain computability of one such partition. It is well known that relations defined by unrestricted unification grammars are not computable in general as 3 301 such grammars have Turing power [13]; it is thus not decidable whether the relation is defined for some given input. Usually some constraint on grammars is defined to remedy this. For example the off-line-parsability constraint [13, 5] ensures that the recognition problem is solvable. Moreover this constraint also implies that the parsing problem as defined here is computable; i.e. the proof procedure will always terminate (because the constraint implies that there is a limit to the depth of possible parse trees for all strings of a given length). However the off-line-parsability constraint assumes a context-free base of the formalism. A generalization of the off-line-parsability constraint for any binary relation defined by unification grammars will consist of three parts; the first and third of these parts are usually imp</context>
+<context position="15497" citStr="[5]" startWordPosition="2614" endWordPosition="2614">on: each daughter of a rule has a value for If that is part of the value of If of the mother. Second, a special condition is defined for rules where the input value of the mother is the same as the input value of one of the daughters. For parsing such rules have exactly one daughter. A chain of applications of such rules is disallowed by some constraint or other; this is the core of most definitions of the offline parsability.constraint. For example in [13] such a chain is disallowed as the principal functor of a term may only occur once in a chain. For a slightly more general definition, cf. [5]. For generation and transfer a similar constraint can be defined. In the terminology of [18, 19] the &amp;apos;head&amp;apos; of a rule is a daughter with the same logical form as its mother. A chain of these heads must be disallowed. Third, the input should not get extended during the proof procedure. In the case of parsing this is achieved easily because the input is ground 2. For generation and transfer this is not necessarily the case. This is the point where the usefulness of the coherence condition comes in; the coherence requirement explicitly states that extension of the input is not allowed. For this </context>
+<context position="17588" citStr="[5]" startWordPosition="2958" endWordPosition="2958">and coherence requirements make life hard for the rulewriter as she/he needs to know exactly what the possible values of inputs are for some component. It is possible to relax the completeness and coherence requirement in two ways that will not affect the reversibility properties between strings. The usefulness of these relaxations depends on the analyses a user wishes to define. 3.2.1 Cyclic and non-cyclic attributes The first relaxation assumes that there is a sort system defined for feature structures that makes it possible to make a distinction between cyclic and noncyclic attributes (cf. [5]). For the moment a noncyclic attribute may be defined as an attribute with a finite number of possible values (i.e. it is not recursive). For example the attributes aryl and arg2 will be cyclic whereas number will be non-cyclic. The completeness and coherence condition is restricted to cyclic attributes. As the proof procedure can only further instantiate non-cyclic attributes no termination problems occur because there are only a finite number of possibilities to do tins. The definition of &amp;apos;equivalence&amp;apos; for feature structures is now slightly changed. To define this properly it is necessary t</context>
+</contexts>
+<marker>[5]</marker>
+<rawString>Andrew Haas. A generalization of the offline parsable grammars. In 27th Annual Meeting of the Association for Computational Linguistics, 1989.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Pierre Isabelle</author>
+</authors>
+<title>Towards reversible MT systems.</title>
+<date>1989</date>
+<booktitle>In MT Summit II,</booktitle>
+<contexts>
+<context position="1670" citStr="[6]" startWordPosition="251" endWordPosition="251">ly possible translations will usually require other sources of knowledge, either incorporated in the system or provided (interactively) by the user. The relation &amp;apos;possible translation&amp;apos; is symmetric whereas the relation &amp;apos;best translation&amp;apos; is not. Thus an MT system may consist of a reversible core, implementing the symmetric relation &amp;apos;possible translation&amp;apos;, and additional components (not necessarily reversible) to select the best translation. Not only is it possible to build reversible (modules of) MT systems; it has also been claimed that reversible systems are preferable. For example Isabelle [6] claims that. reversible MT systems are to be preferred to others because in reversible MT systems a better understanding of the translation relation is achieved; such systems will eventually exhibit better practical performance. Moreover, the arguments in favour of using bidirectional grammars in NLP, such as those given in 11, 8] carry over to translation as well. Because of the declarative nature of unification- and logic grammar formalisms grammars written in these formalisms are increasingly used In a bidirectional way, thus the same grammar is used for both parsing and generation. Some r</context>
+</contexts>
+<marker>[6]</marker>
+<rawString>Pierre Isabelle. Towards reversible MT systems. In MT Summit II, 1989.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Pierre Isabelle</author>
+</authors>
+<title>Marc Dymetman, arid Elliott Macklovitch. CRITTER: a translation system for agricultural market reports,</title>
+<date>1988</date>
+<booktitle>In Proceedings of the 12th International Conference on Computational Linguistics,</booktitle>
+<location>Budapest,</location>
+<contexts>
+<context position="21135" citStr="[3, 7]" startWordPosition="3556" endWordPosition="3557"> of this relaxation the system will eventually find the good translations, but it may take a while. On the other hand, if we are to mention all (possibly unbounded) reentrancies explicitly then the transfer grammar will have to be complicated by a threading mechanism to derive such reentrancies. Again, the specific use of reentrancies in the logical forms that are defined will determine whether this relaxation is desired or not. 4 Final remarks The objective to build a reversible MT system using a series of unification grammars is similar to the objective of the CRITTER system as expressed in [3, 7], and the work of Zajac in [25]. Instead of using unification grammars CRITTER uses logic grammars; Zajac uses a type system including an inheritance mechanism to define transfer-like rules. In these two approaches less attention is being paid to an exact definition of reversibility; although our work may be compatible with these approaches. A somewhat different approach is advocated in [9]. In that approach a system is described where an LFC grammar for some source language is augmented with equations that define (part of) the target level representations. A generator derives from this partia</context>
+</contexts>
+<marker>[7]</marker>
+<rawString>Pierre Isabelle, Marc Dymetman, arid Elliott Macklovitch. CRITTER: a translation system for agricultural market reports, In Proceedings of the 12th International Conference on Computational Linguistics, Budapest, 1988.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Paul S Jacobs</author>
+</authors>
+<title>Achieving bidirectionality.</title>
+<date>1988</date>
+<booktitle>In Proceedings of the 12th International Conference on Computational Linguistics,</booktitle>
+<marker>[8]</marker>
+<rawString>Paul S. Jacobs. Achieving bidirectionality. In Proceedings of the 12th International Conference on Computational Linguistics, 1988. [91 Ronald Kaplan, Klaus Netter, Jiirgen Wedekind, and Annie Zaenen. Translation by structural correspondences. In Fourth Conference of the European Chapter of the Association for Computational Linguistics, 1989.</rawString>
+</citation>
+<citation valid="true">
+<date>1987</date>
+<booktitle>Machine Translation, the State of the Art.</booktitle>
+<editor>Margaret King, editor.</editor>
+<publisher>Edinburgh University Press,</publisher>
+<marker>[10]</marker>
+<rawString>Margaret King, editor. Machine Translation, the State of the Art. Edinburgh University Press, 1987.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Jan Landsbergen</author>
+</authors>
+<title>Isomorphic grammars and their use in the Rosetta translation system,</title>
+<date>1984</date>
+<location>Lugano</location>
+<note>Also appears in [10].</note>
+<contexts>
+<context position="894" citStr="[11]" startWordPosition="134" endWordPosition="134"> are often used to define the relation between strings and meaning representations in a declarative way. Such grammars are sometimes used in a bidirectional way, thus the same grammar is used for both parsing and generation. In this paper I will show how to use bidirectional unification grammars to define r(st.i:r.sible relations between language dependent meaning representations. Furthermore it is shown how to obtain a completely reversible MT system using a. series of (bidirectional) unification grammars. I Introduction The notion of a reversible MT system was first expressed by tandsbergen [11]. Such a system will in 1;rinciple produce a set of possible translations, by employing linguistic knowledge only. Choosing the best translation from the set of linguistically possible translations will usually require other sources of knowledge, either incorporated in the system or provided (interactively) by the user. The relation &amp;apos;possible translation&amp;apos; is symmetric whereas the relation &amp;apos;best translation&amp;apos; is not. Thus an MT system may consist of a reversible core, implementing the symmetric relation &amp;apos;possible translation&amp;apos;, and additional components (not necessarily reversible) to select the </context>
+</contexts>
+<marker>[11]</marker>
+<rawString>Jan Landsbergen. Isomorphic grammars and their use in the Rosetta translation system, 1984. paper presented at the tutorial on Machine Translation, Lugano 1984, Also appears in [10].</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Fernando C N Pereira</author>
+<author>David Warren</author>
+</authors>
+<title>Definite clause grammars for language analysis - a survey of the formalism and a comparison with augmented transition networks.</title>
+<date>1980</date>
+<journal>Artificial Intelligence,</journal>
+<volume>13</volume>
+<note>reprinted in</note>
+<contexts>
+<context position="7729" citStr="[12]" startWordPosition="1304" endWordPosition="1304">ent attributes can be used to represent the &amp;apos;translational syntax&amp;apos;. For instance we can build a tree as value of the attribute tree to represent the derivational history of the translation process. Or we can &amp;apos;thread&amp;apos; information through different nodes to be able to make translations dependent on each other. Translation parameters such as style and subject field can be percolated as attributes of nodes to obtain consistent translations; but these attributes themselves need not be translated. 3 Reversible Unification Grammars A unification grammar defined in formalisms such as PATE. II and DCG [12] usually defines a relation between a string of words and a logical form. In signbased approaches such as UCG [26] and IIPSG [14] this string of words is not assigned a privileged status but is the value of one of the attributes of a feature structure. I will assume a formalism similar to PATE. gb Sb pred open_fire_at arg 1 = 2 300 but without the context-free base; the string is represented as the value of one of the attributes of a feature structure. Thus more generally, unification grammars define relations between the values of two (or morel) attributes - for example the relation between t</context>
+</contexts>
+<marker>[12]</marker>
+<rawString>Fernando C.N. Pereira and David Warren. Definite clause grammars for language analysis - a survey of the formalism and a comparison with augmented transition networks. Artificial Intelligence, 13, 1980. reprinted in</rawString>
+</citation>
+<citation valid="false">
+<marker>[4]</marker>
+<rawString>.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Fernando C N Pereira</author>
+<author>David Warren</author>
+</authors>
+<title>Parsing as deduction.</title>
+<date>1983</date>
+<booktitle>In 21st Annual Meeting of the Association for Computational Linguistics,</booktitle>
+<contexts>
+<context position="13823" citStr="[13]" startWordPosition="2327" endWordPosition="2327">ure /1 all feature structures 12, such that r(f3, f2) and fi and h are equivalent. In the case of strong equivalence this implies that Ii C f3 (completeness), and h C Ii (coherence). In other words, the input should not be extended (coherence) and should completely be derived (completeness). This usage of the terms completeness and coherence was introduced in [24]. In the following I will discuss ways to obtain computability of one such partition. It is well known that relations defined by unrestricted unification grammars are not computable in general as 3 301 such grammars have Turing power [13]; it is thus not decidable whether the relation is defined for some given input. Usually some constraint on grammars is defined to remedy this. For example the off-line-parsability constraint [13, 5] ensures that the recognition problem is solvable. Moreover this constraint also implies that the parsing problem as defined here is computable; i.e. the proof procedure will always terminate (because the constraint implies that there is a limit to the depth of possible parse trees for all strings of a given length). However the off-line-parsability constraint assumes a context-free base of the for</context>
+<context position="15355" citStr="[13]" startWordPosition="2587" endWordPosition="2587">case of parsing: each daughter of a rule dominates part of the string dominated by the mother of that rule. Similarly for transfer and generation: each daughter of a rule has a value for If that is part of the value of If of the mother. Second, a special condition is defined for rules where the input value of the mother is the same as the input value of one of the daughters. For parsing such rules have exactly one daughter. A chain of applications of such rules is disallowed by some constraint or other; this is the core of most definitions of the offline parsability.constraint. For example in [13] such a chain is disallowed as the principal functor of a term may only occur once in a chain. For a slightly more general definition, cf. [5]. For generation and transfer a similar constraint can be defined. In the terminology of [18, 19] the &amp;apos;head&amp;apos; of a rule is a daughter with the same logical form as its mother. A chain of these heads must be disallowed. Third, the input should not get extended during the proof procedure. In the case of parsing this is achieved easily because the input is ground 2. For generation and transfer this is not necessarily the case. This is the point where the use</context>
+</contexts>
+<marker>[13]</marker>
+<rawString>Fernando C.N. Pereira and David Warren. Parsing as deduction. In 21st Annual Meeting of the Association for Computational Linguistics, 1983.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Carl Pollard</author>
+<author>Ivan Sag</author>
+</authors>
+<title>Information Based Syntax and Semantics. Center for the Study of Language and Information Stanford,</title>
+<date>1987</date>
+<contexts>
+<context position="7858" citStr="[14]" startWordPosition="1329" endWordPosition="1329">ee to represent the derivational history of the translation process. Or we can &amp;apos;thread&amp;apos; information through different nodes to be able to make translations dependent on each other. Translation parameters such as style and subject field can be percolated as attributes of nodes to obtain consistent translations; but these attributes themselves need not be translated. 3 Reversible Unification Grammars A unification grammar defined in formalisms such as PATE. II and DCG [12] usually defines a relation between a string of words and a logical form. In signbased approaches such as UCG [26] and IIPSG [14] this string of words is not assigned a privileged status but is the value of one of the attributes of a feature structure. I will assume a formalism similar to PATE. gb Sb pred open_fire_at arg 1 = 2 300 but without the context-free base; the string is represented as the value of one of the attributes of a feature structure. Thus more generally, unification grammars define relations between the values of two (or morel) attributes - for example the relation between the value of the attributes string and if, or between the value of the attributes sp and gb; these relations are all relations bet</context>
+</contexts>
+<marker>[14]</marker>
+<rawString>Carl Pollard and Ivan Sag. Information Based Syntax and Semantics. Center for the Study of Language and Information Stanford, 1987.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Herbert Ruessink</author>
+<author>Gertjan van Noord</author>
+</authors>
+<title>Remarks on the bottom-up generation algorithm.</title>
+<date>1989</date>
+<tech>Technical report,</tech>
+<institution>Department of Linguistics, OTS RUU Utrecht,</institution>
+<contexts>
+<context position="16503" citStr="[15]" startWordPosition="2779" endWordPosition="2779">ot necessarily the case. This is the point where the usefulness of the coherence condition comes in; the coherence requirement explicitly states that extension of the input is not allowed. For this reason strong reversiblity may be easier to obtain than weak reversibility. In the next subsection I will discuss two relaxations of strong symmetry that will not affect the computability properties discussed here. Generalizing the terminology introduced by [13] a proof procedure is strongly stable if it always terminates for grammars that adhere to a generalized off-line parsability constraint. In [15] a general proof procedure for DCG based on head-driven generation [18, 19, 22] is defined that is strongly stable for a specific instantiation of the generalized off-line parsability constraint. 2Note that this is the reason that most DCG parsers expect that the input value of the string has an atomic tail, i.e. parse([ john, kisses, maryb p) will work fine, but parseqjohn, kisses, mary14 X) will cause problems. 3.2 Possible relaxations it is easy to see that the completeness and coherence requirements make life hard for the rulewriter as she/he needs to know exactly what the possible values </context>
+</contexts>
+<marker>[15]</marker>
+<rawString>Herbert Ruessink and Gertjan van Noord. Remarks on the bottom-up generation algorithm. Technical report, Department of Linguistics, OTS RUU Utrecht, 1989.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Stuart M Shieber</author>
+</authors>
+<title>A uniform architecture for parsing and generation.</title>
+<date>1988</date>
+<booktitle>In Proceedings of the 12th International Conference on Computational Linguistics,</booktitle>
+<contexts>
+<context position="2339" citStr="[3, 24, 16, 21, 2, 18, 19, 22, 20]" startWordPosition="352" endWordPosition="360"> are to be preferred to others because in reversible MT systems a better understanding of the translation relation is achieved; such systems will eventually exhibit better practical performance. Moreover, the arguments in favour of using bidirectional grammars in NLP, such as those given in 11, 8] carry over to translation as well. Because of the declarative nature of unification- and logic grammar formalisms grammars written in these formalisms are increasingly used In a bidirectional way, thus the same grammar is used for both parsing and generation. Some recent developments are reported in [3, 24, 16, 21, 2, 18, 19, 22, 20]. In this paper I will show how to use such bidirectional unification grammars to build a completely reversible, multilingual, MT system. For each language there is a unification grammar that defines a reversible relation between strings and language dependent meaning representations (logical forms). Moreover, for each language pair (or set of languages) there is a unification grammar that defines a reversible relation between such language dependent logical forms. Translation is thus defined by a series of three unification grammars. A specific version of the system that is described here is </context>
+<context position="22408" citStr="[16]" startWordPosition="3762" endWordPosition="3762">nguage. Instead of a series of three grammars this architecture thus assumes two grammars, one of which both defines the source language and the relation with the target language. The translation relation is not only defined between logical forms but may relate all levels of representation ( c-structure, f-structure, a-structure). Although in this approach monolingual grammars may be used in a bidirectional way it is unclear whether the translation equations can be used bidirectionally 3 . An important problem for the approach advocated here is the problem of logical form equivalence. Shieber [16] noted that unification grammars usually define a relation between strings and some canonical logical form. Depending on the nature of logical forms that are being used, several representations of a logical form may have the same `meaning&amp;apos;; just as in first order predicate calculus the formulas pV q and qV p are logically equivalent; a unification grammar will not know of these equivalences and, consequently, all equivalences have to be defined separately (if such equivalents are thought of as being translational equivalents); for example in a transfer grammar two rules may be defined to trans</context>
+</contexts>
+<marker>[16]</marker>
+<rawString>Stuart M. Shieber. A uniform architecture for parsing and generation. In Proceedings of the 12th International Conference on Computational Linguistics, 1988.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Stuart M Shieber</author>
+<author>Hans Uszkoreit</author>
+<author>Fernando C N Pereira</author>
+<author>J Robinson</author>
+<author>M Tyson</author>
+</authors>
+<title>The formalism and implementation of PATR-II.</title>
+<date>1983</date>
+<booktitle>Research on Interactive Acquisition and Use of Knowledge. SRI report,</booktitle>
+<editor>In B. J. Grosz and NI. E. Stickel, editors,</editor>
+<contexts>
+<context position="4066" citStr="[17]" startWordPosition="627" endWordPosition="627">ws. In section 2, I will give some examples that show how bidirectional unification grammars can be used to define relations between logical forms of different languages. In section 3, reversibility is defined in terms of symmetry and computability. Possible approaches to obtain reversibility are discussed. In section 4, 1 will compare the current approach with some other approaches in the unification based translation paradigm and discuss some problems and future directions. 2 Unification-based Transfer In this section I will give some examples of the use of a unification grammar (in PATR II [17] notation) to define the relation between language dependent logical forms. For illustrative purposes I will assume logical forms are represented by feature structures consisting of the attributes pred, argi, arg2 together with some attributes representing &amp;apos;universal&amp;apos; meanings such as tense, aspect, number and parson; I will not touch upon issues such as quantification and modification. The logical forms of English and Spanish are labeled by the attributes gb and .sp respectively. As an example 299 the logical form of &amp;apos;The army opened lire at the civilians&amp;apos; is represented as in figure 1. Such </context>
+</contexts>
+<marker>[17]</marker>
+<rawString>Stuart M. Shieber, Hans Uszkoreit, Fernando C.N. Pereira, J. Robinson, and M. Tyson. The formalism and implementation of PATR-II. In B. J. Grosz and NI. E. Stickel, editors, Research on Interactive Acquisition and Use of Knowledge. SRI report, 1983.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Gertjan van Noord Shieber</author>
+<author>Robert C Moore</author>
+<author>Fernando C N Pereira</author>
+</authors>
+<title>A semantic-headdriven generation algorithm for unification based formalisms.</title>
+<date>1989</date>
+<booktitle>hi 27th Annual Meeting of the Association for Computational Linguistics,</booktitle>
+<contexts>
+<context position="2339" citStr="[3, 24, 16, 21, 2, 18, 19, 22, 20]" startWordPosition="352" endWordPosition="360"> are to be preferred to others because in reversible MT systems a better understanding of the translation relation is achieved; such systems will eventually exhibit better practical performance. Moreover, the arguments in favour of using bidirectional grammars in NLP, such as those given in 11, 8] carry over to translation as well. Because of the declarative nature of unification- and logic grammar formalisms grammars written in these formalisms are increasingly used In a bidirectional way, thus the same grammar is used for both parsing and generation. Some recent developments are reported in [3, 24, 16, 21, 2, 18, 19, 22, 20]. In this paper I will show how to use such bidirectional unification grammars to build a completely reversible, multilingual, MT system. For each language there is a unification grammar that defines a reversible relation between strings and language dependent meaning representations (logical forms). Moreover, for each language pair (or set of languages) there is a unification grammar that defines a reversible relation between such language dependent logical forms. Translation is thus defined by a series of three unification grammars. A specific version of the system that is described here is </context>
+<context position="15594" citStr="[18, 19]" startWordPosition="2629" endWordPosition="2630">. Second, a special condition is defined for rules where the input value of the mother is the same as the input value of one of the daughters. For parsing such rules have exactly one daughter. A chain of applications of such rules is disallowed by some constraint or other; this is the core of most definitions of the offline parsability.constraint. For example in [13] such a chain is disallowed as the principal functor of a term may only occur once in a chain. For a slightly more general definition, cf. [5]. For generation and transfer a similar constraint can be defined. In the terminology of [18, 19] the &amp;apos;head&amp;apos; of a rule is a daughter with the same logical form as its mother. A chain of these heads must be disallowed. Third, the input should not get extended during the proof procedure. In the case of parsing this is achieved easily because the input is ground 2. For generation and transfer this is not necessarily the case. This is the point where the usefulness of the coherence condition comes in; the coherence requirement explicitly states that extension of the input is not allowed. For this reason strong reversiblity may be easier to obtain than weak reversibility. In the next subsectio</context>
+</contexts>
+<marker>[18]</marker>
+<rawString>Stuart NI. Shieber, Gertjan van Noord, Robert C. Moore, and Fernando C.N. Pereira. A semantic-headdriven generation algorithm for unification based formalisms. hi 27th Annual Meeting of the Association for Computational Linguistics, 1989.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Gertjan van Noord Shieber</author>
+<author>Robert C Moore</author>
+<author>Fernando C N Pereira</author>
+</authors>
+<date>1990</date>
+<booktitle>Semantic-headdriven generation. Computational Linguistics,</booktitle>
+<note>To appear.</note>
+<contexts>
+<context position="2339" citStr="[3, 24, 16, 21, 2, 18, 19, 22, 20]" startWordPosition="352" endWordPosition="360"> are to be preferred to others because in reversible MT systems a better understanding of the translation relation is achieved; such systems will eventually exhibit better practical performance. Moreover, the arguments in favour of using bidirectional grammars in NLP, such as those given in 11, 8] carry over to translation as well. Because of the declarative nature of unification- and logic grammar formalisms grammars written in these formalisms are increasingly used In a bidirectional way, thus the same grammar is used for both parsing and generation. Some recent developments are reported in [3, 24, 16, 21, 2, 18, 19, 22, 20]. In this paper I will show how to use such bidirectional unification grammars to build a completely reversible, multilingual, MT system. For each language there is a unification grammar that defines a reversible relation between strings and language dependent meaning representations (logical forms). Moreover, for each language pair (or set of languages) there is a unification grammar that defines a reversible relation between such language dependent logical forms. Translation is thus defined by a series of three unification grammars. A specific version of the system that is described here is </context>
+<context position="15594" citStr="[18, 19]" startWordPosition="2629" endWordPosition="2630">. Second, a special condition is defined for rules where the input value of the mother is the same as the input value of one of the daughters. For parsing such rules have exactly one daughter. A chain of applications of such rules is disallowed by some constraint or other; this is the core of most definitions of the offline parsability.constraint. For example in [13] such a chain is disallowed as the principal functor of a term may only occur once in a chain. For a slightly more general definition, cf. [5]. For generation and transfer a similar constraint can be defined. In the terminology of [18, 19] the &amp;apos;head&amp;apos; of a rule is a daughter with the same logical form as its mother. A chain of these heads must be disallowed. Third, the input should not get extended during the proof procedure. In the case of parsing this is achieved easily because the input is ground 2. For generation and transfer this is not necessarily the case. This is the point where the usefulness of the coherence condition comes in; the coherence requirement explicitly states that extension of the input is not allowed. For this reason strong reversiblity may be easier to obtain than weak reversibility. In the next subsectio</context>
+</contexts>
+<marker>[19]</marker>
+<rawString>Stuart NI. Shieber, Gertjan van Noord, Robert C. Moore, and Fernando C.N. Pereira. Semantic-headdriven generation. Computational Linguistics, 1990. To appear.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Tomek Strzalkowski</author>
+</authors>
+<title>Automated inversion of a unification parser into a unification generator.</title>
+<date>1989</date>
+<tech>Technical report,</tech>
+<institution>Courant Institute of Mathematical Sciences, New York University,</institution>
+<note>technical report 465.</note>
+<contexts>
+<context position="2339" citStr="[3, 24, 16, 21, 2, 18, 19, 22, 20]" startWordPosition="352" endWordPosition="360"> are to be preferred to others because in reversible MT systems a better understanding of the translation relation is achieved; such systems will eventually exhibit better practical performance. Moreover, the arguments in favour of using bidirectional grammars in NLP, such as those given in 11, 8] carry over to translation as well. Because of the declarative nature of unification- and logic grammar formalisms grammars written in these formalisms are increasingly used In a bidirectional way, thus the same grammar is used for both parsing and generation. Some recent developments are reported in [3, 24, 16, 21, 2, 18, 19, 22, 20]. In this paper I will show how to use such bidirectional unification grammars to build a completely reversible, multilingual, MT system. For each language there is a unification grammar that defines a reversible relation between strings and language dependent meaning representations (logical forms). Moreover, for each language pair (or set of languages) there is a unification grammar that defines a reversible relation between such language dependent logical forms. Translation is thus defined by a series of three unification grammars. A specific version of the system that is described here is </context>
+</contexts>
+<marker>[20]</marker>
+<rawString>Tomek Strzalkowski. Automated inversion of a unification parser into a unification generator. Technical report, Courant Institute of Mathematical Sciences, New York University, 1989. technical report 465.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Gertjan van Noord</author>
+</authors>
+<title>BUG: A directed bottom-up generator for unification based formalisms. Working Papers in Natural Language Processing, Katholieke Universiteit Leuven, Stichting Taattechnologie Utrecht,</title>
+<date>1989</date>
+<volume>4</volume>
+<contexts>
+<context position="2339" citStr="[3, 24, 16, 21, 2, 18, 19, 22, 20]" startWordPosition="352" endWordPosition="360"> are to be preferred to others because in reversible MT systems a better understanding of the translation relation is achieved; such systems will eventually exhibit better practical performance. Moreover, the arguments in favour of using bidirectional grammars in NLP, such as those given in 11, 8] carry over to translation as well. Because of the declarative nature of unification- and logic grammar formalisms grammars written in these formalisms are increasingly used In a bidirectional way, thus the same grammar is used for both parsing and generation. Some recent developments are reported in [3, 24, 16, 21, 2, 18, 19, 22, 20]. In this paper I will show how to use such bidirectional unification grammars to build a completely reversible, multilingual, MT system. For each language there is a unification grammar that defines a reversible relation between strings and language dependent meaning representations (logical forms). Moreover, for each language pair (or set of languages) there is a unification grammar that defines a reversible relation between such language dependent logical forms. Translation is thus defined by a series of three unification grammars. A specific version of the system that is described here is </context>
+</contexts>
+<marker>[21]</marker>
+<rawString>Gertjan van Noord. BUG: A directed bottom-up generator for unification based formalisms. Working Papers in Natural Language Processing, Katholieke Universiteit Leuven, Stichting Taattechnologie Utrecht, 4, 1989.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Gertjan van Noord</author>
+</authors>
+<title>An overview of head-driven bottom-up generation.</title>
+<date>1990</date>
+<booktitle>Current Research in Natural Language Generation.</booktitle>
+<editor>In Robert Dale, Chris Mellish, and Michael Zock, editors,</editor>
+<contexts>
+<context position="2339" citStr="[3, 24, 16, 21, 2, 18, 19, 22, 20]" startWordPosition="352" endWordPosition="360"> are to be preferred to others because in reversible MT systems a better understanding of the translation relation is achieved; such systems will eventually exhibit better practical performance. Moreover, the arguments in favour of using bidirectional grammars in NLP, such as those given in 11, 8] carry over to translation as well. Because of the declarative nature of unification- and logic grammar formalisms grammars written in these formalisms are increasingly used In a bidirectional way, thus the same grammar is used for both parsing and generation. Some recent developments are reported in [3, 24, 16, 21, 2, 18, 19, 22, 20]. In this paper I will show how to use such bidirectional unification grammars to build a completely reversible, multilingual, MT system. For each language there is a unification grammar that defines a reversible relation between strings and language dependent meaning representations (logical forms). Moreover, for each language pair (or set of languages) there is a unification grammar that defines a reversible relation between such language dependent logical forms. Translation is thus defined by a series of three unification grammars. A specific version of the system that is described here is </context>
+<context position="16582" citStr="[18, 19, 22]" startWordPosition="2790" endWordPosition="2792">coherence condition comes in; the coherence requirement explicitly states that extension of the input is not allowed. For this reason strong reversiblity may be easier to obtain than weak reversibility. In the next subsection I will discuss two relaxations of strong symmetry that will not affect the computability properties discussed here. Generalizing the terminology introduced by [13] a proof procedure is strongly stable if it always terminates for grammars that adhere to a generalized off-line parsability constraint. In [15] a general proof procedure for DCG based on head-driven generation [18, 19, 22] is defined that is strongly stable for a specific instantiation of the generalized off-line parsability constraint. 2Note that this is the reason that most DCG parsers expect that the input value of the string has an atomic tail, i.e. parse([ john, kisses, maryb p) will work fine, but parseqjohn, kisses, mary14 X) will cause problems. 3.2 Possible relaxations it is easy to see that the completeness and coherence requirements make life hard for the rulewriter as she/he needs to know exactly what the possible values of inputs are for some component. It is possible to relax the completeness and </context>
+</contexts>
+<marker>[22]</marker>
+<rawString>Gertjan van Noord. An overview of head-driven bottom-up generation. In Robert Dale, Chris Mellish, and Michael Zock, editors, Current Research in Natural Language Generation. 1990.</rawString>
+</citation>
+<citation valid="false">
+<authors>
+<author>Gertjan van Noord</author>
+<author>Joke Dorrepaal</author>
+<author>Louis des Tanabe</author>
+<author>Pim van der Eijk</author>
+</authors>
+<booktitle>The MiMo2 research system. OTS RUU Utrecht.</booktitle>
+<contexts>
+<context position="3012" citStr="[23]" startWordPosition="465" endWordPosition="465"> grammars to build a completely reversible, multilingual, MT system. For each language there is a unification grammar that defines a reversible relation between strings and language dependent meaning representations (logical forms). Moreover, for each language pair (or set of languages) there is a unification grammar that defines a reversible relation between such language dependent logical forms. Translation is thus defined by a series of three unification grammars. A specific version of the system that is described here is implemented as the core of the experimental MiMo2 translation system [23]. This system aims at translating international news items on Teletext. Apart from unification grammars the system uses a bidirectional two-level orthography component. Language dependent meanings are represented as .sintple predicate argument structures with softie extra labels indicating &amp;apos;universal&amp;apos; meaning such as tense and aspect. The current system (November 1989) includes grammars for Dutch, Spanish and English. The paper is set up as follows. In section 2, I will give some examples that show how bidirectional unification grammars can be used to define relations between logical forms of </context>
+</contexts>
+<marker>[23]</marker>
+<rawString>Gertjan van Noord, Joke Dorrepaal, Louis des Tanabe, and Pim van der Eijk. The MiMo2 research system. OTS RUU Utrecht.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Jiirgen Wedekind</author>
+</authors>
+<title>Generation as structure driven derivation.</title>
+<date>1988</date>
+<booktitle>In Proceedings of the 12th International Conference on Computational Linguistics,</booktitle>
+<contexts>
+<context position="2339" citStr="[3, 24, 16, 21, 2, 18, 19, 22, 20]" startWordPosition="352" endWordPosition="360"> are to be preferred to others because in reversible MT systems a better understanding of the translation relation is achieved; such systems will eventually exhibit better practical performance. Moreover, the arguments in favour of using bidirectional grammars in NLP, such as those given in 11, 8] carry over to translation as well. Because of the declarative nature of unification- and logic grammar formalisms grammars written in these formalisms are increasingly used In a bidirectional way, thus the same grammar is used for both parsing and generation. Some recent developments are reported in [3, 24, 16, 21, 2, 18, 19, 22, 20]. In this paper I will show how to use such bidirectional unification grammars to build a completely reversible, multilingual, MT system. For each language there is a unification grammar that defines a reversible relation between strings and language dependent meaning representations (logical forms). Moreover, for each language pair (or set of languages) there is a unification grammar that defines a reversible relation between such language dependent logical forms. Translation is thus defined by a series of three unification grammars. A specific version of the system that is described here is </context>
+<context position="13585" citStr="[24]" startWordPosition="2288" endWordPosition="2288">roblem. It is now possible to incorporate the notion of equivalence, to obtain a definition of a parser, generator and translator. For example, an algorithm that computes the foregoing relation r will enumerate for a given features structure /1 all feature structures 12, such that r(f3, f2) and fi and h are equivalent. In the case of strong equivalence this implies that Ii C f3 (completeness), and h C Ii (coherence). In other words, the input should not be extended (coherence) and should completely be derived (completeness). This usage of the terms completeness and coherence was introduced in [24]. In the following I will discuss ways to obtain computability of one such partition. It is well known that relations defined by unrestricted unification grammars are not computable in general as 3 301 such grammars have Turing power [13]; it is thus not decidable whether the relation is defined for some given input. Usually some constraint on grammars is defined to remedy this. For example the off-line-parsability constraint [13, 5] ensures that the recognition problem is solvable. Moreover this constraint also implies that the parsing problem as defined here is computable; i.e. the proof pro</context>
+</contexts>
+<marker>[24]</marker>
+<rawString>Jiirgen Wedekind. Generation as structure driven derivation. In Proceedings of the 12th International Conference on Computational Linguistics, 1988.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Remi Zajac</author>
+</authors>
+<title>A transfer model using a typed feature structure rewriting system with inheritence,</title>
+<date>1989</date>
+<booktitle>ln 27th Annual Meeting of the Association for Computational Linguistics,</booktitle>
+<contexts>
+<context position="21166" citStr="[25]" startWordPosition="3564" endWordPosition="3564">ll eventually find the good translations, but it may take a while. On the other hand, if we are to mention all (possibly unbounded) reentrancies explicitly then the transfer grammar will have to be complicated by a threading mechanism to derive such reentrancies. Again, the specific use of reentrancies in the logical forms that are defined will determine whether this relaxation is desired or not. 4 Final remarks The objective to build a reversible MT system using a series of unification grammars is similar to the objective of the CRITTER system as expressed in [3, 7], and the work of Zajac in [25]. Instead of using unification grammars CRITTER uses logic grammars; Zajac uses a type system including an inheritance mechanism to define transfer-like rules. In these two approaches less attention is being paid to an exact definition of reversibility; although our work may be compatible with these approaches. A somewhat different approach is advocated in [9]. In that approach a system is described where an LFC grammar for some source language is augmented with equations that define (part of) the target level representations. A generator derives from this partial description a string accordin</context>
+</contexts>
+<marker>[25]</marker>
+<rawString>Remi Zajac. A transfer model using a typed feature structure rewriting system with inheritence, ln 27th Annual Meeting of the Association for Computational Linguistics, 1989.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Henk Zeevat</author>
+<author>Ewan Klein</author>
+<author>Jo Calder</author>
+</authors>
+<title>Unification cat egorial grammar.</title>
+<date>1987</date>
+<booktitle>Categorial Grammar, Unification Grammar and Parsing. Centre for Cognitive Science,</booktitle>
+<volume>1</volume>
+<editor>In Nicholas Haddock, Ewan Klein, and Glyn Morrill, editors,</editor>
+<contexts>
+<context position="7843" citStr="[26]" startWordPosition="1326" endWordPosition="1326">he attribute tree to represent the derivational history of the translation process. Or we can &amp;apos;thread&amp;apos; information through different nodes to be able to make translations dependent on each other. Translation parameters such as style and subject field can be percolated as attributes of nodes to obtain consistent translations; but these attributes themselves need not be translated. 3 Reversible Unification Grammars A unification grammar defined in formalisms such as PATE. II and DCG [12] usually defines a relation between a string of words and a logical form. In signbased approaches such as UCG [26] and IIPSG [14] this string of words is not assigned a privileged status but is the value of one of the attributes of a feature structure. I will assume a formalism similar to PATE. gb Sb pred open_fire_at arg 1 = 2 300 but without the context-free base; the string is represented as the value of one of the attributes of a feature structure. Thus more generally, unification grammars define relations between the values of two (or morel) attributes - for example the relation between the value of the attributes string and if, or between the value of the attributes sp and gb; these relations are al</context>
+</contexts>
+<marker>[26]</marker>
+<rawString>Henk Zeevat, Ewan Klein, and Jo Calder. Unification cat egorial grammar. In Nicholas Haddock, Ewan Klein, and Glyn Morrill, editors, Categorial Grammar, Unification Grammar and Parsing. Centre for Cognitive Science, 1987. Volume 1 of Working Papers in Cognitive Science.</rawString>
+</citation>
+</citationList>
+</algorithm>
+</algorithms>

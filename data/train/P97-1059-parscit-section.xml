@@ -1,0 +1,1112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<algorithms version="110505">
+<algorithm name="SectLabel" version="110505">
+<variant no="0" confidence="0.000000">
+<title confidence="0.922404">
+Finite State Transducers
+Approximating Hidden Markov Models
+</title>
+<author confidence="0.896919">
+Andre Kempe
+</author>
+<affiliation confidence="0.876609">
+Rank Xerox Research Centre - Grenoble Laboratory
+</affiliation>
+<address confidence="0.741429">
+6, chemin de Maupertuis - 38240 Meylan - France
+</address>
+<email confidence="0.569286">
+andre.kempeOgrenoble.rxrc.xerox.com
+http://www.rxrc.xerox.com/research/m1tt
+</email>
+<sectionHeader confidence="0.955232" genericHeader="abstract">
+Abstract
+</sectionHeader>
+<bodyText confidence="0.999956833333333">
+This paper describes the conversion of a
+Hidden Markov Model into a sequential
+transducer that closely approximates the
+behavior of the stochastic model. This
+transformation is especially advantageous
+for part-of-speech tagging because the re-
+sulting transducer can be composed with
+other transducers that encode correction
+rules for the most frequent tagging errors.
+The speed of tagging is also improved. The
+described methods have been implemented
+and successfully tested on six languages.
+</bodyText>
+<sectionHeader confidence="0.995582" genericHeader="introduction">
+1 Introduction
+</sectionHeader>
+<bodyText confidence="0.901019739130435">
+Finite-state automata have been successfully applied
+in many areas of computational linguistics.
+This paper describes two algorithms&apos; which ap-
+proximate a Hidden Markov Model (HMM) used for
+part-of-speech tagging by a finite-state transducer
+(FST). These algorithms may be useful beyond the
+current description on any kind of analysis of written
+or spoken language based on both finite-state tech-
+nology and HMMs, such as corpus analysis, speech
+recognition, etc. Both algorithms have been fully
+implemented.
+An HMM used for tagging encodes, like a trans-
+ducer, a relation between two languages. One lan-
+guage contains sequences of ambiguity classes ob-
+tained by looking up in a lexicon all words of a sen-
+tence. The other language contains sequences of tags
+obtained by statistically disambiguating the class se-
+quences. From the outside, an HMM tagger behaves
+like a sequential transducer that deterministically
+&apos;There is a different (unpublished) algorithm by
+Julian M. Kupiec and John T. Maxwell (p.c.).
+maps every class sequence to a tag sequence, e.g.:
+[DET, PRO] [ADJ, NOUN] [ADJ, NOUN] [END]
+</bodyText>
+<equation confidence="0.5867125">
+(1)
+DET ADJ NOUN END
+</equation>
+<bodyText confidence="0.908940347826087">
+The aim of the conversion is not to generate FSTs
+that behave in the same way, or in as similar a way
+as possible like HMMs, but rather FSTs that per-
+form tagging in as accurate a way as possible. The
+motivation to derive these FSTs from HMMs is that
+HMMs can be trained and converted with little man-
+ual effort.
+The tagging speed when using transducers is up
+to five times higher than when using the underly-
+ing HMMs. The main advantage of transforming an
+HMM is that the resulting transducer can be han-
+dled by finite state calculus. Among others, it can
+be composed with transducers that encode:
+• correction rules for the most frequent tagging
+errors which are automatically generated (Brill,
+1992; Roche and Schabes, 1995) or manually
+written (Chanod and Tapanainen, 1995), in or-
+der to significantly improve tagging accuracy2.
+These rules may include long-distance depen-
+dencies not handled by HMM taggers, and can
+conveniently be expressed by the replace oper-
+ator (Kaplan and Kay, 1994; Karttunen, 1995;
+Kempe and Karttunen, 1996).
+</bodyText>
+<listItem confidence="0.953428">
+• further steps of text analysis, e.g. light parsing
+or extraction of noun phrases or other phrases
+(Ait-Mokhtar and Chanod, 1997).
+</listItem>
+<bodyText confidence="0.871121875">
+These compositions enable complex text analysis
+to be performed by a single transducer.
+An HMM transducer builds on the data (probabil-
+ity matrices) of the underlying HMM. The accuracy
+2Automatically derived rules require less work than
+manually written ones but are unlikely to yield better
+results because they would consider relatively limited
+context and simple relations only.
+</bodyText>
+<page confidence="0.998292">
+460
+</page>
+<bodyText confidence="0.999538777777778">
+of this data has an impact on the tagging accuracy
+of both the HMM itself and the derived transducer.
+The training of the HMM can be done on either a
+tagged or untagged corpus, and is not a topic of this
+paper since it is exhaustively described in the liter-
+ature (Bahl and Mercer, 1976; Church, 1988).
+An HMM can be identically represented by a
+weighted FST in a straightforward way. We are,
+however, interested in non-weighted transducers.
+</bodyText>
+<sectionHeader confidence="0.986605" genericHeader="method">
+2 n-Type Approximation
+</sectionHeader>
+<bodyText confidence="0.98958165">
+This section presents a method that approximates
+a (1st order) HMM by a transducer, called n-type
+approximation3.
+Like in an HMM, we take into account initial prob-
+abilities it, transition probabilities a and class (i.e.
+observation symbol) probabilities b. We do, how-
+ever, not estimate probabilities over paths. The tag
+of the first word is selected based on its initial and
+class probability. The next tag is selected on its tran-
+sition probability given the first tag, and its class
+probability, etc. Unlike in an HMM, once a decision
+on a tag has been made, it influences the following
+decisions but is itself irreversible.
+A transducer encoding this behaviour can be gen-
+erated as sketched in figure 1. In this example we
+have a set of three classes, c1 with the two tags ti
+and /12, C2 with the three tags 121,122 and /23, and
+C3 with one tag t31. Different classes may contain
+the same tag, e.g. 112 and 123 may refer to the same
+tag.
+For every possible pair of a class and a tag (e.g.
+c1 : t12 or [MIT ,NOUN] :NOUN) a state is created and
+labelled with this same pair (fig. 1). An initial state
+which does not correspond with any pair, is also cre-
+ated. All states are final, marked by double circles.
+&apos; For every state, as many outgoing arcs are created
+as there are classes (three in fig. 1). Each such arc
+for a particular class points to the most probable
+pair of this same class. If the arc comes from the
+initial state, the most probable pair of a class and a
+tag (destination state) is estimated by:
+arg maxpi (ci , tik ) = r(ilk) b(ciltik) (2)
+If the arc comes from a state other than the initial
+state, the most probable pair is estimated by:
+arg max p2(ci , ilk) = a(tik tprevious) b(ci itik) (3)
+In the example (fig. 1) c1 :112 is the most likely pair
+of class ci, and c2 : t23 the most likely pair of class c2
+3Name given by the author.
+when coming from the initial state, and c2 :121 the
+most likely pair of class c2 when coming from the
+state of c3 :t31.
+Every arc is labelled with the same symbol pair
+as its destination state, with the class symbol in the
+upper language and the tag symbol in the lower lan-
+guage. E.g. every arc leading to the state of c1 :112
+is labelled with ci :t12.
+Finally, all state labels can be deleted since the
+behaviour described above is encoded in the arc la-
+bels and the network structure. The network can be
+minimized and determinized.
+We call the model an ra-type model, the resulting
+FST an nl-type transducer and the algorithm lead-
+ing from the HMM to this transducer, an nl-type
+approximation of a 1st order HMM.
+Adapted to a 2nd order HMM, this algorithm
+would give an n2-type approximation. Adapted to
+a zero order HMM, which means only to use class
+probabilities b, the algorithm would give an nO-type
+approximation.
+n-Type transducers have deterministic states only.
+</bodyText>
+<sectionHeader confidence="0.995719" genericHeader="method">
+3 s-Type Approximation
+</sectionHeader>
+<bodyText confidence="0.999815571428571">
+This section presents a method that approxi-
+mates an HMM by a transducer, called s-type
+approximation&apos;.
+Tagging a sentence based on a 1st order HMM
+includes finding the most probable tag sequence T
+given the class sequence C of the sentence. The joint
+probability of C and T can be estimated by:
+</bodyText>
+<equation confidence="0.8991675">
+r(ti) b(ci It&apos;) • 11 a(ti Iti_ 1) b(ci Iii) (4)
+1=2
+</equation>
+<bodyText confidence="0.9683865">
+The decision on a tag of a particular word cannot
+be made separately from the other tags. Tags can
+influence each other over a long distance via transi-
+tion probabilities. Often, however, it is unnecessary
+to decide on the tags of the whole sentence at once.
+In the case of a 1st order HMM, unambiguous classes
+(containing one tag only), plus the sentence begin-
+ning and end positions, constitute barriers to the
+propagation of HMM probabilities. Two tags with
+one or more barriers inbetween do not influence each
+other&apos;s probability.
+4 Name given by the author.
+</bodyText>
+<page confidence="0.996583">
+461
+</page>
+<figure confidence="0.996125">
+classes tags of classes
+tsi
+C3
+C2
+Cl
+tll t12
+tl t22 t23
+</figure>
+<figureCaption confidence="0.999993">
+Figure 1: Generation of an nl-type transducer
+</figureCaption>
+<subsectionHeader confidence="0.99032">
+3.1 s-Type Sentence Model
+</subsectionHeader>
+<bodyText confidence="0.999907833333333">
+To tag a sentence, one can split its class sequence at
+the barriers into subsequences, then tag them sep-
+arately and concatenate them again. The result is
+equivalent to the one obtained by tagging the sen-
+tence as a whole.
+We distinguish between initial and middle sub-
+sequences. The final subsequence of a sentence is
+equivalent to a middle one, if we assume that the
+sentence end symbol (. or ! or?) always corresponds
+to an unambiguous class eu. This allows us to ig-
+nore the meaning of the sentence end position as an
+HMM barrier because this role is taken by the un-
+ambiguous class cu at the sentence end.
+An initial subsequence Ci starts with the sentence
+initial position, has any number (incl. zero) of am-
+biguous classes co and ends with the first unambigu-
+ous class ce, of the sentence. It can be described by
+the regular expression5:
+</bodyText>
+<equation confidence="0.786478">
+= Co* Cu (5)
+</equation>
+<bodyText confidence="0.998564">
+The joint probability of an initial class subse-
+quence Ci of length r, together with an initial tag
+subsequence T2, can be estimated by:
+</bodyText>
+<equation confidence="0.9744425">
+p(Ci,Ti) = r(ti) b(ci Iti) • II a(ti Iti- 1) b(cj Iti) (6)
+j.2
+</equation>
+<bodyText confidence="0.790692333333333">
+A middle subsequence Cm starts immediately af-
+ter an unambiguous class Cu, has any number (incl.
+5Regular expression operators used in this section are
+explained in the annex.
+zero) of ambiguous classes co and ends with the fol-
+lowing unambiguous class Cu:
+</bodyText>
+<equation confidence="0.992635">
+Cm = Cu (7)
+</equation>
+<bodyText confidence="0.9987368">
+For correct probability estimation we have to in-
+clude the immediately preceding unambiguous class
+Cu, actually belonging to the preceding subsequence
+Ci or Cm. We thereby obtain an extended middle
+subsequence5:
+</bodyText>
+<equation confidence="0.991918">
+C7e = Cu (8)
+</equation>
+<bodyText confidence="0.998659333333333">
+The joint probability of an extended middle class
+subsequence Cine of length s, together with a tag sub-
+sequence T, can be estimated by:
+</bodyText>
+<equation confidence="0.9431345">
+P(Ceen,T7eu) = b(ciiti) a(tjlti-i) b(ciiii) (9)
+j.2
+</equation>
+<subsectionHeader confidence="0.999739">
+3.2 Construction of an s-Type Transducer
+</subsectionHeader>
+<bodyText confidence="0.997531333333333">
+To build an s-type transducer, a large number of ini-
+tial class subsequences Ci and extended middle class
+subsequences C,e.„ are generated in one of the follow-
+ing two ways:
+(a) Extraction from a corpus
+Based on a lexicon and a guesser, we annotate an
+untagged training corpus with class labels. From ev-
+ery sentence, we extract the initial class subsequence
+Ci that ends with the first unambiguous class ct, (eq.
+5), and all extended middle subsequences C,.en rang-
+ing from any unambiguous class C (in the sentence)
+to the following unambiguous class (eq. 8).
+</bodyText>
+<page confidence="0.996795">
+462
+</page>
+<bodyText confidence="0.991845714285714">
+A frequency constraint (threshold) may be im-
+posed on the subsequence selection, so that the only
+subsequences retained are those that occur at least
+a certain number of times in the training corpus6.
+(b) Generation of possible subsequences
+Based on the set of classes, we generate all possi-
+ble initial and extended middle class subsequences,
+Ci and Cg., (eq. 5, 8) up to a defined length.
+Every class subsequence Ci or Cg., is first dis-
+ambiguated based on a 1st order HMM, using the
+Viterbi algorithm (Viterbi, 1967; Rabiner, 1990) for
+efficiency, and then linked to its most probable tag
+subsequence Tt or 7;7, by means of the cross product
+operation6:
+</bodyText>
+<equation confidence="0.785238444444445">
+= C2 .X. Tj = c1 :t1 C2:12 (10)
+s7e,, = C:n .x. = cl:t1 c2:12 C„:1„ (11)
+In all extended middle subsequences sT„, e.g.:
+Cc
+In Te
+= = (12)
+In
+[DET] [ADJ, NOUN] [ADJ, NOUN] [NOUN]
+DET ADJ ADJ NOUN
+</equation>
+<bodyText confidence="0.998513">
+the first class symbol on the upper side and the first
+tag symbol on the lower side, will be marked as an
+extension that does not really belong to the middle
+sequence but which is necessary to disambiguate it
+correctly. Example (12) becomes:
+</bodyText>
+<equation confidence="0.962551">
+C°
+= = (13)
+O. [DET] [ADJ, NOUN] [ADJ, NOUN] [NOUN]
+0.DET ADJ ADJ NOUN
+</equation>
+<bodyText confidence="0.976668863636363">
+We then build the union &apos;St of all initial subse-
+quences Si and the union &apos;5T72 of all extended middle
+subsequences .37%, and formulate a preliminary sen-
+tence model:
+uso _ usi usmo* (14)
+in which all middle subsequences smo are still marked
+and extended in the sense that all occurrences of all
+unambiguous classes are mentioned twice: Once un-
+marked as au at the end of every sequence Ci or Ct,
+and the second time marked as au° at the beginning
+of every following sequence Ct. The upper side of
+the sentence model u50 describes the complete (but
+6The frequency constraint may prevent the encoding
+of rare subsequences which would encrease the size of
+the transducer without contributing much to the tagging
+accuracy.
+extended) class sequences of possible sentences, and
+the lower side of L&apos;S° describes the corresponding (ex-
+tended) tag sequences.
+To ensure a correct concatenation of initial and
+middle subsequences, we formulate a concatenation
+constraint for the classes:
+</bodyText>
+<equation confidence="0.625568">
+,.n [--$[ (15)
+</equation>
+<bodyText confidence="0.999734555555555">
+stating that every middle subsequence must begin
+with the same marked unambiguous class cu° (e.g.
+OIDET]) which occurs unmarked as cts (e.g. [DET])
+at the end of the preceding subsequence since both
+symbols refer to the same occurrence of this unam-
+biguous class.
+Having ensured correct concatenation, we delete
+all marked classes on the upper side of the relation
+by means of
+</bodyText>
+<equation confidence="0.960435">
+D, = [] [U [c (16)
+</equation>
+<bodyText confidence="0.7633">
+and all marked tags on the lower side by means of
+</bodyText>
+<equation confidence="0.8095915">
+Dt =[U[eii] []
+3 (17)
+</equation>
+<bodyText confidence="0.978470466666667">
+By composing the above relations with the prelim-
+inary sentence model, we obtain the final sentence
+mode16:
+S= De .o. R .o. USO .o. Dt (18)
+We call the model an s-type model, the corre-
+sponding FST an s-type transducer, and the whole
+algorithm leading from the HMM to the transducer,
+an s-type approximation of an HMM.
+The s-type transducer tags any corpus which con-
+tains only known subsequences, in exactly the same
+way, i.e. with the same errors, as the corresponding
+HMM tagger does. However, since an s-type trans-
+ducer is incomplete, it cannot tag sentences with
+one or more class subsequences not contained in the
+union of the initial or middle subsequences.
+</bodyText>
+<subsectionHeader confidence="0.999946">
+3.3 Completion of an s-Type Transducer
+</subsectionHeader>
+<bodyText confidence="0.9999655">
+An incomplete s-type transducer S can be completed
+with subsequences from an auxiliary, complete n-
+type transducer N as follows:
+First, we extract the union of initial and the union
+of extended middle subsequences, suSi and 1,-)S,fle from
+the primary s-type transducer S, and the unions nuSi
+</bodyText>
+<page confidence="0.999383">
+463
+</page>
+<bodyText confidence="0.999444666666667">
+and „uStme from the auxiliary n-type transducer N. To
+extract the union L&apos;S&apos;i of initial subsequences we use
+the following filter:
+</bodyText>
+<equation confidence="0.853786">
+Fs, = [Vet, , t) ]* (c,„t) [? :[]]* (19)
+</equation>
+<bodyText confidence="0.9886195">
+where (cu, t) is the 1-level format7 of the symbol pair
+cu :t. The extraction takes place by
+</bodyText>
+<equation confidence="0.974306">
+uSi = [ N.1L .o. Fs ,].1.2L (20)
+</equation>
+<bodyText confidence="0.999875">
+where the transducer N is first converted into 1-
+level format7, then composed with the filter Fs, (eq.
+19). We extract the lower side of this composition,
+where every sequence of N.1L remains unchanged
+from the beginning up to the first occurrence of an
+unambiguous class cu. Every following symbol is
+mapped to the empty string by means of [? : [ ]]
+(eq. 19). Finally, the extracted lower side is again
+converted into 2-level format7.
+The extraction of the union uSr% of extended mid-
+dle subsequences is performed in a similar way.
+We then make the joint unions of initial and ex-
+tended middle subsequences&apos;:
+</bodyText>
+<equation confidence="0.9991845">
+USi =s I [ [ — `Si .0] .o. (21)
+uQe = `;&apos;,5&apos;;„ I [ — .o. ] (22)
+</equation>
+<bodyText confidence="0.999800916666667">
+In both cases (eq. 21 and 22) we union all subse-
+quences from the principal model S, with all those
+subsequences from the auxiliary model N that are
+not in S.
+Finally, we generate the completed s+n-type
+transducer from the joint unions of subsequences uSi
+and `-&apos;5„6, as decribed above (eq. 14-18).
+A transducer completed in this way, disam-
+biguates all subsequences known to the principal
+incomplete s-type model, exactly as the underlying
+HMM does, and all other subsequences as the aux-
+iliary n-type model does.
+</bodyText>
+<sectionHeader confidence="0.9809825" genericHeader="method">
+4 An Implemented Finite-State
+Tagger
+</sectionHeader>
+<bodyText confidence="0.999460827586207">
+The implemented tagger requires three transducers
+which represent a lexicon, a guesser and any above
+mentioned approximation of an HMM.
+All three transducers are sequential, i.e. deter-
+ministic on the input side.
+Both the lexicon and guesser unambiguously map
+a surface form of any word that they accept to the
+corresponding class of tags (fig. 2, col. 1 and 2):
+71-Level and 2-level format are explained in the an-
+nex.
+First, the word is looked for in the lexicon. If this
+fails, it is looked for in the guesser. If this equally
+fails, it gets the label [UNKNOWN] which associates
+the word with the tag class of unknown words. Tag
+probabilities in this class are approximated by tags
+of words that appear only once in the training cor-
+pus.
+As soon as an input token gets labelled with the
+tag class of sentence end symbols (fig. 2: [SENT7),
+the tagger stops reading words from the input. At
+this point, the tagger has read and stored the words
+of a whole sentence (fig. 2, col. 1) and generated the
+corresponding sequence of classes (fig. 2, col. 2).
+The class sequence is now deterministically
+mapped to a tag sequence (fig. 2, col. 3) by means of
+the HMM transducer. The tagger outputs the stored
+word and tag sequence of the sentence, and contin-
+ues in the same way with the remaining sentences of
+the corpus.
+</bodyText>
+<figure confidence="0.9418621">
+The [AT] AT
+share [NN,VB] NN
+of [IN] IN
+tripled [VED,VBN] VBD
+within [IN,RB] IN
+that [CS,DT,WPS] DT
+span [TN,VB,VED] VBD
+of [IN] IN
+time [NN,VB] NN
+[SENT] SENT
+</figure>
+<figureCaption confidence="0.99056">
+Figure 2: Tagging a sentence
+</figureCaption>
+<sectionHeader confidence="0.988373" genericHeader="evaluation">
+5 Experiments and Results
+</sectionHeader>
+<bodyText confidence="0.999656722222222">
+This section compares different n-type and s-type
+transducers with each other and with the underlying
+HMM.
+The FSTs perform tagging faster than the HMMs.
+Since all transducers are approximations of
+HMMs, they give a lower tagging accuracy than the
+corresponding HMMs. However, improvement in ac-
+curacy can be expected since these transducers can
+be composed with transducers encoding correction
+rules for frequent errors (sec. 1).
+Table 1 compares different transducers on an En-
+glish test case.
+The s+nl-type transducer containing all possible
+subsequences up to a length of three classes is the
+most accurate (table 1, last line, s+nl-FST (&lt; 3):
+95.95 %) but also the largest one. A similar rate of
+accuracy at a much lower size can be achieved with
+the s+nl-type, either with all subsequences up to a
+</bodyText>
+<page confidence="0.998569">
+464
+</page>
+<table confidence="0.999733555555556">
+accuracy tagging speed transducer size creation
+in % in words/sec time
+# states # arcs
+HMM 96.77 4 590
+n0-FST 83.53 20 582 1 297 16 sec
+nl-FST 94.19 17 244 71 21 087 17 sec
+s+nl-FST (20K, Fl) 94.74 13 575 927 203 853 3 min
+s+nl-FST (50K, Fl) 94.92 12 760 2 675 564 887 10 min
+s+nl-FST (100K, Fl) 95.05 12 038 4 709 976 785 23 min
+s+nl-FST (100K, F2) 94.76 14 178 476 107 728 2 min
+s+nl-FST (100K, F4) 94.60 14 178 211 52 624 76 sec
+s+nl-FST (100K, F8) 94.49 13 870 154 41 598 62 sec
+s+nl-FST (1M, F2) 95.67 11 393 2 049 418 536 7 min
+s+nl-FST (1M, F4) 95.36 11 193 799 167 952 4 min
+s+nl-FST (1M, F8) 95.09 13 575 432 96 712 3 min
+s+nl-FST (&lt;2) 95.06 8 180 9 796 1 311 962 39 min
+s+nl-FST (&lt;3) 95.95 4 870 92 463 13 681 113 47 h
+Language: English
+Corpora: 19 944 words for HMM training, 19 934 words for test
+Tag set: 74 tags 297 classes
+Types of FST (Finite-State Transducers) :
+nO, n1 0-type (with only lexical probabilities) or nl-type (sec. 2)
+sd-n1 (100K, F2) s-type (sec. 3), with subsequences of frequency &gt; 2, from a training
+corpus of 100 000 words (sec. 3.2 a), completed with nl-type (sec. 3.3)
+s-l-n1 (&lt; 2) s-type (sec. 3), with all possible subsequences of length &lt; 2 classes
+(sec. 3.2 b), completed with n1-type (sec. 3.3)
+Computer: ultra2, 1 CPU, 512 MBytes physical RAM, 1.4 GBytes virtual RAM
+</table>
+<tableCaption confidence="0.999971">
+Table 1: Accuracy, speed, size and creation time of some HMM transducers
+</tableCaption>
+<bodyText confidence="0.9998995">
+length of two classes (s+nl-FST (&lt; 2): 95.06%) or
+with subsequences occurring at least once in a train-
+ing corpus of 100 000 words (s+nl-FST (100K, F1):
+95.05 %).
+Increasing the size of the training corpus and the
+frequency limit, i.e. the number of times that a sub-
+sequence must at least occur in the training corpus
+in order to be selected (sec. 3.2 a), improves the re-
+lation between tagging accuracy and the size of the
+transducer. E.g. the s+nl-type transducer that en-
+codes subsequences from a training corpus of 20 000
+words (table 1, s+nl-FST (20K, F1): 94.74 %, 927
+states, 203 853 arcs), performs less accurate tagging
+and is bigger than the transducer that encodes sub-
+sequences occurring at least eight times in a corpus
+of 1 000 000 words (table 1, s+nl-FST (1M, F8):
+95.09 %, 432 states, 96 712 arcs).
+Most transducers in table 1 are faster then the
+underlying HMM; the nO-type transducer about five
+times8. There is a large variation in speed between
+&apos;Since nO-type and n1-type transducers have deter-
+ministic states only, a particular fast matching algorithm
+can be used for them.
+the different transducers due to their structure and
+size.
+Table 2 compares the tagging accuracy of different
+transducers and the underlying HMM for different
+languages. In these tests the highest accuracy was
+always obtained by s-type transducers, either with
+all subsequences up to a length of two classes9 or
+with subsequences occurring at least once in a corpus
+of 100 000 words.
+</bodyText>
+<sectionHeader confidence="0.980276" genericHeader="conclusions">
+6 Conclusion and Future Research
+</sectionHeader>
+<bodyText confidence="0.999880625">
+The two methods described in this paper allow the
+approximation of an HMM used for part-of-speech
+tagging, by a finite-state transducer. Both methods
+have been fully implemented.
+The tagging speed of the transducers is up to five
+times higher than that of the underlying HMM.
+The main advantage of transforming an HMM
+is that the resulting FST can be handled by finite
+</bodyText>
+<footnote confidence="0.516771666666667">
+9A maximal length of three classes is not considered
+here because of the high increase in size and a low in-
+crease in accuracy.
+</footnote>
+<page confidence="0.997978">
+465
+</page>
+<table confidence="0.98516">
+accuracy in %
+English Dutch French German Portug. Spanish
+HMM 96.77 94.76 98.65 97.62 97.12 97.60
+nO-FST 83.53 81.99 91.13 82.97 91.03 93.65
+nl-FST 94.19 91.58 98.18 94.49 96.19 96.46
+s-l-nl-FST (20K, Fl) 94.74 92.17 98.35 95.23 96.33 96.71
+s+nl-FST (50K, Fl) 94.92 92.24 98.37 95.57 96.49 96.76
+s+nl-FST (100K, Fl) 95.05 92.36 98.37 95.81 96.56 96.87
+s+nl-FST (100K, F2) 94.76 92.17 98.34 95.51 96.42 96.74
+s+nl-FST (100K, F4) 94.60 92.02 98.30 95.29 96.27 96.64
+s+nl-FST (100K, F8) 94.49 91.84 98.32 95.02 96.23 96.54
+s+nl-FST (&lt;2) 95.06 92.25 98.37 95.92 96.50 96.90
+HMM train.crp. (#wd) 19 944 26 386 22 622 91 060 20 956 16 221
+test corpus (# words) 19 934 10 468 6 368 39 560 15 536 15 443
+# tags 74 47 45 66 67 55
+# classes 297 230 287 389 303 254
+Types of FST (Finite-State Transducers) : cf. table 1
+</table>
+<tableCaption confidence="0.999552">
+Table 2: Accuracy of some HMM transducers for different languages
+</tableCaption>
+<bodyText confidence="0.9990935">
+state calculusl° and thus be directly composed with
+other transducers which encode tag correction rules
+and/or perform further steps of text analysis.
+Future research will mainly focus on this pos-
+sibility and will include composition with, among
+others:
+</bodyText>
+<listItem confidence="0.674585">
+• Transducers that encode correction rules (pos-
+sibly including long-distance dependencies) for
+the most frequent tagging errors, in order to
+significantly improve tagging accuracy. These
+rules can be either extracted automatically from
+a corpus (Brill, 1992) or written manually
+(Chanod and Tapanainen, 1995).
+• Transducers for light parsing, phrase extraction
+and other analysis (Ait-Mokhtar and Chanod,
+1997).
+</listItem>
+<bodyText confidence="0.9651379">
+An HMM transducer can be composed with one or
+more of these transducers in order to perform com-
+plex text analysis using only a single transducer.
+We also hope to improve the n-type model by us-
+ing look-ahead to the following tags11.
+&quot;A large library of finite-state functions is available
+at Xerox.
+liOngoing work has shown that, looking ahead to just
+one tag is worthless because it makes tagging results
+highly ambiguous.
+</bodyText>
+<sectionHeader confidence="0.991424" genericHeader="acknowledgments">
+Acknowledgements
+</sectionHeader>
+<bodyText confidence="0.999947642857143">
+I wish to thank the anonymous reviewers of my pa-
+per for their valuable comments and suggestions.
+I am grateful to Lauri Karttunen and Gregory
+Grefenstette (both RXRC Grenoble) for extensive
+and frequent discussion during the period of my
+work, as well as to Julian Kupiec (Xerox PARC)
+and Mehryar Mohri (AT&amp;T Research) for sending
+me some interesting ideas before I started.
+Many thanks to all my colleagues at RXRC
+Grenoble who helped me in whatever respect, partic-
+ularly to Anne Schiller, Marc Dymetman and Jean-
+Pierre Chanod for discussing parts of the work, and
+to Irene Maxwell for correcting various versions of
+the paper.
+</bodyText>
+<page confidence="0.998713">
+466
+</page>
+<sectionHeader confidence="0.495561" genericHeader="references">
+References ANNEX: Regular Expression Operators
+</sectionHeader>
+<reference confidence="0.808413905263158">
+Alt-Mokhtar, Salah and Chanod, Jean-Pierre
+(1997). Incremental Finite-State Parsing. In
+the Proceedings of the 5th Conference of Applied
+Natural Language Processing. ACL, pp. 72-79.
+Washington, DC, USA.
+Bahl, Lalit R. and Mercer, Robert L. (1976). Part
+of Speech Assignment by a Statistical Decision
+Algorithm. In IEEE international Symposium on
+Information Theory. pp. 88-89. Ronneby.
+Brill, Eric (1992). A Simple Rule-Based Part-of-
+Speech Tagger. In the Proceedings of the 3rd con-
+ference on Applied Natural Language Processing,
+pp. 152-155. Trento, Italy.
+Chanod, Jean-Pierre and Tapanainen, Pasi (1995).
+Tagging French - Comparing a Statistical and a
+Constraint Based Method. In the Proceedings of
+the 7th conference of the EACL, pp. 149-156.
+ACL. Dublin, Ireland.
+Church, Kenneth W. (1988). A Stochastic Parts
+Program and Noun Phrase Parser for Unre-
+stricted Text. In Proceedings of the 2nd Con-
+ference on Applied Natural Language Processing.
+ACL, pp. 136-143.
+Kaplan, Ronald M. and Kay, Martin (1994). Reg-
+ular Models of Phonological Rule Systems. In
+Computational Linguistics. 20:3, pp. 331-378.
+Karttunen, Lauri (1995). The Replace Operator.
+In the Proceedings of the 33rd Annual Meeting
+of the Association for Computational Linguistics.
+Cambridge, MA, USA. cmp-lg/9504032
+Kempe, Andre and Karttunen, Lauri (1996). Par-
+allel Replacement in Finite State Calculus. In
+the Proceedings of the 16th International Confer-
+ence on Computational Linguistics, pp. 622-627.
+Copenhagen, Denmark. cmp-lg/9607007
+Rabiner, Lawrence R. (1990). A Tutorial on Hid-
+den Markov Models and Selected Applications in
+Speech Recognition. In Readings in Speech Recog-
+nition (eds. A. Waibel, K.F. Lee). Morgan Kauf-
+mann Publishers, Inc. San Mateo, CA., USA.
+Roche, Emmanuel and Schabes, Yves (1995). De-
+terministic Part-of-Speech Tagging with Finite-
+State Transducers. In Computational Linguistics.
+Vol. 21, No. 2, pp. 227-253.
+Viterbi, A.J. (1967). Error Bounds for Convolu-
+tional Codes and an Asymptotical Optimal De-
+coding Algorithm. In Proceedings of IEEE, vol.
+61, pp. 268-278.
+Below, a and b designate symbols, A and
+B designate languages, and R. and Q desig-
+nate relations between two languages. More
+details on the following operators and point-
+ers to finite-state literature can be found in
+http://www.rxrc.xerox.com/research/m1tt/fst
+$A Contains. Set of strings containing at least
+one occurrence of a string from A as a
+substring.
+-A Complement (negation). All strings ex-
+cept those from A.
+\a Term complement. Any symbol other
+than a.
+A* Kleene star. Zero or more times A con-
+catenated with itself.
+A+ Kleene plus. One or more times A concate-
+nated with itself.
+a -&gt; b Replace. Relation where every a on the
+upper side gets mapped to a b on the lower
+side.
+a &lt;- b Inverse replace. Relation where every b on
+the lower side gets mapped to an a on the
+upper side.
+a :b Symbol pair with a on the upper and b on
+the lower side.
+(a, b) 1-Level symbol which is the 1-level form
+(./L) of the symbol pair a:b.
+R.0 Upper language of R..
+R.1 Lower language of R.
+A B Concatenation of all strings of A with all
+strings of B.
+A I B Union of A and B.
+A &amp; B Intersection of A and B.
+A - B Relative complement (minus). All strings
+of A that are not in B.
+A .x. B Cross Product (Cartesian product) of the
+languages A and B.
+R .o Q Composition of the relations R. and Q.
+R. 1L 1-Level form. Makes a language out of
+the relation R.. Every symbol pair becomes
+a simple symbol. (e.g. a :b becomes (a , b)
+and a which means a:a becomes (a, a))
+A.2L 2-Level form. Inverse operation to .1L
+(R.1L.2L = R).
+0 or [ ] Empty string (epsilon).
+Any symbol in the known alphabet and its
+extensions
+</reference>
+<page confidence="0.999047">
+467
+</page>
+</variant>
+</algorithm>
+<algorithm name="ParsHed" version="110505">
+<variant no="0" confidence="0.516900">
+<title confidence="0.989668">Finite State Approximating Hidden Markov Models</title>
+<author confidence="0.942304">Andre</author>
+<affiliation confidence="0.621533">Rank Xerox Research Centre - Grenoble</affiliation>
+<address confidence="0.669796">6, chemin de Maupertuis - 38240 Meylan -</address>
+<web confidence="0.957765">http://www.rxrc.xerox.com/research/m1tt</web>
+<abstract confidence="0.998468307692308">This paper describes the conversion of a Hidden Markov Model into a sequential transducer that closely approximates the behavior of the stochastic model. This transformation is especially advantageous for part-of-speech tagging because the resulting transducer can be composed with other transducers that encode correction rules for the most frequent tagging errors. The speed of tagging is also improved. The described methods have been implemented and successfully tested on six languages.</abstract>
+</variant>
+</algorithm>
+<algorithm name="ParsCit" version="110505">
+<citationList>
+<citation valid="true">
+<authors>
+<author>Salah Alt-Mokhtar</author>
+<author>Jean-Pierre Chanod</author>
+</authors>
+<title>Incremental Finite-State Parsing.</title>
+<date>1997</date>
+<booktitle>In the Proceedings of the 5th Conference of Applied Natural Language Processing. ACL,</booktitle>
+<pages>72--79</pages>
+<location>Washington, DC, USA.</location>
+<marker>Alt-Mokhtar, Chanod, 1997</marker>
+<rawString>Alt-Mokhtar, Salah and Chanod, Jean-Pierre (1997). Incremental Finite-State Parsing. In the Proceedings of the 5th Conference of Applied Natural Language Processing. ACL, pp. 72-79. Washington, DC, USA.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Lalit R Bahl</author>
+<author>Robert L Mercer</author>
+</authors>
+<title>Part of Speech Assignment by a Statistical Decision Algorithm.</title>
+<date>1976</date>
+<booktitle>In IEEE international Symposium on Information Theory.</booktitle>
+<pages>88--89</pages>
+<location>Ronneby.</location>
+<contexts>
+<context position="3710" citStr="Bahl and Mercer, 1976" startWordPosition="582" endWordPosition="585">o be performed by a single transducer. An HMM transducer builds on the data (probability matrices) of the underlying HMM. The accuracy 2Automatically derived rules require less work than manually written ones but are unlikely to yield better results because they would consider relatively limited context and simple relations only. 460 of this data has an impact on the tagging accuracy of both the HMM itself and the derived transducer. The training of the HMM can be done on either a tagged or untagged corpus, and is not a topic of this paper since it is exhaustively described in the literature (Bahl and Mercer, 1976; Church, 1988). An HMM can be identically represented by a weighted FST in a straightforward way. We are, however, interested in non-weighted transducers. 2 n-Type Approximation This section presents a method that approximates a (1st order) HMM by a transducer, called n-type approximation3. Like in an HMM, we take into account initial probabilities it, transition probabilities a and class (i.e. observation symbol) probabilities b. We do, however, not estimate probabilities over paths. The tag of the first word is selected based on its initial and class probability. The next tag is selected on</context>
+</contexts>
+<marker>Bahl, Mercer, 1976</marker>
+<rawString>Bahl, Lalit R. and Mercer, Robert L. (1976). Part of Speech Assignment by a Statistical Decision Algorithm. In IEEE international Symposium on Information Theory. pp. 88-89. Ronneby.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Eric Brill</author>
+</authors>
+<title>A Simple Rule-Based Part-ofSpeech Tagger.</title>
+<date>1992</date>
+<booktitle>In the Proceedings of the 3rd conference on Applied Natural Language Processing,</booktitle>
+<pages>152--155</pages>
+<location>Trento, Italy.</location>
+<contexts>
+<context position="2572" citStr="Brill, 1992" startWordPosition="399" endWordPosition="400">s similar a way as possible like HMMs, but rather FSTs that perform tagging in as accurate a way as possible. The motivation to derive these FSTs from HMMs is that HMMs can be trained and converted with little manual effort. The tagging speed when using transducers is up to five times higher than when using the underlying HMMs. The main advantage of transforming an HMM is that the resulting transducer can be handled by finite state calculus. Among others, it can be composed with transducers that encode: • correction rules for the most frequent tagging errors which are automatically generated (Brill, 1992; Roche and Schabes, 1995) or manually written (Chanod and Tapanainen, 1995), in order to significantly improve tagging accuracy2. These rules may include long-distance dependencies not handled by HMM taggers, and can conveniently be expressed by the replace operator (Kaplan and Kay, 1994; Karttunen, 1995; Kempe and Karttunen, 1996). • further steps of text analysis, e.g. light parsing or extraction of noun phrases or other phrases (Ait-Mokhtar and Chanod, 1997). These compositions enable complex text analysis to be performed by a single transducer. An HMM transducer builds on the data (probab</context>
+<context position="22351" citStr="Brill, 1992" startWordPosition="3877" endWordPosition="3878">-State Transducers) : cf. table 1 Table 2: Accuracy of some HMM transducers for different languages state calculusl° and thus be directly composed with other transducers which encode tag correction rules and/or perform further steps of text analysis. Future research will mainly focus on this possibility and will include composition with, among others: • Transducers that encode correction rules (possibly including long-distance dependencies) for the most frequent tagging errors, in order to significantly improve tagging accuracy. These rules can be either extracted automatically from a corpus (Brill, 1992) or written manually (Chanod and Tapanainen, 1995). • Transducers for light parsing, phrase extraction and other analysis (Ait-Mokhtar and Chanod, 1997). An HMM transducer can be composed with one or more of these transducers in order to perform complex text analysis using only a single transducer. We also hope to improve the n-type model by using look-ahead to the following tags11. &quot;A large library of finite-state functions is available at Xerox. liOngoing work has shown that, looking ahead to just one tag is worthless because it makes tagging results highly ambiguous. Acknowledgements I wish</context>
+</contexts>
+<marker>Brill, 1992</marker>
+<rawString>Brill, Eric (1992). A Simple Rule-Based Part-ofSpeech Tagger. In the Proceedings of the 3rd conference on Applied Natural Language Processing, pp. 152-155. Trento, Italy.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Jean-Pierre Chanod</author>
+<author>Pasi Tapanainen</author>
+</authors>
+<title>Tagging French - Comparing a Statistical and a Constraint Based Method.</title>
+<date>1995</date>
+<booktitle>In the Proceedings of the 7th conference of the EACL,</booktitle>
+<pages>149--156</pages>
+<publisher>ACL. Dublin,</publisher>
+<contexts>
+<context position="2648" citStr="Chanod and Tapanainen, 1995" startWordPosition="408" endWordPosition="411"> perform tagging in as accurate a way as possible. The motivation to derive these FSTs from HMMs is that HMMs can be trained and converted with little manual effort. The tagging speed when using transducers is up to five times higher than when using the underlying HMMs. The main advantage of transforming an HMM is that the resulting transducer can be handled by finite state calculus. Among others, it can be composed with transducers that encode: • correction rules for the most frequent tagging errors which are automatically generated (Brill, 1992; Roche and Schabes, 1995) or manually written (Chanod and Tapanainen, 1995), in order to significantly improve tagging accuracy2. These rules may include long-distance dependencies not handled by HMM taggers, and can conveniently be expressed by the replace operator (Kaplan and Kay, 1994; Karttunen, 1995; Kempe and Karttunen, 1996). • further steps of text analysis, e.g. light parsing or extraction of noun phrases or other phrases (Ait-Mokhtar and Chanod, 1997). These compositions enable complex text analysis to be performed by a single transducer. An HMM transducer builds on the data (probability matrices) of the underlying HMM. The accuracy 2Automatically derived r</context>
+<context position="22401" citStr="Chanod and Tapanainen, 1995" startWordPosition="3882" endWordPosition="3885">Table 2: Accuracy of some HMM transducers for different languages state calculusl° and thus be directly composed with other transducers which encode tag correction rules and/or perform further steps of text analysis. Future research will mainly focus on this possibility and will include composition with, among others: • Transducers that encode correction rules (possibly including long-distance dependencies) for the most frequent tagging errors, in order to significantly improve tagging accuracy. These rules can be either extracted automatically from a corpus (Brill, 1992) or written manually (Chanod and Tapanainen, 1995). • Transducers for light parsing, phrase extraction and other analysis (Ait-Mokhtar and Chanod, 1997). An HMM transducer can be composed with one or more of these transducers in order to perform complex text analysis using only a single transducer. We also hope to improve the n-type model by using look-ahead to the following tags11. &quot;A large library of finite-state functions is available at Xerox. liOngoing work has shown that, looking ahead to just one tag is worthless because it makes tagging results highly ambiguous. Acknowledgements I wish to thank the anonymous reviewers of my paper for </context>
+</contexts>
+<marker>Chanod, Tapanainen, 1995</marker>
+<rawString>Chanod, Jean-Pierre and Tapanainen, Pasi (1995). Tagging French - Comparing a Statistical and a Constraint Based Method. In the Proceedings of the 7th conference of the EACL, pp. 149-156. ACL. Dublin, Ireland.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Kenneth W Church</author>
+</authors>
+<title>A Stochastic Parts Program and Noun Phrase Parser for Unrestricted Text.</title>
+<date>1988</date>
+<booktitle>In Proceedings of the 2nd Conference on Applied Natural Language Processing. ACL,</booktitle>
+<pages>136--143</pages>
+<contexts>
+<context position="3725" citStr="Church, 1988" startWordPosition="586" endWordPosition="587">gle transducer. An HMM transducer builds on the data (probability matrices) of the underlying HMM. The accuracy 2Automatically derived rules require less work than manually written ones but are unlikely to yield better results because they would consider relatively limited context and simple relations only. 460 of this data has an impact on the tagging accuracy of both the HMM itself and the derived transducer. The training of the HMM can be done on either a tagged or untagged corpus, and is not a topic of this paper since it is exhaustively described in the literature (Bahl and Mercer, 1976; Church, 1988). An HMM can be identically represented by a weighted FST in a straightforward way. We are, however, interested in non-weighted transducers. 2 n-Type Approximation This section presents a method that approximates a (1st order) HMM by a transducer, called n-type approximation3. Like in an HMM, we take into account initial probabilities it, transition probabilities a and class (i.e. observation symbol) probabilities b. We do, however, not estimate probabilities over paths. The tag of the first word is selected based on its initial and class probability. The next tag is selected on its transition</context>
+</contexts>
+<marker>Church, 1988</marker>
+<rawString>Church, Kenneth W. (1988). A Stochastic Parts Program and Noun Phrase Parser for Unrestricted Text. In Proceedings of the 2nd Conference on Applied Natural Language Processing. ACL, pp. 136-143.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Ronald M Kaplan</author>
+<author>Martin Kay</author>
+</authors>
+<title>Regular Models of Phonological Rule Systems.</title>
+<date>1994</date>
+<booktitle>In Computational Linguistics. 20:3,</booktitle>
+<pages>331--378</pages>
+<contexts>
+<context position="2861" citStr="Kaplan and Kay, 1994" startWordPosition="442" endWordPosition="445">times higher than when using the underlying HMMs. The main advantage of transforming an HMM is that the resulting transducer can be handled by finite state calculus. Among others, it can be composed with transducers that encode: • correction rules for the most frequent tagging errors which are automatically generated (Brill, 1992; Roche and Schabes, 1995) or manually written (Chanod and Tapanainen, 1995), in order to significantly improve tagging accuracy2. These rules may include long-distance dependencies not handled by HMM taggers, and can conveniently be expressed by the replace operator (Kaplan and Kay, 1994; Karttunen, 1995; Kempe and Karttunen, 1996). • further steps of text analysis, e.g. light parsing or extraction of noun phrases or other phrases (Ait-Mokhtar and Chanod, 1997). These compositions enable complex text analysis to be performed by a single transducer. An HMM transducer builds on the data (probability matrices) of the underlying HMM. The accuracy 2Automatically derived rules require less work than manually written ones but are unlikely to yield better results because they would consider relatively limited context and simple relations only. 460 of this data has an impact on the ta</context>
+</contexts>
+<marker>Kaplan, Kay, 1994</marker>
+<rawString>Kaplan, Ronald M. and Kay, Martin (1994). Regular Models of Phonological Rule Systems. In Computational Linguistics. 20:3, pp. 331-378.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Lauri Karttunen</author>
+</authors>
+<title>The Replace Operator.</title>
+<date>1995</date>
+<booktitle>In the Proceedings of the 33rd Annual Meeting of the Association for Computational Linguistics.</booktitle>
+<pages>9504032</pages>
+<location>Cambridge, MA, USA.</location>
+<contexts>
+<context position="2878" citStr="Karttunen, 1995" startWordPosition="446" endWordPosition="447"> using the underlying HMMs. The main advantage of transforming an HMM is that the resulting transducer can be handled by finite state calculus. Among others, it can be composed with transducers that encode: • correction rules for the most frequent tagging errors which are automatically generated (Brill, 1992; Roche and Schabes, 1995) or manually written (Chanod and Tapanainen, 1995), in order to significantly improve tagging accuracy2. These rules may include long-distance dependencies not handled by HMM taggers, and can conveniently be expressed by the replace operator (Kaplan and Kay, 1994; Karttunen, 1995; Kempe and Karttunen, 1996). • further steps of text analysis, e.g. light parsing or extraction of noun phrases or other phrases (Ait-Mokhtar and Chanod, 1997). These compositions enable complex text analysis to be performed by a single transducer. An HMM transducer builds on the data (probability matrices) of the underlying HMM. The accuracy 2Automatically derived rules require less work than manually written ones but are unlikely to yield better results because they would consider relatively limited context and simple relations only. 460 of this data has an impact on the tagging accuracy of</context>
+</contexts>
+<marker>Karttunen, 1995</marker>
+<rawString>Karttunen, Lauri (1995). The Replace Operator. In the Proceedings of the 33rd Annual Meeting of the Association for Computational Linguistics. Cambridge, MA, USA. cmp-lg/9504032</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Andre Kempe</author>
+<author>Lauri Karttunen</author>
+</authors>
+<title>Parallel Replacement in Finite State Calculus.</title>
+<date>1996</date>
+<booktitle>In the Proceedings of the 16th International Conference on Computational Linguistics,</booktitle>
+<pages>622--627</pages>
+<location>Copenhagen,</location>
+<contexts>
+<context position="2906" citStr="Kempe and Karttunen, 1996" startWordPosition="448" endWordPosition="451">ying HMMs. The main advantage of transforming an HMM is that the resulting transducer can be handled by finite state calculus. Among others, it can be composed with transducers that encode: • correction rules for the most frequent tagging errors which are automatically generated (Brill, 1992; Roche and Schabes, 1995) or manually written (Chanod and Tapanainen, 1995), in order to significantly improve tagging accuracy2. These rules may include long-distance dependencies not handled by HMM taggers, and can conveniently be expressed by the replace operator (Kaplan and Kay, 1994; Karttunen, 1995; Kempe and Karttunen, 1996). • further steps of text analysis, e.g. light parsing or extraction of noun phrases or other phrases (Ait-Mokhtar and Chanod, 1997). These compositions enable complex text analysis to be performed by a single transducer. An HMM transducer builds on the data (probability matrices) of the underlying HMM. The accuracy 2Automatically derived rules require less work than manually written ones but are unlikely to yield better results because they would consider relatively limited context and simple relations only. 460 of this data has an impact on the tagging accuracy of both the HMM itself and the</context>
+</contexts>
+<marker>Kempe, Karttunen, 1996</marker>
+<rawString>Kempe, Andre and Karttunen, Lauri (1996). Parallel Replacement in Finite State Calculus. In the Proceedings of the 16th International Conference on Computational Linguistics, pp. 622-627. Copenhagen, Denmark. cmp-lg/9607007</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Lawrence R Rabiner</author>
+</authors>
+<title>A Tutorial on Hidden Markov Models and Selected Applications in Speech Recognition.</title>
+<date>1990</date>
+<booktitle>In Readings in Speech Recognition</booktitle>
+<editor>(eds. A. Waibel, K.F. Lee).</editor>
+<publisher>Morgan Kaufmann Publishers, Inc.</publisher>
+<location>San Mateo, CA., USA.</location>
+<contexts>
+<context position="10638" citStr="Rabiner, 1990" startWordPosition="1814" endWordPosition="1815">mbiguous class C (in the sentence) to the following unambiguous class (eq. 8). 462 A frequency constraint (threshold) may be imposed on the subsequence selection, so that the only subsequences retained are those that occur at least a certain number of times in the training corpus6. (b) Generation of possible subsequences Based on the set of classes, we generate all possible initial and extended middle class subsequences, Ci and Cg., (eq. 5, 8) up to a defined length. Every class subsequence Ci or Cg., is first disambiguated based on a 1st order HMM, using the Viterbi algorithm (Viterbi, 1967; Rabiner, 1990) for efficiency, and then linked to its most probable tag subsequence Tt or 7;7, by means of the cross product operation6: = C2 .X. Tj = c1 :t1 C2:12 (10) s7e,, = C:n .x. = cl:t1 c2:12 C„:1„ (11) In all extended middle subsequences sT„, e.g.: Cc In Te = = (12) In [DET] [ADJ, NOUN] [ADJ, NOUN] [NOUN] DET ADJ ADJ NOUN the first class symbol on the upper side and the first tag symbol on the lower side, will be marked as an extension that does not really belong to the middle sequence but which is necessary to disambiguate it correctly. Example (12) becomes: C° = = (13) O. [DET] [ADJ, NOUN] [ADJ, N</context>
+</contexts>
+<marker>Rabiner, 1990</marker>
+<rawString>Rabiner, Lawrence R. (1990). A Tutorial on Hidden Markov Models and Selected Applications in Speech Recognition. In Readings in Speech Recognition (eds. A. Waibel, K.F. Lee). Morgan Kaufmann Publishers, Inc. San Mateo, CA., USA.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Emmanuel Roche</author>
+<author>Yves Schabes</author>
+</authors>
+<title>Deterministic Part-of-Speech Tagging with FiniteState Transducers.</title>
+<date>1995</date>
+<journal>In Computational Linguistics.</journal>
+<volume>21</volume>
+<pages>227--253</pages>
+<contexts>
+<context position="2598" citStr="Roche and Schabes, 1995" startWordPosition="401" endWordPosition="404">ay as possible like HMMs, but rather FSTs that perform tagging in as accurate a way as possible. The motivation to derive these FSTs from HMMs is that HMMs can be trained and converted with little manual effort. The tagging speed when using transducers is up to five times higher than when using the underlying HMMs. The main advantage of transforming an HMM is that the resulting transducer can be handled by finite state calculus. Among others, it can be composed with transducers that encode: • correction rules for the most frequent tagging errors which are automatically generated (Brill, 1992; Roche and Schabes, 1995) or manually written (Chanod and Tapanainen, 1995), in order to significantly improve tagging accuracy2. These rules may include long-distance dependencies not handled by HMM taggers, and can conveniently be expressed by the replace operator (Kaplan and Kay, 1994; Karttunen, 1995; Kempe and Karttunen, 1996). • further steps of text analysis, e.g. light parsing or extraction of noun phrases or other phrases (Ait-Mokhtar and Chanod, 1997). These compositions enable complex text analysis to be performed by a single transducer. An HMM transducer builds on the data (probability matrices) of the und</context>
+</contexts>
+<marker>Roche, Schabes, 1995</marker>
+<rawString>Roche, Emmanuel and Schabes, Yves (1995). Deterministic Part-of-Speech Tagging with FiniteState Transducers. In Computational Linguistics. Vol. 21, No. 2, pp. 227-253.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>A J Viterbi</author>
+</authors>
+<title>Error Bounds for Convolutional Codes and an Asymptotical Optimal Decoding Algorithm.</title>
+<date>1967</date>
+<booktitle>In Proceedings of IEEE,</booktitle>
+<volume>61</volume>
+<pages>268--278</pages>
+<contexts>
+<context position="10622" citStr="Viterbi, 1967" startWordPosition="1812" endWordPosition="1813">ng from any unambiguous class C (in the sentence) to the following unambiguous class (eq. 8). 462 A frequency constraint (threshold) may be imposed on the subsequence selection, so that the only subsequences retained are those that occur at least a certain number of times in the training corpus6. (b) Generation of possible subsequences Based on the set of classes, we generate all possible initial and extended middle class subsequences, Ci and Cg., (eq. 5, 8) up to a defined length. Every class subsequence Ci or Cg., is first disambiguated based on a 1st order HMM, using the Viterbi algorithm (Viterbi, 1967; Rabiner, 1990) for efficiency, and then linked to its most probable tag subsequence Tt or 7;7, by means of the cross product operation6: = C2 .X. Tj = c1 :t1 C2:12 (10) s7e,, = C:n .x. = cl:t1 c2:12 C„:1„ (11) In all extended middle subsequences sT„, e.g.: Cc In Te = = (12) In [DET] [ADJ, NOUN] [ADJ, NOUN] [NOUN] DET ADJ ADJ NOUN the first class symbol on the upper side and the first tag symbol on the lower side, will be marked as an extension that does not really belong to the middle sequence but which is necessary to disambiguate it correctly. Example (12) becomes: C° = = (13) O. [DET] [AD</context>
+</contexts>
+<marker>Viterbi, 1967</marker>
+<rawString>Viterbi, A.J. (1967). Error Bounds for Convolutional Codes and an Asymptotical Optimal Decoding Algorithm. In Proceedings of IEEE, vol. 61, pp. 268-278.</rawString>
+</citation>
+<citation valid="false">
+<authors>
+<author>Below</author>
+</authors>
+<title>a and b designate symbols, A and B designate languages, and R. and Q designate relations between two languages. More details on the following operators and pointers to finite-state literature can be found</title>
+<note>in http://www.rxrc.xerox.com/research/m1tt/fst</note>
+<marker>Below, </marker>
+<rawString>Below, a and b designate symbols, A and B designate languages, and R. and Q designate relations between two languages. More details on the following operators and pointers to finite-state literature can be found in http://www.rxrc.xerox.com/research/m1tt/fst</rawString>
+</citation>
+<citation valid="false">
+<authors>
+<author>A Contains</author>
+</authors>
+<title>Set of strings containing at least one occurrence of a string from A as a substring.</title>
+<marker>Contains, </marker>
+<rawString>$A Contains. Set of strings containing at least one occurrence of a string from A as a substring.</rawString>
+</citation>
+<citation valid="false">
+<title>A Complement (negation). All strings except those from A.</title>
+<marker></marker>
+<rawString>-A Complement (negation). All strings except those from A.</rawString>
+</citation>
+<citation valid="false">
+<title>a Term complement. Any symbol other than a.</title>
+<marker></marker>
+<rawString>\a Term complement. Any symbol other than a.</rawString>
+</citation>
+<citation valid="false">
+<authors>
+<author>A Kleene star</author>
+</authors>
+<title>Zero or more times A concatenated with itself.</title>
+<marker>star, </marker>
+<rawString>A* Kleene star. Zero or more times A concatenated with itself.</rawString>
+</citation>
+<citation valid="false">
+<authors>
+<author>A Kleene</author>
+</authors>
+<title>plus. One or more times A concatenated with itself.</title>
+<marker>Kleene, </marker>
+<rawString>A+ Kleene plus. One or more times A concatenated with itself.</rawString>
+</citation>
+<citation valid="false">
+<title>a -&gt; b Replace. Relation where every a on the upper side gets mapped to a b on the lower side.</title>
+<marker></marker>
+<rawString>a -&gt; b Replace. Relation where every a on the upper side gets mapped to a b on the lower side.</rawString>
+</citation>
+<citation valid="false">
+<authors>
+<author>a</author>
+</authors>
+<title>b Inverse replace. Relation where every b on the lower side gets mapped to an a on the upper side.</title>
+<marker>a, </marker>
+<rawString>a &lt;- b Inverse replace. Relation where every b on the lower side gets mapped to an a on the upper side.</rawString>
+</citation>
+<citation valid="false">
+<title>a :b Symbol pair with a on the upper and b on the lower side.</title>
+<marker></marker>
+<rawString>a :b Symbol pair with a on the upper and b on the lower side.</rawString>
+</citation>
+<citation valid="false">
+<title>b) 1-Level symbol which is the 1-level form (./L) of the symbol pair a:b.</title>
+<booktitle>R.0 Upper language of R.. R.1 Lower language of R.</booktitle>
+<marker></marker>
+<rawString>(a, b) 1-Level symbol which is the 1-level form (./L) of the symbol pair a:b. R.0 Upper language of R.. R.1 Lower language of R.</rawString>
+</citation>
+<citation valid="false">
+<title>A B Concatenation of all strings of A with all strings of B.</title>
+<journal>A I B Union of A and B. A &amp; B Intersection of A and B. A - B</journal>
+<note>in B.</note>
+<marker></marker>
+<rawString>A B Concatenation of all strings of A with all strings of B. A I B Union of A and B. A &amp; B Intersection of A and B. A - B Relative complement (minus). All strings of A that are not in B.</rawString>
+</citation>
+<citation valid="false">
+<authors>
+<author>R</author>
+<author>Q</author>
+</authors>
+<title>A .x. B Cross Product (Cartesian product) of the languages A and B.</title>
+<journal>R .o Q Composition of the relations</journal>
+<marker>R, Q, </marker>
+<rawString>A .x. B Cross Product (Cartesian product) of the languages A and B. R .o Q Composition of the relations R. and Q.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>R</author>
+</authors>
+<title>1-Level form. Makes a language out of the relation R.. Every symbol pair becomes a simple symbol. (e.g. a :b becomes (a , b) and a which means a:a becomes (a, a)) A.2L 2-Level form. Inverse operation to .1L (R.1L.2L = R).</title>
+<date></date>
+<marker>R, </marker>
+<rawString>R. 1L 1-Level form. Makes a language out of the relation R.. Every symbol pair becomes a simple symbol. (e.g. a :b becomes (a , b) and a which means a:a becomes (a, a)) A.2L 2-Level form. Inverse operation to .1L (R.1L.2L = R).</rawString>
+</citation>
+<citation valid="false">
+<title>0 or [ ] Empty string (epsilon). Any symbol in the known alphabet and its extensions</title>
+<marker></marker>
+<rawString>0 or [ ] Empty string (epsilon). Any symbol in the known alphabet and its extensions</rawString>
+</citation>
+</citationList>
+</algorithm>
+</algorithms>

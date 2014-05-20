@@ -1,0 +1,1021 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<algorithms version="110505">
+<algorithm name="SectLabel" version="110505">
+<variant no="0" confidence="0.000002">
+<title confidence="0.724798">
+HELPFUL ANSWERS TO MODAL AND HYPOTHETICAL QUESTIONS
+</title>
+<author confidence="0.812324">
+Anne De Roeck, Richard Ball, Keith Brown, Chris Fox, Marjolein Groefsema, Nadim Obeid, Ray Turner
+</author>
+<affiliation confidence="0.659462">
+University of Essex
+England
+</affiliation>
+<email confidence="0.941564">
+email: deroe@uk.ac.essex (Janet)
+</email>
+<sectionHeader confidence="0.568094" genericHeader="abstract">
+1.0 ABSTRACT,
+</sectionHeader>
+<bodyText confidence="0.9992127">
+This paper describes a computational pragmatic model which is
+geared towards providing helpful answers to modal and hypothet-
+ical questions. The work brings together elements from formal .
+semantic theories on modality and question answering, defines a
+wider, pragmatically flavoured, notion of answerhood based on
+non-monotonic inference and develops a notion of context, with-
+in which aspects of more cognitively oriented theories, such as
+Relevance Theory, can be accommodated. The model has been
+implemented. The research was funded by ESRC grant number
+R000231279.
+</bodyText>
+<sectionHeader confidence="0.9965205" genericHeader="keywords">
+Keywords:Semantics, Pragmatics
+2.0 INTRODUCTION.
+</sectionHeader>
+<bodyText confidence="0.999309830188679">
+Answers people give to questions have two basic properties:
+they may vary depending on the situation a question is asked in,
+and, especially if the answer is negative, they aim to be &quot;helpful&quot;.
+The context-sensistivity of answering seems obvious and in no
+need of further demonstration. What precisely constitutes &quot;help-
+fulness&quot; is harder to pin down. Modal and hypothetical questions
+offer an interesting area for investigating &quot;helpfulness&quot;. Suppose
+A and B are going to a party and are discussing how they might
+travel. Suppose A asks B Can you drive? B is correct but perverse
+to respond Yes, if he knows how to drive, has a valid licence but
+has no car, or if he has a car but he has lent it to someone. A more
+helpful answer might be No. because I haven&apos;t got a car. Note
+here that there is a range of &quot;correct&quot; answers, some of which are
+Yes: for instance Yes. I know how to drive, Yes. I have a licence,
+even Yes, I have a car, and some of which are No, as in No I ha-
+ven&apos;t got a car tonight. The range includes No. but! can ask to
+borrow my wife&apos;s car, or even Yes, if I can get my car back which
+establishes a link with hypothetical questions. Note also that, for
+each of these &quot;correct&quot; answers, we can imagine contexts in
+which they would be &quot;helpful&quot;.
+Little is known about the nature of questions and their relation-
+ship to appropriate answers, or about how such answers can be
+computed given some information about what the answerer
+knows. Some theories, mainly emerging from the Montague tra-
+dition (see Groenendijk and Stockhof [1984J), attempt to define
+&quot;semantic&quot; answerhood (see section 2.2), but fall short when
+tackling the pragmatic aspect of helpful answers. Other theories
+[Sperber &amp; Wilson 19861 offer interesting pragmatic insights but
+their formulation does not allow for a straightforward implemen-
+tation. Furthermore, the problem of answering modal and hypo-
+thetical questions is a compounded one which touches on a host
+of issues including quantification, intensionality, partiality, belief
+revision, propositional attitudes, etc.
+Our research aimed to draw up a formally specified and compu-
+tationally feasible pragmatic theory which could accommodate
+formal semantic views on answerhood as well as intuitive in-
+sights into &quot;helpfulness&quot; and its dependence on context (such as
+offered by Relevance Theory [Sperber and Wilson 19861). Fur-
+thermore, the model is rigourously constrained as it must be test-
+ed by an implementation over some knowledge base representing
+what an agent knows.
+This paper is intended as an overview of the computational
+model. As such it does not provide an in-depth account of all as-
+poets of the investigation; in particular, it does not attempt to give
+a formal account of a basic theory of pragmatics, which is avail-
+able elsewhere [Ball et al 19901 Rather, we sketch the back-
+ground to the problems involved in providing helpful answers to
+modal and hypothetical questions as a review of the relevant liter-
+ature and its perceived shortcomings. We will then proceed to
+outline the intuitions behind our approach to a model of pragmat-
+ics and its implementation, and explain how it accommodates
+helpful answers to modal and hypothetical questions. An exam-
+ple is presented.
+</bodyText>
+<sectionHeader confidence="0.73796" genericHeader="method">
+3.0 HELPFULNESS, MODALS AND QUESTIONS
+</sectionHeader>
+<bodyText confidence="0.958242">
+Though the problem of helpfully answering modal questions
+touches on many issues, four particular points need to be ad-
+dressed.
+</bodyText>
+<subsectionHeader confidence="0.9651">
+3.1 Modality.
+</subsectionHeader>
+<bodyText confidence="0.999742190476191">
+When looking at the example set out in the introduction, the
+question arises whether the range of &quot;correct&quot; answers to some
+extent corresponds to ambiguity (ability/possibility) residing in
+the modal can. Indeed, a large proportion of the literature on :no-
+dality concerns the view that modals are polysemous, depending
+on the kind and degree of modality they express (epistemic, dean-
+tic, etc.) [Palmer 1979, 1986; Quirk et al. 19851. Usually, at-
+tempts are made to identify modal &quot;primitives&quot; (ability,
+permission, etc) and to analyse modal constructs as ambiguous
+over several &quot;literal&quot; meanings involving these primitives. Invari-
+ably, polysemic reductionist approaches to modal constructs run
+into problems: given any classification of core types of modality,
+it is often impossible to determine which reading is involved in
+any particular example [Coates 1983 versus Walton 1988].
+Kratzer [1977J takes another view. She presents a unified anal,
+ysis of modality which includes the treatment of conditionals
+(and hence hypotheticals). Modals are unambiguous and modal
+constructs are analysed as tri-partite structures Isee also Partee
+1988, Heim 19821, comprising a modal operator, a conversational
+background, and a proposition. For example, in [Kratzer 19771
+the modal must in the following sentences:
+</bodyText>
+<listItem confidence="0.999457375">
+(a) All Maori children must learn the names of their
+ancestors.
+(b) The ancestors of the Maoris must have arrived
+from Tahiti.
+(c) If you must sneeze, at least use your
+handkerchief.
+(d) When Kahulcura-nui died, the people of
+Kahungunu said: Rakaipaka must be our chief.
+</listItem>
+<bodyText confidence="0.85058925">
+is traditionally analysed as (a) &apos;deontic&apos; must indicating duty, (b)
+&apos;epistemic&apos; must referring to a piece of knowledge or informa-
+tion, (c) &apos;dispositional&apos; must, referring to people&apos;s dispositions
+(e.g. they cannot help sneezing), and (d) &apos;preferential&apos; must refer-
+ring to. preferences and wishes. Kratzer points out that classifica-
+tions of modals drawn in the polysemy paradigms never
+adequately cover the data and that new examples are easily found
+to demonstrate the need for ever more refined categories of modal
+meaning.
+Kratzer wishes to propose a treatment that brings out the com-
+mon factor in all uses of must (and of other modals) and suggests
+that the burden of differentiation is to be placed on a variation M
+</bodyText>
+<listItem confidence="0.863566333333333">
+- 257 -
+context. As such, the meaning of (a)-(d) entertains a relationship
+with the meaning of (a&apos;)-(d&apos;) respectively:
+(a) In view of what their tribal duties are, all Maori
+children must learn the names of their ancestors.
+(b) In view of what is known, the ancestors of the
+Maoris must have arrived from Tahiti.
+(c) If, in view of what your dispositions are, you must
+sneeze, at least use your handkerchief.
+(d) When Kahukura-nui died, die people of
+Kahungunu said: In view of what is good for us,
+Rakaipaka must be our chief.
+and she defines the sematic interpretation underlying modal con-
+structs as a tripartite structure (applied to (b)):
+Sentence: Operator: Must in view of
+First Argument: What is known
+Second Argument: The ancestors o (the Maori have
+arrived from Tahiti.
+</listItem>
+<bodyText confidence="0.99986305882353">
+The modal is an operator which takes a context and a proposition.
+The truth conditions for must, interpreted as necessity, dictate that
+the modal construct is true if the proposition (the second argument)
+logically follows from the context (the first argument). A similar
+approach to can (possibility) unpacks its truth conditions as true if
+the context (the first argument) is logically compatible:(i.e. does
+not induce a contradiction) with the proposition (the second argu-
+ment). Kratzer works within the classical possible world tradition.
+Conversational backgrounds, modelled as sets of propositions, are
+usually implicit and linked to the utterance situation, though it is
+not clear by what mechanism.
+Kratzer [19831 proceeds to distinguish between different kinds of
+conversational backgrounds, depending on the information they
+contain. She does however experience difficulties when trying to
+identify different context classes. Indeed, it is as difficult- to isolate
+different conversational backgrounds as it is to pinpoint the various
+meanings a modal might have.
+</bodyText>
+<subsectionHeader confidence="0.999897">
+3.2 Questions and Answers
+</subsectionHeader>
+<bodyText confidence="0.999986869565217">
+It is also necessary to present a coherent perspective on questions
+and answers. Groenendijk and Stockhrif 119841 compile an over-
+view of various treatments of questions that populate the field and
+investigate desiderata for a semantic theory. They argue. that inter-
+rogatives are entitled to a meaning of their own (and should not be
+viewed as, say, hidden imperatives) but that their treatment must
+show some equivalence with that of indirect questions. The mean-
+ing of a question is to be related inextricably with its answerhood
+conditions. Groenendijk and Stockhof work in the possible world
+tradition and they cast the interpretation of amuestion as&apos;a function
+which, for every index, returns its true answer. Consider the fol-
+lowing example. The semantics given to a question Does Peter
+walk? is a partition of the set of possible worlds into two: those
+worlds where Peter walks, and those *odds where Peter does not
+walk. Both Peter walks and Peter does not walk are possible se-
+mantic answers to the question. Each possible world belongs to one
+or the other of these partitions, so each possible world offers only
+one true answer to the question. This analysis caters for entailment
+between questions (question Q entails question R if all true answers
+to Q are also true answers to R) and thus explains entailment be-
+tween coordinated questions. Groenendijk and Stockhof elaborate
+the basic treatment of yes/no questions; wh-questions are reduced
+to this basic type. They also provide an interpretation for constitu-
+ent answers. They assume that modal questions will be analysed at
+some other pragmatic level.
+The work described constitutes the most extensive treatment of
+the semantics of questions and answers to date. However, in our
+view, it cannot be directly incorporated in a pragmatic model, for
+two reasons. First of all, the semantic model assumes completeness
+of information, and complete mutual awareness of speakers&apos; belief
+states (but then, why ask questions of one another?). They do at-
+tempt to build, from this, an account of how to reason with par-
+tial knowledge but, as they work in a traditional extensional
+framework, this results in clashes with the semantic theory. (In
+short, what a person knows is a set of possible worlds, namely
+all those possible worlds that are consistent with his/her beliefs.
+The semantics of questions is given as a partition over all possi-
+ble worlds. In an extensional framework - where intensions are
+derived from extensions - this means that if a person entertains
+partial beliefs, he/she cannot know the meaning of a question.)
+Secondly, there may be more than one true answer to a question,
+and all should be captured by Groenendijk and Stockhof&apos;s theo-
+ry. But how are these answers defined, even computed, from the
+question? And, as illustrated in the example given in the intro-
+duction, even if we know how to generate such answers, how do
+we define a helpful answer?
+</bodyText>
+<subsectionHeader confidence="0.998601">
+3.3 Helpfulness
+</subsectionHeader>
+<bodyText confidence="0.999954103448276">
+It is not easy to give a definition of a &quot;helpful&quot; answer off the
+cuff. Formal semantic theories have little to say on this issue,
+though some cognitively oriented frameworks have developed
+useful views.
+Relevance Theory [Sperber and Wilson 19861 has given an ac-
+count of context-sensitivity in communication. It postulates that
+when people understand, they attempt to maximise relevance
+i.e. they pick the context against which the relevance of an utter-
+ance is greatest. Relevance, thus, is quantifiable and defined by
+means of extent conditions: an assumption is relevant in a con-
+text to the extent that its effects in this context are large and the
+effort to process it is small.
+It should be clear from the onset that the specification of Rele-
+vance Theory is , not precise enough to be implemented as it
+stands. There are, however, three principles which are interest-
+ing for our purpose. (i) The most relevant context for interpret-
+ing a question is that a Yes-answer is desired. This helps towards
+explaining why helpful answers are given at all, and why they
+occur typically with negative answers. (ii) The selection of rele-
+vant contexts is embodied in the human cognitive machinery
+and ensures that an utterance receives only one interpretation
+(and not many from which a particular one is selected). Indeed,
+as shown in the introduction, there may be more than one true
+answer to a question but only one appropriate one, which must
+be characterized. (iii) The theory specifies that all contextual ef-
+fects are explained against the background of assumptions
+which a person may hold and postulates mechanisms by means
+of which relevant contexts can be pinned down starting from sit-
+uational information and the utterance itself.
+</bodyText>
+<subsectionHeader confidence="0.974682">
+3.4 Context
+</subsectionHeader>
+<bodyText confidence="0.990339428571429">
+The necessity to give a more precise definition of context be-
+comes obvious from the previous sections. Questions can only
+be answered in context, modals seem to receive different inter-
+pretations according to varying contexts, and any cognitively
+appealing notion of &quot;helpfulness&quot; or &quot;relevance&quot; is stated in
+terms of contexts. AU this ties in with current work in formal se-
+mantics which explores tri-partite structures (tying in context
+with propositional content of utterances) as a basic mechanism
+for semantic interpretation &apos;Heim 1982, Partee 19881. However,
+though current formal semantic theory is steadily increasing the
+workload of context, its precise nature remains vague. It is not
+enough to furnish formal semantic interpretations &quot;relative&quot; to
+some context: a satisfactory approach to a formal but cognitive-
+ly attractive characterization of &quot;helpful&quot; answers seems to war.,
+rant a closer look at the content of conversational backgrounds,
+their relation to the utterance and its situation, and an apprecia-
+tion of whether they can be computed.
+The insights offered by Relevance Theory may be compatible
+with formal (and computational) semantic theories, and offer a
+practical starting point when trying to pin down a fuller notion
+- 258 -
+of context. In order to investigate this, we need to define our intui-
+tions in an implementable framework. Please note that it is not our
+intention to attempt a formalisation or an implementation of Rele-
+vance Theory, but merely to define an experimental framework ca-
+pable of handling contexts in order to derive helpful answers to
+modal and hypothetical questions, albeit exploiting insights from
+Relevance Theory if possible.
+</bodyText>
+<subsectionHeader confidence="0.520444">
+4.0 TOWARDS A THEORY OF PRAGMATICS
+</subsectionHeader>
+<bodyText confidence="0.999990606741573">
+It is our intuition that, when people communicate, they know dif-
+ferent things, or there would be no point in communicating. Thus it
+seems that any realistic model of communication must allow for
+partiality in what agents know. Since agents retain inferential capa-
+bilities, we assume their beliefs are consistent. As a consequence,.
+our model represents agents as partial, consistent sets of proposi-
+tions. The notion of proposition deployed is taken straight from
+Property Theory (Turner 1987, Chierchia et al 1989, see also Ram-
+say 19901, a weak first order theory with fine grained intensionali-
+ty.
+Questions are not themselves propositions; they are not associat-
+ed with truth values. They do, however, entertain a relationship
+with propositions. In our view, a simple yes/no question embodies
+a proposition whose truth value is not, known to the agent asking
+the question. An answer to the question is any proposition which, if
+added to the agent&apos;s beliefs, will force truth or falsity of the propo-
+sition embodied in the question. This view on answerhood is much
+looser than the one adopted by Groenendijk and Stockhof in that it
+allows answers other than true semantic answers. Indeed, any an-
+swer will do as long as it allows an agent to conclude to the true se-
+mantic answer. Thus, a question Does Peter walk? may be
+answered by Peter sleeps in this framework (and not just by either
+of Peter walks or Peter does not walk) as long as that information
+allows the agent to conclude that Peter walks or that Peter does not
+iva/k. This constrains the agent&apos;s reasoning capacity which must
+now deal with partial infonnation. It also means that agents&apos; beliefs
+must be subject to revision.
+In order to reflect these intuitions in our theory, we extended the
+language of Property Theory with a predicate which holds of ques-
+tions, and an operator which, given a proposition, will yield a ques-
+tion. An axiomatisation governs conjunction of questions. A
+relation of answerhood is defined which holds between a question
+and its answer (a proposition). The behaviour of this relation is
+given through axiomatisation of a proof theory.
+We adopt a view on modality parallel to Kratzer&apos;s: our working
+hypothesis states that modals are not ambiguous and that any dif-
+ference in interpretation resides in contextual diversity. We do not,
+however, try to classify contexts; a hopeless task which is no differ-
+ent to attempting to classify modal ambiguity. Can and rnust corre-
+spond to the modal operators of possibility and necessity. Modal
+constructs are analysed in terms of these operators, a context and a
+proposition. A context is a collection of propositions, which is a
+colts istent subset of the agent&apos;s total beliefs. Necessity is true if the
+negation of the proposition causes a contradiction in the context;
+possibility is true if the proposition can be accommodated within
+the context without giving rise to a contradiction (i.e. the context
+can be updated with the proposition).
+Questions, whether they are simple or modal, are equally analy-
+sed as tri-partite structures comprising an operator, a context and a
+proposition. For simple yes/no questions the operator is the Ques-
+tionTruth predicate (which can be safely stated in Property Theo-
+ry). For modal questions, the operator is the Question counterpart
+of the appropriate modal operator. As with Groenendijk and Stock-
+hof, wh-questions are reduced to yes/no questions. It should follow
+front the above that Groenendijk and Stockhof&apos;s results carry over
+into this model, as the notion of semantic answerhood is preserved
+(though in an extended framework).
+Following ICratzer, conditionals are treated like modals but the
+context is updated with the antecedent. We are not, however,
+treating counterfactuals at this stage (i.e. we only treat cases
+where the context can be updated with the antecedent and where
+no contradictions occur as a result).
+In defining &quot;helpfulness&quot;, we take the view of Relevance The-
+ory that a positive answer to the proposition embedded in the
+question is desirable. As such, yekanswers become uninterest-
+ing as they are already maximally helpful. No-answers, on the
+other hand, where the proposition cannot be accommodated by
+the context, can be helpful if they indicate why the proposition
+is incompatible with a state of affairs, or how the state of affairs
+might change so that it can be updated with the proposition. In
+the theory, this information is available from the logic underpin-
+ning the answerhood relation relativised to a context. However,
+this furnishes us with a semantics only. To arrive at some view
+of how this may interact with pragmatics, the content of con-
+texts must be fleshed out.
+Intuition tells us that only one helpful answer is furnished per
+context. Following Kratzer, and Relevance Theory, we assume
+that the burden of being helpful and relevant rests with the
+mechanism which defines the context for an utterance given a
+situation. Many factors may contribute to this mechanism and it
+seems reasonable that knowledge of the physical circumstances
+(i.e. speakers, time, location, etc.) should play a role. The utter-
+ance itself must also contribute. As the literature offers no de-
+tailed information on how to model the relationship between
+context and utterance, we have developed an implementation of
+a context machine which, initially, derived context from lexical
+information. This implementation was changed and refined in
+order to attempt to determine experimentally what the require-
+ments for a &quot;context machine&quot; may be.
+</bodyText>
+<sectionHeader confidence="0.966302" genericHeader="method">
+5.0 TIIE IMPLEMENTATION
+</sectionHeader>
+<subsectionHeader confidence="0.993912">
+5.1 The Overall Framework
+</subsectionHeader>
+<bodyText confidence="0.993306227272727">
+The implementation of the overall framework consists of a
+parser, a knowledge base, a context machine and a theorem
+prover. The knowledge base, a consistent collection of proposi-
+tions, is set up to represent the beliefs of an agent who is to an-
+swer questions. For convenience of computation, the items in it
+are cast as sorted property-theoretic expressions (a sortal hierar-
+chy can be achieved without sorting quantified variables - soil-
+ing and closing the world with respect to individuals merely has
+the effect of rendering the implementation of the first order lan-
+guage decidable). Each knowledge base item is tagged with
+keys linking the information it contains with words in the lexi-
+con.
+The parser, a bi-directional chart parser [Steel and De Roeck
+19871 augmented with feature structures, works from an essen/
+tidily context free rule base where semantic translation rules are
+paired up with the syntactic statement. The semantic representa-
+tion delivered by the parser is an expression in Property Theory
+capturing the structural aspects of question&apos;s meaning.
+This Property-Theoretic expression is passed to the context,
+machine. It yields, from the Property-Theoretic expression, a tri-
+partite structure comprising an operator, a context and a proposi-
+tion derived from the question. The role of the context machine
+is to extract from the knowledge base that information which is
+relevant to finding a helpful answer to the question.
+The proposition delivered by the context machine is given in
+the language of the logic K-T [Obeid 19901. K-T is a proposi-
+tional, non-monotonic logic which employs Kleene&apos;s strong
+three-valued connectives, and which is extended with two mod-
+al operators (the language can be propositional as the knowl-
+edge base is sorted and closed). The semantics of the logic are
+expressed in terms of states of partial information which allow
+an agent to be uncertain about the truth or falsity of his know!-
+- 259 -
+edge, and where possible, to make assumptions on the basis of
+what is not known to be false. The inference rules of K-T are given
+in the Appendix.
+The propositional content of the input question is set against a
+suitable subset of the agent&apos;s knowledge, i.e. the context. The theo-
+rem prover then attempts to prove in the system K-i&apos; that the prop-
+ositional content of the input question follows from the context.
+This it might achieve monotonically; or non-monotonically with
+the aid of assumptions. It is the record left in the wake of the proof
+process in each case, which we interpret in order to provide a help-
+ful answer.
+</bodyText>
+<subsectionHeader confidence="0.986345">
+5.2 The Theorem Prover.
+</subsectionHeader>
+<bodyText confidence="0.999990066666667">
+The theorem prover is a three valued, modal analogue of a seman-
+tic tableau theorem prover (Beth 1962; Jeffrey 19671. This method
+performs a case-wise analysis of all models in which the premises
+(read context) might be true while contradicting the conclusion
+(read propositional content of the input. question). If no such mod-
+els are found to exist, the theorem is proven. We employ this meth-
+od because it allows a user absolute access to every stage of the
+proof process. We then exploit this access in order to find a helpful
+answer. If a proof succeeds monotonically, the agent&apos;s answer is
+simply Yes. If it succeeds by means of one or more assumptions,
+the answer is of the form Yes. if..., where the body of the if-clause
+is the information that was assumed. Where a proof fails, we have
+the task of determining the reason why it failed - i.e. which as-
+sumptions should be made to yield a yes-answer. The proof process
+constnicts a tree of which the branches represent individual mod-
+els. These models are closely or distantly related to one another ac-
+cording to how much of the proof tree they have in conunon. A
+failed proof has one or more models which are consistent, and
+therefore counterexamples to our intended inference. We are able
+to compare these consistent models with closely related inconsis-
+tent ones. We can then identify the contradiction which- is in some
+sense missing. - i.e. we point to the particular premise or premises
+which are too weak to support the inference. A helpful answer in
+this case takes the form No, unless ... and the body of the unless-
+clause is composed of the strengthening required in a premise or
+premises so that the counterexamples.would no longer arise. This
+method remains constant regardless Of the actual content of the
+context. Note that a single answer is &apos;always yielded and that the
+burden of assuring that its content is &quot;helpful&quot; rests entirely on the
+context machine.
+</bodyText>
+<subsectionHeader confidence="0.830083">
+5.3 The Context Machine.
+</subsectionHeader>
+<bodyText confidence="0.999900724137931">
+Different implementations of the context selection mechanism
+have been attempted. Originally, it operated by intersecting that
+part of the knowledge base which concerns the individuals and re-
+lations mentioned in the utterance. In this sense, it relied exclusive-
+ly on lexical information as the process operated by selecting
+propositions associated with lexical items reflected as objects in the
+knowledge base. It used closure on the sortal hierarchy to achieve
+this. This approach is compatible with Relevance Theory as it can
+be argued that Encyclopedic Knowledge can be thus implemented.
+A side effect is lexical disambiguation - different readings of a
+word are associated with different Clusters of information; only
+compatible information will survive the intersection. •
+This version was tested on a knowledge base modelling a build-
+ing site, containing information about. buildings, workers, materials
+and time tables. The domain proved too complex to allow for any
+conclusions to be drawn: the diversity of objects whose behaviour
+needed modelling (including some beyond the current state of the
+art - e.g.. mass vs count objects, plurals, time and tense, etc.) was
+prohibitive. Two other domains were tackled as a consequence:
+marital relationships and law, and the simple situation of what it
+takes to drive a car.
+Even against simple domains, it became clear that mere reliance
+on keying lexical information would not be sufficient. The search
+space remained large and insufficiently focussed as it included
+propositions which never contributed to deriving an answer, and
+a closer interaction between context machine and proof process
+should be postulated. It seems that the context selection mecha-
+nism must have a model of inference. An attempt at such a
+mechanism was developed.
+The context machine Mark II extracts from the knowledge
+base any information which enable the truth of the proposition
+associated with the question to be derived. Any implication in
+the knowledge base with that proposition as a consequent is se-
+lected to form part of the context and all rules and assertions
+which enable the truth of the antecedent of the implication to be
+derived are also included. Any other rules, which cannot im-
+pinge upon the truth of the goal clause, are omitted as they are
+&apos;irrelevant&apos; to the proof. In a sense, this selection process antici-
+pates the structure of the proof itself. In the full system, the in-
+stantiation of quantified variables in sentences extracted from
+the knowledge base, is restricted to those individuals mentioned
+in the question, or relevant to those assertions made about indi-
+viduals mentioned in the question. This is implemented using
+the sorts! hierarchy. The examples given in Section 5 are de-
+rived using this version over a very restricted domain.
+Though the results were more satisfactory, the contexts de-
+rived in complex domains are still large. Though all information
+selected plays a part in time overall proof, the search space is uni-
+form for each proof branch. It became clear that a full interac-
+tion between the structure of the proof and context selection
+must be achieved. A third version of the context machine at-
+tempted to derive contexts local to particular steps in the proof
+process. Though incomplete, the experience gained in the at,
+tempt convinced us that the selection of &apos;relevant&apos; contextual in-
+formation is dynamic. Information pertaining to particular steps
+in the derivation of an answer should be local to that step and
+different &apos;relevant&apos; contexts should be made accessible as the
+derivation progresses.
+</bodyText>
+<subsectionHeader confidence="0.763161">
+6.0 AN EXAMPLE
+</subsectionHeader>
+<bodyText confidence="0.9893795">
+This section elaborates an example to illustrate (i) the basic
+theorem prover and (ii) the behaviour of context machines. To
+simplify the examples, we consider the case where there is only
+one individual, Anne. The set up concerns finding a helpful an-
+swer to Can Anne drive? First we present a successful proof,
+working from an optimal context which yields that Anne can in-
+deed drive. The rules to the theorem prover (K-T [Obeid 19881)
+are given in the Appendix. Notice that premises are theorems of
+the logic and so any premise of form It is logically equivalent to
+—M it.
+</bodyText>
+<equation confidence="0.9815764">
+M drive(a) goal 131 licenced(a) premise
+121 ownscar(a) premise [41 skilltodrive(a) premise
+151 ownscar(a) &amp; licenced(a) &amp; skilltodrive(a) -&amp;gt; drive(a)
+premise
+171 —M drive(a) Line 5 - contradiction 17](1]
+161 —M (ownscar(a) &amp; licenced(a) &amp; skilltodrive(a))
+181 ownscar(a) Line 6 - contradiction 18.1 121
+19.1 —M (licenced(a) &amp; skilltodrive(a))
+1101 —M licenced(a) Line 9 - contradiction (101131
+Ill] —M skilltodrive(a) 0(4)
+</equation>
+<bodyText confidence="0.966312384615385">
+The theorem prover reports that the inference KB I- drive(a) is
+proven by refutation. This we know because each path is incon-
+sistent. The inference was proven monotonically (there was no
+need for assumptions) and required no sub-proof. The answer
+here is Yes: Anne can drive because she has a licence, she owns
+a car and she has the required skills.
+In the second example, the premise that Anne has a licence is
+removed. The proof fails to show monotonically that Anne can
+drive. The system therefore sets out to assume that Anne might
+have a licence and thus attempts to fill the gap in the agent&apos;s in-
+- 260 -
+formation. Rule R3 (see Appendix) allows us to infer M it for any
+It if we cannot prove — it.
+</bodyText>
+<equation confidence="0.9345179">
+[I] M drive(a) goal
+[2] ownscar(a) premise [4] skilltOdrive(a) premise
+[4] ownscar(a) &amp; licenced(a) &amp; skilltodrive(a) -&amp;gt; drive(a)
+premise
+161 —M drive(a) Line 4 contradiction 161 111
+[Si —M (ownscar(a) &amp; licenced(a) &amp; skilltodrive(a))
+Ill —M ownscar(a) Line 5 - contradiction 171 121
+181 —M (licenced(a) &amp; skilltodrive(a))
+191 —M skilltodrive(a) Line 8 - contradiction 191 131
+[10] —M licenced(a)
+</equation>
+<bodyText confidence="0.999459285714286">
+In this case, if we can assume the premise M licenced(a) success-
+fully, we can prove the original assertion monotonically. In this
+context there are no formulae which might affect the truth of M li-
+cenced(a) so our proof succeeds trivially. The answer here is Yes, if
+Anne has a licence. In the next example, we add explicitly that
+Anne does not have a licence. We assume that this information is
+known and does not need a sub-proof.
+</bodyText>
+<equation confidence="0.9510607">
+[1] M drive(a) goal [3] —M licenced(a) premise
+[2] ownscar(a) premise [4] skilltodrive(a) premise
+[5] ownscar(a) &amp; licenced(a) &amp; skilltodrive(a) -&amp;gt; drive(a)
+premise
+[7] —M drive(a) Line 5 - contradiction 171 111
+[6] —M (ownscar(a) &amp; licenced(a) &amp; skilltodrive(a))
+[8] —M ownscar(a) Line 6 - contradiction 181 121
+[9] —M (licenced(a) &amp; skilltodrive(a))
+1101 —M skilltodrive(a) Line 9 - contradiction 1101 [41
+[11] —M licenced(a)
+</equation>
+<bodyText confidence="0.999132888888889">
+Again, the proof fails monotonically as in the second example.
+An attempt to hold an assumption that Anne has a licence will,
+however, fail as it will contradict the premise [3] which states that
+such an assumption is false. The answer in this case is No. because
+Anne does not have a licence.
+The procedure for dealing with hypotheticals is similar but the
+context is updated with the antecedent before the proof of the con-
+sequent is carried out. Counterfactuals, which would require total
+revision of the knowledge base, are not treated.
+We can use these examples to illustrate the problems faced with
+selecting the appropriate contexts to yield helpful answers. The
+earliest version of the context machine would have selected all in-
+formation associated with domain objects directly related to the
+words in the sentence (Anne and driving), and all information asso-
+ciated with the sonal hierarchy involving those objects. The union
+of all these propositions produced a context that was not adequate:
+only some properties of Anne will affect hr driving, and not all
+knowledge about vehicles will contribute to finding an answer to
+whether Anne can drive. Intersection of clusters of information ob-
+tained by closure on the hierarchy has the side effect of achieving
+lexical disambiguation, but, in complex domains, it excluded some
+relevant facts from the context, whilst still including propositions
+which could never play a role in the proof. A more fine grained ap-
+proach was needed.
+In the second implementation, the context machine selected only
+those propositions which could lead to a goal. Any implication in
+the knowledge base with the goal as a consequent is extracted, as
+are all assertions that contribute to establishing the truth of any of
+its antecedents (recursively). The proof is established against this
+context as a whole. Whilst significantly reducing the size of the re-
+sulting context as well as focussing its content on what the proof
+might turn out to be, there are problems with this approach. Imag-
+ine the situation where Anne has the skill to drive, she owns a car,
+but she does not have a licence because she has to pay her fines.
+She did not pay her fines because she has no money. All this infor-
+mation would be extracted as a total context for answering the
+</bodyText>
+<figure confidence="0.974095588235294">
+question Can Anne drive?
+[1] M drive(a) goal [31 skilltodrive(a) premise
+[2] ownscar(a) premise [4] —M hasmoney(a) premise
+[5] hasmoney(a) -&amp;gt; payfines(a) premise
+[61 payfutes(a) -&amp;gt; licenced(a) premise
+[7] ownscar(a) &amp; licenced(a) 8c skilltodrive(a) -&amp;gt; drive(a)
+premise
+[8] —M drive(a) Line 7 - contradiction 181 11
+[9] —M (ownscar(a) &amp; licenced(a) &amp; skilltodrive(a))
+[10] —M ownscar(a) Line 9- contradiction [101 121
+[11] —M (licenced(a) &amp; skilltodrive(a))
+[12] —M skilltodrive(a) Linell - contradiction (12)131
+[13] —M licenced(a)
+[14] licenced(a) Line 6 - Contradiction [141 1131
+[15] —M payfines(a)
+[16] payfines(a) Line 5 - Contradiction (161(151
+[17] —M hasmoney(a)
+</figure>
+<bodyText confidence="0.999862166666667">
+The proof to [13] mimicks that of example 2 above, but now,
+an attempt to establish whether Anne has a licence requires a
+sub-proof. The proof fails to close on the assumption that Anne
+has money. It cannot be inferred non-monotonically that Anne
+has money (because of [4]). The answer in this case is No, be,
+cause Anne has ,no money. Some explanation is due here.
+Though the answer offered in the last example is &quot;correct&quot;, and
+there might be situations in which it is helpful, it is intuitively
+arguable that an answer No. because Anne has no licence is
+more helpful. The point is that this version of the context ma,.
+chine does not cater for the possibility of giving this latter an-
+swer under any conditions. From this we conclude that a closer
+interaction between context machine and proof structure is nec-
+essary. A helpful answer should not be confined to the ultimate
+reasons why the reply is No: the answer should depend upon
+some measure of &quot;closeness&quot; in contexts. Contrary to the as-
+sumptions we made at the start of this project our conclusions
+lead us to postulate that such a view is indeed necessary to pro-
+vide a fine grained notion of helpfulness.
+We have no treatment of mutual beliefs so far (but Davies
+[1990] is compatible and promising). We need to extend the log-
+ic so it can reason with varying domains if we are to exploit full
+the intensionality provided by the Property Theory. We have
+started work on a treatment of time and tense in this framework.
+</bodyText>
+<sectionHeader confidence="0.997149" genericHeader="method">
+7.0 CONCLUSIONS
+</sectionHeader>
+<bodyText confidence="0.99993875">
+We have developed a semantic theory of questions using Prop,.
+erty Theory. We have investigated (i) pragmatic answerhood and
+(ii) modality using an experimental computational framework.
+We believe that the insights gained from the work have beep
+valuable: they contribute towards our understanding of the re-
+quirements for a formally specified and computationally tracta-
+ble theory of pragmatics which is capable of incorporating
+insights from cognitively oriented theories. Furthermore, the ex-
+periment has pointed out that some of the intuitions underlying
+Relevance Theory are accurate and useful, especially with re-
+spect to context fefining strategies necessary for characterising
+helpful answers.
+</bodyText>
+<sectionHeader confidence="0.337322" genericHeader="method">
+8.0 REFERENCES
+</sectionHeader>
+<reference confidence="0.942031596153846">
+Ball , R. E.K. Brown, A.N. De Roeck, Cl. Fox, M. Groefsema,
+N. Obeid and R. Turner (1990) Helpful Answers to Modal and
+Hypothetical Questions: Final Report, Cognitive Science Cen-
+tre Memo, University of Essex
+Beth, E.W. (1962) Formal Methods, Dordrecht, Reidel
+Chierchia, 0., B. Partee and R. Turner (1989) Properties. Types
+and Meaning, Dordrecht, Kluwer Academic Publishers
+Coates, J. (1983) The Semantics of the Modal Auxiliaries, Lon-
+don, Croom Helm
+Davies, N. (1990) &apos;A First Order Logic of Truth, Knowledge
+and Belief&apos;, Proceedings of ECM 1990
+- 261 -
+Groefsema, M., CJ. Fox and N. Obeid (1991) &apos;Can, May, Must
+and Should: A division of Labour&apos;, Paperaccepted at the LAGB,
+Somerville College, Oxford.
+Groenendijk, J. and M. Stockhof (1984) Studies on the Semantics
+of Questions and the Pragmatics of Answers, PhD. Dissertation,
+University of Amsterdam
+Heim, I. (1982) The Semantics of Definite and hidefinite Noun
+Phrases, PhD Dissertation, University of Massachussetts, Am-
+herst (Ma.ss.)
+Jeffrey, R.C. (1967) Formal Logic, its Scope and Limits, London,
+McGraw-Hill
+Kratzer, A. (1977) &apos;What &apos;must&apos; and &apos;can&apos; must and can mean&apos;,
+Linguistics and Philosophy, Vol 1-3: 337-355
+ICratzer, A. (1981) &apos;The Notional Category of Modality&apos;, in Eikm-
+eyer and Rieser (eds) Words, Worlds and Contexts, Berlin, Walter
+de Gruyter
+Obeid, N. (1988) &apos;A Propositional Logic for Reasoning about
+Real-Time Situations&apos;, in TASTED International Conference, Los
+Angeles, California.
+Obeid, N. (1990) Partial Models Basis for Non-monotonic Reason-
+in_g, Research Note CSM-140, Department of Computer Science,
+University of Essex
+Palmer, F.R. (1979) Modality and the English Modals, London,
+Longman
+Palmer, F.R. (1986) Mood and Modality, Cambridge, Cambridge
+University Press
+Quirk, Q. et at (1985) A Comprehensive Grammar of the English
+Language, London, Longman
+Ramsay, A. (1990) The Logical Structure of English, London, Pit-
+man Publishing
+Sperber, D. and D. Wilson (1986) Relevance: Communication and
+Cognition, Oxford, Basil Blackwell
+Steel, S. and A.N. De Roeck (1987) &apos;Bi-Directional Chart Parsing&apos;,
+in Hallam and Mellish (eds) Advances in Al, London, John Wiley
+Turner, R. (1987) &apos;A Theory of Properties&apos;, Journal of Symbolic
+Logic, Vol 52, No 2 : 455-472
+Turner, R. (1990), Truth and Modality for Knowledge Representa-
+tion, Pitman &amp; MIT Press, London.
+Walton, A. (1988), The Pragmatics of English Modal Verbs, PhD.
+Dissertation, University of London.
+</reference>
+<sectionHeader confidence="0.978945" genericHeader="method">
+APPENDIX
+</sectionHeader>
+<subsectionHeader confidence="0.902377">
+Kleene-Turner&apos;s (K-T) System [Obeid 1988)
+</subsectionHeader>
+<bodyText confidence="0.999288956521739">
+Complete information is hard to obtain, even in the most
+manageable situations: in most cases, a reasoner does not know
+everything that is pertinent to the investigation at hand. There are
+propositions whose truth status cannot be decided. However, most
+of the classically based non-monotonic formalisms seem to resort
+to adding intermediary truth values between truth and falsity. This,
+in fact, is one of the basic and most important features which
+distinguishes three-valued logics from the classical one. Such a
+difference is reflected semantically by partial models (partially
+states of information) for three-valued logics as opposed to
+possible worlds (complete status of knowledge) for classical
+logic. In this section, we shall develop the logic K-T.
+In K-T a proposition is either accepted as true, accepted as false
+or not known at all. The basic language LK_T which we shall use
+is a propositional logic. Starting with primitive propositions T
+(true), F (false), p,q,r ..., more complicated ones are formed via clo-
+sure under negation —, conjunction &amp;, disjunction V. implication —)
+and epistemic possibility M. That is, if A and B are well-formed
+formulae then so are —A, A&amp;B, AVB, A -4 B and MA. Let N be
+the dual of M, i.e. NA=—M. —, -4, &amp; and V are Kleene&apos;s stong con-
+nectives. Given A, MA is false if A is false, otherwise MA is true.
+&amp; and M may be taken as primitives. V and -4 may be defined
+in terms of &amp; and — as follows:
+</bodyText>
+<construct confidence="0.286966666666667">
+Definition I. A V B= —(—A &amp; —B)
+Definition 2 (A --&amp;gt; B) = —A V B
+Let A &lt;--&amp;gt; B stand for (A —&amp;gt; B) &amp; (B —&amp;gt; A). Note that Kleen-
+</construct>
+<bodyText confidence="0.966079789473684">
+e&apos;s strong implication -4 is not truth functional, i.e. A 13 is
+undefined if both A and B are undefined. We also define a truth-
+fucntional implication as follows:
+Definition 2.3. (A B) = M(—A &amp; B) V —A V B. is truth
+functional in the sense that the truth value of A B is true if
+both A and B have the same truth value. Let A = B stand for
+(ADB)&amp;(BDA).
+Definition 2.4. A model structure for LK_T is K = &lt;B, R, g&amp;gt;
+where B is non-empty set, R is a binary relation on B and g is a
+truth assignment function g for atomic wffs. The interpreta-
+tion of R may be thought of as &quot;epistemic possible&quot; extension
+between states. Given b, bl are members of B, we shall write b
+R bl to mean that the state bl is an &quot;epistemic possible&quot; exten-
+sion of the state b.
+We employ the notation K I= g A (resp. K =1 g A) to mean that
+A is accepted as true (resp. false) in K with respect to g. For
+convenience, reference to g will be omitted except when a con-
+fusion may arise. Let A, B be wffs; then the truth I= and the fal-
+sity =1 notions are recursively defined as follows:
+</bodyText>
+<sectionHeader confidence="0.243815" genericHeader="method">
+Definition 2.5.
+</sectionHeader>
+<reference confidence="0.9120628">
+(i) K,b 1= T
+(ii) K,b I= p iff g(b,p) = true for p atomic
+(iii) K,b I= A &amp; B iff K,b1= A and K,b 1= B
+(iv) K,b 1= —A iff K,b =1 A
+(v) K,b 1= MA iff(bl e B) (b R bl and K, bl 1# —A)
+(i&apos;) Ktb =1 F
+(ii&apos;) K,b 1=p iff g(b,p) = false for p atomic
+(iii&apos;) K,b =1 A &amp; B iff K,B =1 A or K,b =1B
+(iv&apos;) K,b =1 —A iff K,b 1= A
+(v&apos;) K,b =1 NIA iff (V bl e B) (if b R bl then K,b1 1= —A)
+The logic K-T is the smallest set of LK_T which is closed under
+the following axiom schemas and inference rules. We shall
+write I- K_T A to mean that A is a &quot;theorem&quot; of K-T.
+Axiom Schemas:
+(al) A (B A&amp;B) (a5) --A E A
+(a2) A (B -4 A) (a6) —(A &amp; B) (—A V —B)
+(a3) A&amp;BDAIA&amp;BDB (a7)
+(a4) A ---o B) RB -4 C) (A —)
+Inference Rules:
+Modus ponens (Mp) for together with (RI), (R2) and (R3).
+(R1) From — A V B infer —MA V B
+(R2) From A B infer MA —&amp;gt; MB
+(R3) ------
+1- MA
+- 262 -
+</reference>
+</variant>
+</algorithm>
+<algorithm name="ParsHed" version="110505">
+<variant no="0" confidence="0.271164">
+<title confidence="0.999292">HELPFUL ANSWERS TO MODAL AND HYPOTHETICAL QUESTIONS</title>
+<author confidence="0.999953">Anne De_Roeck</author>
+<author confidence="0.999953">Richard Ball</author>
+<author confidence="0.999953">Keith Brown</author>
+<author confidence="0.999953">Chris Fox</author>
+<author confidence="0.999953">Marjolein Groefsema</author>
+<author confidence="0.999953">Nadim Obeid</author>
+<author confidence="0.999953">Ray Turner</author>
+<affiliation confidence="0.999936">University of Essex</affiliation>
+<address confidence="0.903598">England</address>
+<email confidence="0.402205">deroe@uk.ac.essex(Janet)</email>
+<abstract confidence="0.985069545454545">1.0 ABSTRACT, This paper describes a computational pragmatic model which is geared towards providing helpful answers to modal and hypothetical questions. The work brings together elements from formal . semantic theories on modality and question answering, defines a wider, pragmatically flavoured, notion of answerhood based on non-monotonic inference and develops a notion of context, within which aspects of more cognitively oriented theories, such as Relevance Theory, can be accommodated. The model has been implemented. The research was funded by ESRC grant number R000231279.</abstract>
+<intro confidence="0.776539">Keywords:Semantics, Pragmatics</intro>
+</variant>
+</algorithm>
+<algorithm name="ParsCit" version="110505">
+<citationList>
+<citation valid="false">
+<authors>
+<author>M Groefsema Fox</author>
+<author>N Obeid</author>
+<author>R Turner</author>
+</authors>
+<title>Helpful Answers to Modal and Hypothetical Questions: Final Report,</title>
+<date>1990</date>
+<journal>Journal of Symbolic Logic,</journal>
+<booktitle>Proceedings of ECM</booktitle>
+<volume>52</volume>
+<pages>261</pages>
+<publisher>Kluwer Academic Publishers</publisher>
+<institution>Cognitive Science Centre Memo, University of Essex</institution>
+<location>Dordrecht, Reidel</location>
+<marker>Fox, Obeid, Turner, 1990</marker>
+<rawString> Ball , R. E.K. Brown, A.N. De Roeck, Cl. Fox, M. Groefsema, N. Obeid and R. Turner (1990) Helpful Answers to Modal and Hypothetical Questions: Final Report, Cognitive Science Centre Memo, University of Essex Beth, E.W. (1962) Formal Methods, Dordrecht, Reidel Chierchia, 0., B. Partee and R. Turner (1989) Properties. Types and Meaning, Dordrecht, Kluwer Academic Publishers Coates, J. (1983) The Semantics of the Modal Auxiliaries, London, Croom Helm Davies, N. (1990) &apos;A First Order Logic of Truth, Knowledge and Belief&apos;, Proceedings of ECM 1990 - 261 -Groefsema, M., CJ. Fox and N. Obeid (1991) &apos;Can, May, Must and Should: A division of Labour&apos;, Paperaccepted at the LAGB, Somerville College, Oxford. Groenendijk, J. and M. Stockhof (1984) Studies on the Semantics of Questions and the Pragmatics of Answers, PhD. Dissertation, University of Amsterdam Heim, I. (1982) The Semantics of Definite and hidefinite Noun Phrases, PhD Dissertation, University of Massachussetts, Amherst (Ma.ss.) Jeffrey, R.C. (1967) Formal Logic, its Scope and Limits, London, McGraw-Hill Kratzer, A. (1977) &apos;What &apos;must&apos; and &apos;can&apos; must and can mean&apos;, Linguistics and Philosophy, Vol 1-3: 337-355 ICratzer, A. (1981) &apos;The Notional Category of Modality&apos;, in Eikmeyer and Rieser (eds) Words, Worlds and Contexts, Berlin, Walter de Gruyter Obeid, N. (1988) &apos;A Propositional Logic for Reasoning about Real-Time Situations&apos;, in TASTED International Conference, Los Angeles, California. Obeid, N. (1990) Partial Models Basis for Non-monotonic Reasonin_g, Research Note CSM-140, Department of Computer Science, University of Essex Palmer, F.R. (1979) Modality and the English Modals, London, Longman Palmer, F.R. (1986) Mood and Modality, Cambridge, Cambridge University Press Quirk, Q. et at (1985) A Comprehensive Grammar of the English Language, London, Longman Ramsay, A. (1990) The Logical Structure of English, London, Pitman Publishing Sperber, D. and D. Wilson (1986) Relevance: Communication and Cognition, Oxford, Basil Blackwell Steel, S. and A.N. De Roeck (1987) &apos;Bi-Directional Chart Parsing&apos;, in Hallam and Mellish (eds) Advances in Al, London, John Wiley Turner, R. (1987) &apos;A Theory of Properties&apos;, Journal of Symbolic Logic, Vol 52, No 2 : 455-472 Turner, R. (1990), Truth and Modality for Knowledge Representation, Pitman &amp; MIT Press, London. Walton, A. (1988), The Pragmatics of English Modal Verbs, PhD. Dissertation, University of London.</rawString>
+</citation>
+<citation valid="false">
+<tech>K,b 1= T</tech>
+<contexts>
+<context position="12247" citStr="(i)" startWordPosition="1974" endWordPosition="1974">in communication. It postulates that when people understand, they attempt to maximise relevance i.e. they pick the context against which the relevance of an utterance is greatest. Relevance, thus, is quantifiable and defined by means of extent conditions: an assumption is relevant in a context to the extent that its effects in this context are large and the effort to process it is small. It should be clear from the onset that the specification of Relevance Theory is , not precise enough to be implemented as it stands. There are, however, three principles which are interesting for our purpose. (i) The most relevant context for interpreting a question is that a Yes-answer is desired. This helps towards explaining why helpful answers are given at all, and why they occur typically with negative answers. (ii) The selection of relevant contexts is embodied in the human cognitive machinery and ensures that an utterance receives only one interpretation (and not many from which a particular one is selected). Indeed, as shown in the introduction, there may be more than one true answer to a question but only one appropriate one, which must be characterized. (iii) The theory specifies that all co</context>
+<context position="28569" citStr="(i)" startWordPosition="4634" endWordPosition="4634"> interaction between the structure of the proof and context selection must be achieved. A third version of the context machine attempted to derive contexts local to particular steps in the proof process. Though incomplete, the experience gained in the at, tempt convinced us that the selection of &apos;relevant&apos; contextual information is dynamic. Information pertaining to particular steps in the derivation of an answer should be local to that step and different &apos;relevant&apos; contexts should be made accessible as the derivation progresses. 6.0 AN EXAMPLE This section elaborates an example to illustrate (i) the basic theorem prover and (ii) the behaviour of context machines. To simplify the examples, we consider the case where there is only one individual, Anne. The set up concerns finding a helpful answer to Can Anne drive? First we present a successful proof, working from an optimal context which yields that Anne can indeed drive. The rules to the theorem prover (K-T [Obeid 19881) are given in the Appendix. Notice that premises are theorems of the logic and so any premise of form It is logically equivalent to —M it. M drive(a) goal 131 licenced(a) premise 121 ownscar(a) premise [41 skilltodriv</context>
+<context position="36022" citStr="(i)" startWordPosition="5886" endWordPosition="5886">the assumptions we made at the start of this project our conclusions lead us to postulate that such a view is indeed necessary to provide a fine grained notion of helpfulness. We have no treatment of mutual beliefs so far (but Davies [1990] is compatible and promising). We need to extend the logic so it can reason with varying domains if we are to exploit full the intensionality provided by the Property Theory. We have started work on a treatment of time and tense in this framework. 7.0 CONCLUSIONS We have developed a semantic theory of questions using Prop,. erty Theory. We have investigated (i) pragmatic answerhood and (ii) modality using an experimental computational framework. We believe that the insights gained from the work have beep valuable: they contribute towards our understanding of the requirements for a formally specified and computationally tractable theory of pragmatics which is capable of incorporating insights from cognitively oriented theories. Furthermore, the experiment has pointed out that some of the intuitions underlying Relevance Theory are accurate and useful, especially with respect to context fefining strategies necessary for characterising helpful answers. </context>
+</contexts>
+<marker>(i)</marker>
+<rawString>K,b 1= T</rawString>
+</citation>
+<citation valid="false">
+<authors>
+<author>b I K</author>
+</authors>
+<title>p iff g(b,p) = true for p atomic</title>
+<contexts>
+<context position="12459" citStr="(ii)" startWordPosition="2009" endWordPosition="2009">e and defined by means of extent conditions: an assumption is relevant in a context to the extent that its effects in this context are large and the effort to process it is small. It should be clear from the onset that the specification of Relevance Theory is , not precise enough to be implemented as it stands. There are, however, three principles which are interesting for our purpose. (i) The most relevant context for interpreting a question is that a Yes-answer is desired. This helps towards explaining why helpful answers are given at all, and why they occur typically with negative answers. (ii) The selection of relevant contexts is embodied in the human cognitive machinery and ensures that an utterance receives only one interpretation (and not many from which a particular one is selected). Indeed, as shown in the introduction, there may be more than one true answer to a question but only one appropriate one, which must be characterized. (iii) The theory specifies that all contextual effects are explained against the background of assumptions which a person may hold and postulates mechanisms by means of which relevant contexts can be pinned down starting from situational information </context>
+<context position="28603" citStr="(ii)" startWordPosition="4640" endWordPosition="4640">e of the proof and context selection must be achieved. A third version of the context machine attempted to derive contexts local to particular steps in the proof process. Though incomplete, the experience gained in the at, tempt convinced us that the selection of &apos;relevant&apos; contextual information is dynamic. Information pertaining to particular steps in the derivation of an answer should be local to that step and different &apos;relevant&apos; contexts should be made accessible as the derivation progresses. 6.0 AN EXAMPLE This section elaborates an example to illustrate (i) the basic theorem prover and (ii) the behaviour of context machines. To simplify the examples, we consider the case where there is only one individual, Anne. The set up concerns finding a helpful answer to Can Anne drive? First we present a successful proof, working from an optimal context which yields that Anne can indeed drive. The rules to the theorem prover (K-T [Obeid 19881) are given in the Appendix. Notice that premises are theorems of the logic and so any premise of form It is logically equivalent to —M it. M drive(a) goal 131 licenced(a) premise 121 ownscar(a) premise [41 skilltodrive(a) premise 151 ownscar(a) &amp; lice</context>
+</contexts>
+<marker>(ii)</marker>
+<rawString>K,b I= p iff g(b,p) = true for p atomic</rawString>
+</citation>
+<citation valid="false">
+<journal>K,b I= A &amp; B iff K,b1= A and K,b</journal>
+<volume>1</volume>
+<publisher>B</publisher>
+<contexts>
+<context position="12814" citStr="(iii)" startWordPosition="2068" endWordPosition="2068">h are interesting for our purpose. (i) The most relevant context for interpreting a question is that a Yes-answer is desired. This helps towards explaining why helpful answers are given at all, and why they occur typically with negative answers. (ii) The selection of relevant contexts is embodied in the human cognitive machinery and ensures that an utterance receives only one interpretation (and not many from which a particular one is selected). Indeed, as shown in the introduction, there may be more than one true answer to a question but only one appropriate one, which must be characterized. (iii) The theory specifies that all contextual effects are explained against the background of assumptions which a person may hold and postulates mechanisms by means of which relevant contexts can be pinned down starting from situational information and the utterance itself. 3.4 Context The necessity to give a more precise definition of context becomes obvious from the previous sections. Questions can only be answered in context, modals seem to receive different interpretations according to varying contexts, and any cognitively appealing notion of &quot;helpfulness&quot; or &quot;relevance&quot; is stated in terms of </context>
+</contexts>
+<marker>(iii)</marker>
+<rawString>K,b I= A &amp; B iff K,b1= A and K,b 1= B</rawString>
+</citation>
+<citation valid="false">
+<booktitle>K,b 1= —A iff K,b =1 A</booktitle>
+<marker>(iv)</marker>
+<rawString>K,b 1= —A iff K,b =1 A</rawString>
+</citation>
+<citation valid="false">
+<booktitle>K,b 1= MA iff(bl e B) (b R bl and K, bl 1# —A)</booktitle>
+<marker>(v)</marker>
+<rawString>K,b 1= MA iff(bl e B) (b R bl and K, bl 1# —A)</rawString>
+</citation>
+<citation valid="false">
+<journal>Ktb</journal>
+<volume>1</volume>
+<publisher>F</publisher>
+<marker>(i&apos;)</marker>
+<rawString>Ktb =1 F</rawString>
+</citation>
+<citation valid="false">
+<title>K,b 1=p iff g(b,p) = false for p atomic</title>
+<marker>(ii&apos;)</marker>
+<rawString>K,b 1=p iff g(b,p) = false for p atomic</rawString>
+</citation>
+<citation valid="false">
+<journal>K,b =1 A &amp; B iff K,B</journal>
+<volume>1</volume>
+<note>A or K,b =1B</note>
+<marker>(iii&apos;)</marker>
+<rawString>K,b =1 A &amp; B iff K,B =1 A or K,b =1B</rawString>
+</citation>
+<citation valid="false">
+<booktitle>K,b =1 —A iff K,b 1= A</booktitle>
+<marker>(iv&apos;)</marker>
+<rawString>K,b =1 —A iff K,b 1= A</rawString>
+</citation>
+<citation valid="false">
+<title>K,b =1 NIA iff (V bl e B) (if b R bl then K,b1 1= —A) The logic K-T is the smallest set of LK_T which is closed under the following axiom schemas and inference rules. We shall write I- K_T A to mean that A is a &quot;theorem&quot; of K-T. Axiom Schemas:</title>
+<marker>(v&apos;)</marker>
+<rawString>K,b =1 NIA iff (V bl e B) (if b R bl then K,b1 1= —A) The logic K-T is the smallest set of LK_T which is closed under the following axiom schemas and inference rules. We shall write I- K_T A to mean that A is a &quot;theorem&quot; of K-T. Axiom Schemas:</rawString>
+</citation>
+<citation valid="false">
+<journal>A (B A&amp;B) (a5) --A E A</journal>
+<marker>(al)</marker>
+<rawString>A (B A&amp;B) (a5) --A E A</rawString>
+</citation>
+<citation valid="false">
+<journal>A (B -4 A) (a6) —(A &amp; B) (—A V —B)</journal>
+<marker>(a2)</marker>
+<rawString>A (B -4 A) (a6) —(A &amp; B) (—A V —B)</rawString>
+</citation>
+<citation valid="false">
+<note>A&amp;BDAIA&amp;BDB (a7)</note>
+<marker>(a3)</marker>
+<rawString>A&amp;BDAIA&amp;BDB (a7)</rawString>
+</citation>
+<citation valid="false">
+<title>A ---o B) RB -4 C) (A —) Inference Rules: Modus ponens (Mp) for together with (RI),</title>
+<marker>(a4)</marker>
+<rawString>A ---o B) RB -4 C) (A —) Inference Rules: Modus ponens (Mp) for together with (RI), (R2) and (R3).</rawString>
+</citation>
+<citation valid="false">
+<journal>From — A V B infer —MA V B</journal>
+<marker>(R1)</marker>
+<rawString>From — A V B infer —MA V B</rawString>
+</citation>
+<citation valid="false">
+<journal>From A B infer MA —&amp;gt; MB</journal>
+<marker>(R2)</marker>
+<rawString>From A B infer MA —&amp;gt; MB</rawString>
+</citation>
+<citation valid="false">
+<authors>
+<author>MA</author>
+</authors>
+<title></title>
+<pages>262</pages>
+<marker>(R3)</marker>
+<rawString>------1- MA - 262 -</rawString>
+</citation>
+</citationList>
+</algorithm>
+</algorithms>

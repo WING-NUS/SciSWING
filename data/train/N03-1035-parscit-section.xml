@@ -1,0 +1,1334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<algorithms version="110505">
+<algorithm name="SectLabel" version="110505">
+<variant no="0" confidence="0.000098">
+<note confidence="0.959830333333333">
+Proceedings of HLT-NAACL 2003
+Main Papers , pp. 189-196
+Edmonton, May-June 2003
+</note>
+<title confidence="0.996733">
+Toward a Task-based Gold Standard for Evaluation
+of NP Chunks and Technical Terms
+</title>
+<author confidence="0.990368">
+Nina Wacholder
+</author>
+<affiliation confidence="0.81463">
+Rutgers University
+</affiliation>
+<email confidence="0.99282">
+nina@scils.rutgers.edu
+</email>
+<author confidence="0.977527">
+Peng Song
+</author>
+<affiliation confidence="0.815656">
+Rutgers University
+</affiliation>
+<email confidence="0.997683">
+psong@paul.rutgers.edu
+</email>
+<sectionHeader confidence="0.992489" genericHeader="abstract">
+Abstract
+</sectionHeader>
+<bodyText confidence="0.999952740740741">
+We propose a gold standard for evaluating two
+types of information extraction output -- noun
+phrase (NP) chunks (Abney 1991; Ramshaw and
+Marcus 1995) and technical terms (Justeson and
+Katz 1995; Daille 2000; Jacquemin 2002). The
+gold standard is built around the notion that since
+different semantic and syntactic variants of terms
+are arguably correct, a fully satisfactory assess-
+ment of the quality of the output must include
+task-based evaluation. We conducted an experi-
+ment that assessed subjects’ choice of index terms
+in an information access task. Subjects showed
+significant preference for index terms that are
+longer, as measured by number of words, and
+more complex, as measured by number of prepo-
+sitions. These terms, which were identified by a
+human indexer, serve as the gold standard. The
+experimental protocol is a reliable and rigorous
+method for evaluating the quality of a set of terms.
+An important advantage of this task-based evalua-
+tion is that a set of index terms which is different
+than the gold standard can ‘win’ by providing
+better information access than the gold standard
+itself does. And although the individual human
+subject experiments are time consuming, the ex-
+perimental interface, test materials and data
+analysis programs are completely re-usable.
+</bodyText>
+<sectionHeader confidence="0.99963" genericHeader="introduction">
+1 Introduction
+</sectionHeader>
+<bodyText confidence="0.997712927272728">
+The standard metrics for evaluation of the output of
+NLP systems are precision and recall. Given an ar-
+guably correct list of the units that a system would
+identify if it performed perfectly, there should in
+principle be no discrepancy between the units identi-
+fied by a system and the units that are either useful in
+a particular application or are preferred by human
+beings for use in a particular task. But when the satis-
+factory output can take many different forms, as in
+summarization and generation, evaluation by preci-
+sion and recall is not sufficient. In these cases, the
+challenge for system designers and users is to effec-
+tively distinguish between systems that provide gen-
+erally satisfactory output and systems that do not.
+NP chunks (Abney 1991; Ramshaw and Marcus
+1995; Evans and Zhai 1996; Frantzi and Ananiadou
+1996) and technical terms (Dagan and Church 1994;
+Justeson and Katz 1995; Daille 1996; Jacquemin
+2001; Bourigault et al. 2002) fall into this difficult-to-
+assess category. NPs are recursive structures. For the
+maximal NP large number of recent newspaper articles
+on biomedical science and clinical practice, a full-
+fledged parser would legitimately identify (at least)
+seven NPs in addition to the maximal one: large
+number; recent newspaper articles; large number of
+recent newspaper articles; biomedical science; clini-
+cal practice; biomedical science and clinical prac-
+tice; and recent newspaper articles on biomedical
+science and clinical practice. To evaluate the per-
+formance of a parser, NP chunks can usefully be
+evaluated by a gold standard; many systems (e.g.,
+Ramshaw and Marcus 1995 and Cardie and Pierce
+1988) use the Penn Treebank for this type of evalua-
+tion. But for most applications, output that lists a
+maximal NP and each of its component NPs is bulky
+and redundant. Even a system that achieves 100%
+precision and recall in identifying all of the NPs in a
+document needs criteria for determining which units
+to use in different contexts or applications.
+Technical terms are a subset of NP chunks. Jac-
+quemin (2001:3) defines terms as multi-word “vehi-
+cles of scientific and technical information”.1 The
+operational difficulty, of course, is to decide whether
+a specific term is a vehicle of scientific and technical
+information (e.g., birth date or light truck). Evalua-
+tion of mechanisms that filter out some terms while
+retaining others is subject to this difficulty. This is
+exactly the kind of case where context plays a sig-
+nificant role in deciding whether a term conforms to a
+definition and where experts disagree.
+In this paper, we turn to an information access
+task in order to assess terms identified by different
+techniques. There are two basic types of information
+access mechanisms, searching and browsing. In
+searching, the user generates the search terms; in
+</bodyText>
+<footnote confidence="0.331706">
+1 Jacquemin does not use the modifier technical.
+</footnote>
+<bodyText confidence="0.956367">
+lected terms; by this measure the subjects’ preference
+for the human terms was more than 7 times greater
+than the preference for either of the automatic tech-
+niques. (In Table 1 and in the rest of this paper, all
+index term counts are by type rather than by token,
+unless otherwise indicated.)
+</bodyText>
+<table confidence="0.739249285714286">
+HUM HS TT
+Total number of 673 7980 1788
+terms
+Number of terms 89 114 31
+selected
+Percentage of 13.22% 1.43% 1.73%
+terms selected
+</table>
+<tableCaption confidence="0.848771">
+Table 1: Percentage of terms selected by human
+</tableCaption>
+<bodyText confidence="0.96401935">
+subjects relative to number of terms in the entire
+index.
+This initial experiment strongly indicates that 1) peo-
+ple have a demonstrable preference for different
+types of index terms; 2) these human terms are a very
+good gold standard. If subjects use a greater propor-
+tion of the terms identified by a particular technique,
+the terms can be judged better than the terms identi-
+fied by another technique, even if the terms are dif-
+ferent. Any automatic technique capable of
+identifying terms that are preferred over these human
+terms would be a very strong system indeed. Fur-
+thermore, the properties of the terms preferred by the
+experimental subjects can be used to guide design of
+systems for identifying and selecting NP chunks and
+technical terms.
+In the next section, we describe the design of the
+experiment and in Section 3, we report on what the
+experimental data shows about human preferences
+for different kinds of index terms.
+</bodyText>
+<sectionHeader confidence="0.656753" genericHeader="method">
+2 Experimental design
+</sectionHeader>
+<bodyText confidence="0.999102125">
+Our experiment assesses the index terms vis a vis
+their usefulness in a strictly controlled information
+access task. Subjects responded to a set of questions
+whose answers were contained in a 350 page college-
+level text (Rice, Ronald E., McCreadie, Maureen and
+Chang, Shan-ju L. (2001) Accessing and Browsing
+Information and Communication. Cambridge, MA:
+MIT Press.) Subjects used the Experimental Search-
+ing and Browsing Interface (ESBI) which forces
+them to access text via the index terms; direct text
+searching was prohibited. 25 subjects participated in
+the experiment; they were undergraduate and gradu-
+ate students at Rutgers University. The experiments
+were conducted by graduate students at the Rutgers
+University School of Communication, Information
+and Library Studies (SCILS).
+browsing, the user recognizes potentially useful terms
+from a list of terms presented by the system. When an
+information seeker can readily think up a suitable
+term or linguistic expression to represent the informa-
+tion need, direct searching of text by user-generated
+terms is faster and more effective than browsing.
+However, when users do not know (or can’t remem-
+ber) the exact expression used in relevant documents,
+they necessarily struggle to find relevant information
+in full-text search systems. Experimental studies have
+repeatedly shown that information seekers use many
+different terms to describe the same concept and few
+of these terms are used frequently (Furnas et al. 1987;
+Saracevic et al. 1988; Bates et al. 1998). When in-
+formation seekers are unable to figure out the term
+used to describe a concept in a relevant document,
+electronic indexes are required for successful infor-
+mation access.
+NP chunks and technical terms have been pro-
+posed for use in this task (Boguraev and Kennedy
+1997; Wacholder 1998). NP chunks and technical
+terms have also been used in phrase browsing and
+phrase hierarchies (Jones and Staveley 1999; Nevill-
+Manning et al. 1999; Witten et al. 1999; Lawrie and
+Croft 2000) and summarization (e.g., McKeown et al.
+1999; Oakes and Paice 2001). In fact, the distinction
+between task-based evaluation of a system and preci-
+sion/recall evaluation of the quality of system output
+is similar to the extrinsic/intrinsic evaluation of
+summarization (Gallier and Jones 1993).
+In order to focus on the subjects’ choice of index
+terms rather than on other aspects of the information
+access process, we asked subject to find answers to
+questions in a college level text book. Subjects used
+the Experimental Searching and Browsing Interface
+(ESBI) to browse a list of terms that were identified
+by different techniques and then merged. Subjects
+select an index term by clicking on it in order to hy-
+perlink to the text itself. By design, ESBI forces the
+subjects to access the text indirectly, by searching
+and browsing the list of index terms, rather than by
+direct searching of the text.
+Three sets of terms were used in the experiment:
+one set (HS) was identified using the head-sorting
+method of Wacholder (1998); the second set (TT)
+was identified by an implementation of the technical
+term algorithm of Justeson and Katz (1995); a third
+set (HUM) was created by a human indexer. The
+methods for identifying these terms will be discussed
+in greater detail below.
+Somewhat to our surprise, subjects displayed a
+very strong preference for the index terms that were
+identified by the human indexer. Table 1 shows that
+when measured by percentage terms selected, sub-
+jects chose over 13% of the available human terms,
+but only 1.73% and 1.43% of the automatically se-
+</bodyText>
+<subsectionHeader confidence="0.5638915">
+2.1 ESBI (Experimental Searching and Brows-
+ing Interface)
+</subsectionHeader>
+<bodyText confidence="0.999871472727273">
+Subjects used the Experimental Searching and
+Browsing Interface (ESBI) to find the answers to the
+questions. After an initial training session, ESBI pre-
+sents the user with a Search/Browse screen (not
+shown); the question appears at the top of the screen.
+The subject may enter a string to search for in the
+index, or click on the &quot;Browse&quot; button for access to
+the whole index. At this point, &quot;search&quot; and &quot;browse&quot;
+apply only to the list of index terms, not to the text.
+The user may either browse the entire list of index
+terms or may enter a search term and specify criteria
+to select the subset of terms that will be returned.
+Most people begin with the latter option because the
+complete list of index terms is too long to be easily
+browsed. The user may select (click on) an index
+term to view a list of the contexts in which the term
+appears. If the context appears useful, the user may
+choose to view the term in its full context; if not, the
+user may either do additional browsing or start the
+process over again.
+Figure 1 shows a screen shot of ESBI after the
+searcher has entered the string democracy in the
+search box. This view shows the demo question and
+the workspace for entering answers. The string was
+(previously) entered in the search box and all index
+terms that include the word democracy are displayed.
+Although it is not illustrated here, ESBI also permits
+substring searching and the option to specify case
+sensitivity.
+Regardless of the technique by which the term
+was identified, terms are organized by grammatical
+head of the phrase. Preliminary analysis of our results
+has shown that most subjects like this analysis, which
+resembles standard organization of back-of-the-book
+indexes.
+Readers may notice that the word participation
+appears at the left-most margin, where it represents
+the set of terms whose head is participation. The in-
+dented occurrence represents the individual term.
+Selecting the left-most occurrence brings up contexts
+for all phrases for which participation is a head. Se-
+lecting on the indented occurrence brings up contexts
+for the noun participation only when it is not part of
+a larger phrase. This is explained to subjects during
+the pre-experimental training and an experimenter is
+present to remind subjects of this distinction if a
+question arises during the experiment.
+Readers may also notice that in Figure 1, one of
+the terms, participation require, is ungrammatical.
+This particular error was caused by a faulty part-of-
+speech tag. But since automatically identified index
+terms typically include some nonsensical terms, we
+have left these terms in – these terms are one of the
+problems that information seekers have to cope with
+in a realistic task-based evaluation.
+</bodyText>
+<subsectionHeader confidence="0.998364">
+2.2 Questions
+</subsectionHeader>
+<bodyText confidence="0.999810923076923">
+After conducting initial testing to find out what types
+of questions subjects founder hard or easy, we spent
+considerable effort to design a set of 26 questions of
+varying degrees of difficulty. To obtain an initial
+assessment of difficulty, one of the experimenters
+used ESBI to answer all of the questions and rate
+each question with regard to how difficult it was to
+answer using the ESBI system. For example, the
+question What are the characteristics of
+Marchionini&apos;s model of browsing? was rated very
+easy because searching on the string marchionini
+reveals an index term Marchionini&apos;s which is linked
+to the text sentence: Marchionini&apos;s model of browsing
+considers five interactions among the information-
+seeking factors of &quot;task, domain, setting, user charac-
+teristics and experience, and system content and in-
+terface&quot; (p.107). The question What factors
+determine when users decide to stop browsing? was
+rated very difficult because searching on stop (or
+synonyms such as halt, cease, end, terminate, finish,
+etc.) reveals no helpful index terms, while searching
+on factors or browsing yields an avalanche of over
+500 terms, none with any obvious relevance.
+After subjects finished answering each question,
+they were asked to rate the question in terms of its
+difficulty. A positive correlation between judgments
+</bodyText>
+<figureCaption confidence="0.999747">
+Figure 1: ESBI Screen shot
+</figureCaption>
+<bodyText confidence="0.999926636363636">
+of the experimenters and the experimental subjects
+(Sharp et al., under submission) confirmed that we
+had successfully devised questions with a range of
+difficulty. In general, questions that included terms
+actually used in the index were judged easier; ques-
+tions where the user had to devise the index terms
+were judged harder.
+To avoid effects of user learning, questions were
+presented to subjects in random order; in the one hour
+experiment, subjects answered an average of about 9
+questions.
+</bodyText>
+<subsectionHeader confidence="0.861244">
+2.3 Terms
+</subsectionHeader>
+<bodyText confidence="0.999940378378378">
+Although the primary goal of this research is to point
+the way to improved techniques for automatic crea-
+tion of index terms, we used human created terms to
+create a baseline. For the human index terms, we
+used the pre-existing back-of-the-book index, which
+we believe to be of high quality.2
+The two techniques for automatic identification
+were the technical terms algorithm of Justeson and
+Katz (1995) and the head sorting method (Dagan and
+Church (1994); Wacholder (1998). In the implemen-
+tation of the Justeson and Katz’ algorithm, technical
+terms are multi-word NPs repeated above some
+threshold in a corpus; in the head sorting method,
+technical terms are identified by grouping noun
+phrases with a common head (e.g., health-care work-
+ers and asbestos workers), and selecting as terms
+those NPs whose heads appear in two or more
+phrases. Definitionally, technical terms are a proper
+subset of terms identified by Head Sorting. Differ-
+ences in the implementations, especially the pre-
+processing module, result in there being some terms
+identified by Termer that were not identified by Head
+Sorting.
+Table 2 shows the number of terms identified by
+each method. (*Because some terms are identified by
+more than one technique, the percentage adds up to
+more than 100%.) The fewest terms (673) were iden-
+tified by the human method; in part this reflects the
+judgment of the indexer and in part it is a result of
+restrictions on index length in a printed text. The
+largest number of terms (7980) was identified by the
+head sorting method. This is because it applies
+looser criteria for determining a term than does the
+Justeson and Katz algorithm which imposes a very
+strict standard--no single word can be considered a
+term, and an NP must be repeated in full to be con-
+sidered a term.
+</bodyText>
+<footnote confidence="0.5240655">
+2 Jim Snow prepared the index under the supervision of
+SCILS Professor James D. Anderson.
+</footnote>
+<table confidence="0.999900888888889">
+HUM HS TT Total
+Total 673 7980 1788 9992
+number
+of terms
+Per- 6.73% 79.86% 17.89% *
+centage
+of total
+number
+of terms
+</table>
+<tableCaption confidence="0.938609">
+Table 2: Number of terms in index by method of
+identification
+</tableCaption>
+<bodyText confidence="0.999871705882353">
+Wacholder et al. (2000) showed that when experi-
+mental subjects were asked to assess the usefulness
+of terms for an information access task without actu-
+ally using the terms for information access showed
+that the terms identified by the technical term algo-
+rithm, which are considerably fewer than the terms
+identified by head sorting, were overall of higher
+quality than the terms identified by the head sorting
+method. However, the fact that subjects assigned a
+high rank to many of the terms identified by Head
+Sorting suggested that the technical term algorithm
+was failing to pick up many potentially useful index
+terms.
+In preparation for the experiment, all index terms
+were merged into a single list and duplicates were
+removed, resulting in a list of nearly 10,000 index
+terms.
+</bodyText>
+<subsectionHeader confidence="0.996189">
+2.4 Tracking results
+</subsectionHeader>
+<bodyText confidence="0.999945846153846">
+In the experiment, we logged the terms that sub-
+jects searched for (i.e., entered in a search box) and
+selected. In this paper, we report only on the terms
+that the subjects selected (i.e., clicked on). This is
+because if a subject entered a single word, or a sub-
+part of a word in the search box, ESBI returned to
+them a list of index terms; the subject then selected a
+term to view the context in which it appears in the
+text. This term might have been the same term origi-
+nally searched for or it might have been a super-
+string. The terms that subjects selected for searching
+are interesting in their own right, but are not analyzed
+here.
+</bodyText>
+<sectionHeader confidence="0.999973" genericHeader="method">
+3 Results
+</sectionHeader>
+<bodyText confidence="0.999679826086956">
+At the outset of this experiment, we did not know
+whether it would be possible to discover differences
+in human preferences for terms in the information
+access task reported on in this paper. We therefore
+started our research with the null hypothesis that all
+index terms are created equal. If users selected index
+terms in roughly the same proportion as the terms
+occur in the text, the null hypothesis would be
+proven.
+The results strongly discredit the null hypothesis.
+Table 3 shows that when measured by percentage of
+terms selected, subjects selected on over 13.2% of the
+available human terms, but only 1.73% and 1.43%
+respectively of the automatically selected terms. Ta-
+ble 3 also shows that although the human index terms
+formed only 6% of the total number of index terms,
+40% of the terms which were selected by subjects in
+order to view the context were identified by human
+indexing. Although 80% of the index terms were
+identified by head sorting, only 51% of the terms
+subjects chose to select had been identified by this
+method. (*Because of overlap of terms selected by
+different techniques, total is greater than 100%)
+</bodyText>
+<table confidence="0.9992755">
+HM HS TT Total
+All terms 673 7980 1788 9992
+Percentage 6.73% 79.9% 17.9% *
+of all
+terms
+Total 89 114 31 223
+number of
+terms se-
+lected
+Percentage 39.9% 51.1% 13.9 *
+of terms
+selected
+Percentage 13.2% 1.43% 1.73%
+of avail-
+able terms
+selected
+</table>
+<tableCaption confidence="0.970888">
+Table 3: Subject selection of index terms, by
+method.
+</tableCaption>
+<bodyText confidence="0.9996232">
+To determine whether the numbers represent statisti-
+cally significant evidence that the null hypothesis is
+wrong, we represent the null hypothesis (HT)) as (1)
+and the falsification of the null hypothesis (HA) as
+(2).
+</bodyText>
+<equation confidence="0.587168">
+HT: P1/µ1 = P2/µ2 (1)
+HA: P1/µ1 ≠ P2/µ2 (2)
+</equation>
+<bodyText confidence="0.999961">
+Pi is the expected percentage of the selected terms
+that are type i in all the selected terms; µi is the ex-
+pected percentage if there is no user preference, i.e.
+the proportion of this term type i in all the terms. We
+rewrite the above as (3).
+</bodyText>
+<equation confidence="0.948287">
+HT: X = 0 HA: X ≠ 0 X = P1/µ1 ─ P2/µ2 (3)
+</equation>
+<bodyText confidence="0.9996102">
+Assuming that X is normally distributed, we can use
+a one-sample t test on X to decide whether to accept
+the hypothesis (1). The two-tailed t test (df =222)
+produces a p-value of less than .01% for the compari-
+son of the expected and selected proportions of a)
+human terms and head sorted terms and b) human
+terms and technical terms. In contrast, the p-value for
+the comparison of head-sorted and technical terms
+was 33.7%, so we draw no conclusions about relative
+preferences for head sorted and technical terms.
+We also considered the possibility that our formu-
+lation of questions biased the terms that the subjects
+selected, perhaps because the words of the questions
+overlapped more with the terms selected by one of
+the methods. 3 We took the following steps:
+</bodyText>
+<listItem confidence="0.5407956">
+1) For each search word, calculate the number of
+terms overlapping with it from each source.
+2) Based on these numbers, determine the proportion
+of terms provided by each method.
+3) Sum the proportions of all the search words.
+</listItem>
+<bodyText confidence="0.999925464285715">
+As measured by the terms the subjects saw during
+browsing, 22% were human terms, 62% were head
+sorted terms and 16% were technical terms. Using the
+same reasoning about the null hypothesis as above,
+the p-value for the comparison of the ratios of human
+and head sorted terms was less than 0.01%, as was
+the comparison of the ratios of the human and techni-
+cal terms. This supports the validity of the results of
+the initial test. In contrast, the p-value for the com-
+parison of the two automatic techniques was 77.3%.
+Why did the subjects demonstrate such a strong
+preference for the human terms? Table 4 illustrates
+some important differences between the human terms
+and the automatically identified terms. The terms
+selected on are longer, as measured in number of
+words, and more complex, as measured by number of
+prepositions per index terms and by number of con-
+tent-bearing words. As shown in Table 5, the differ-
+ence of these complexity measures between human
+terms and automatically identified terms are statisti-
+cally significant.
+Since longer terms are more specific than shorter
+terms (for example, participation in a democracy is
+longer and more specific than democracy), the results
+suggest that subjects prefer the more specific terms.
+If this result is upheld in future research, it has practi-
+cal implications for the design of automatic term
+identification systems.
+</bodyText>
+<table confidence="0.999746375">
+Num- Average Preposi- Content-
+ber of length of tions per bearing
+terms term in index words
+selected words term per in-
+dex term
+HM 89 6.22 1.4 4.54
+HS 114 2.59 0.026 2.23
+TT 31 2.26 0 2.26
+</table>
+<tableCaption confidence="0.9898">
+Table 4: Measures of index term complexity
+</tableCaption>
+<table confidence="0.999474625">
+Average Number Number of
+length of of prepo- content-
+term in sitions bearing
+number of per index words per
+words term index term
+HM vs HS &amp;lt;0.01% &amp;lt;0.01% &amp;lt;0.01%
+HM vs TT &amp;lt;0.01% &amp;lt;0.01% &amp;lt;0.01%
+HS vs TT 0.57% 8.33% 77.8%
+</table>
+<tableCaption confidence="0.946659">
+Table 5: Result of two-independent-sample two-
+tailed t-test on index term complexity. The num-
+bers in the cells are p-value of the test.
+</tableCaption>
+<subsectionHeader confidence="0.979118">
+4.3 Relationship between Term Source and
+Search Effectiveness
+</subsectionHeader>
+<bodyText confidence="0.999961054054054">
+In this paper, our primary focus is on the question of
+what makes index terms &apos;better&apos;, as measured by user
+preferences in a question-answering task. Also of
+interest, of course, is what makes index terms &apos;better&apos;
+in terms of how accurate the resulting users&apos; answers
+are. The problem is that any facile judgment of free-
+text answer accuracy is bound to be arbitrary and
+potentially unreliable; we discuss this in detail in
+[26]. Nevertheless, we address the issue in a prelimi-
+nary way in the current paper. We used an ad hoc set
+of canonical answers to score subjects&apos; answers on a
+scale of 1 to 3, where 1 stands for &apos;very accurate&apos;, 2
+stands for &apos;partly accurate&apos; and 3 represents &apos;not at all
+accurate&apos;. Using general loglinear regression (Poisson
+model) under the hypothesis that these two variables
+are independent of each other, our analysis showed
+that there is a systematic relationship (significance
+probability is 0.0504) between source of selected
+terms and answer accuracy. Specifically, in cases
+where subjects used more index terms identified by
+the human indexer, the answers were more accurate.
+On the basis of our initial accuracy judgments, we
+can therefore draw the preliminary conclusion that
+terms that were better in that they were preferred by
+the experimental subjects were also better in that they
+were associated with better answers. We plan to con-
+duct a more in-depth analysis of answer accuracy and
+will report on it in future work.
+But the primary question addressed in this paper
+is how to reliably assess NP chunks and technical
+terms. These results constitute experimental evidence
+that the index terms identified by the human indexer
+constitute a gold standard, at least for the text used in
+the experiment. Any set of index terms, regardless of
+the technique by which they were created or the crite-
+ria by they were selected, can be compared vis a vis
+their usefulness in the information access task.
+</bodyText>
+<sectionHeader confidence="0.998612" genericHeader="method">
+4 Discussion
+</sectionHeader>
+<bodyText confidence="0.9977714">
+The contribution of this paper is the description of a
+task-based gold-standard method for evaluating the
+usefulness and therefore the quality of NP chunks
+and technical terms. In this section, we address a
+number of questions about this method.
+</bodyText>
+<listItem confidence="0.765040897435897">
+1) What properties of terms can this technique
+be used to study?
+• One word or many. There are two parts to
+the process of identifying NP terms: NP
+chunks that are candidate terms must be
+identified and candidate terms must be fil-
+tered in order to select a subset appropriate
+for use in the intended application. Justeson
+and Katz (1995) is an example of an algo-
+rithm where the process used for identifying
+NP chunks is also the filtering process. A
+byproduct of this technique is that single-
+word terms are excluded. In part, this is be-
+cause it is much harder to determine in con-
+text which single words actually qualify as
+terms. But dictionaries of technical termi-
+nology have many one-word terms.
+• Simplex or complex NPs (e.g., Church
+1988; Hindle and Rooth 1991; Wacholder
+1998) identify simplex or base NPs – NPs
+which do not have any component NPs -- at
+least in part because this bypasses the need
+to solve the quite difficult attachment prob-
+lem, i.e., to determine which simpler NPs
+should be combined to output a more com-
+plex NP. But if people find complex NPs
+more useful than simpler ones, it is impor-
+tant to focus on improvement of techniques
+to reliably identify more complex terms.
+• Semantic and syntactic terms variants.
+Daille et al. (1996), Jacquemin (2001) and
+others address the question of how to iden-
+tify semantic (synonymous) and syntactic
+variants. But independent of the question of
+how to recognize variants is the question of
+which variants are to be preferred for differ-
+ent kinds of uses.
+• Impact of errors. Real-world NLP systems
+have a measurable error rate. By conducting
+</listItem>
+<bodyText confidence="0.970104616666667">
+experiments in which terms with errors are
+include in the set of test terms, the impact of
+these errors can be measured. The useful-
+ness of a set of terms presumably is at least
+in part a function of the impact of the errors,
+whether the errors are a by-product of the
+algorithm or the implementation of the algo-
+rithm.
+2) Could the set of human index terms be used
+as a gold standard without conducting the
+human subject experiments? This of course
+could be done, but then the terms are being
+evaluated by a fixed standard – by definition, no
+set of terms can do better than the gold standard.
+This experimental method leaves open the possi-
+bility that there is a set of terms that is better
+than the gold standard. In this case, of course, the
+gold standard would no longer be a gold standard
+-- perhaps we would have to call it a platinum
+standard.
+3) How reproducible is the experiment? The ex-
+periment can be re-run with any set of terms
+deemed to be representative of the content of the
+Rice text. The preparation of the materials for
+additional texts is admittedly time-consuming.
+But over time a sizable corpus of experimental
+materials in different domains could be built up.
+These materials could be used for training as
+well as for testing.
+4) How extensible is the gold standard? The ex-
+perimental protocol will be validated only if
+equally useful index terms can be created for
+other texts. We anticipate that they can.
+5) How can this research help in the design of
+real world NLP systems? This technique can
+help in assessing the relative usefulness of exist-
+ing techniques for identifying terms. It is possi-
+ble, for example, there already exist techniques
+for identifying terms that are superior to the two
+tested here. If we can find such systems, their al-
+gorithms should be preferred. If not, there re-
+mains a need for development of algorithms to
+identify single word terms and complex phrases.
+6) Do the benefits of this evaluation technique
+outweigh the costs? Given the fundamental dif-
+ficulty of evaluating NP chunks and technical
+terms, task-based evaluation is a promising sup-
+plement to evaluation by precision and recall.
+These relatively time-consuming human subject
+experiments surely will not be undertaken by
+most system developers; ideally, they should be
+performed by neutral parties who do not have a
+stake in the outcome.
+7) Should automated indexes try to imitate hu-
+man indexers? Automated indexes should con-
+tain terms that are most easily processed by
+users. If the properties of such terms can be re-
+liably discovered, developers of systems that
+identify terms intended to be processed by peo-
+ple surely should pay attention.
+</bodyText>
+<sectionHeader confidence="0.998869" genericHeader="conclusions">
+5 Conclusion
+</sectionHeader>
+<bodyText confidence="0.999771518518519">
+In this paper we have reported on a rigorous experi-
+mental technique for black-box evaluation of the use-
+fulness of NP chunks and technical terms in an
+information access task. Our experiment shows that it
+is possible to reliably identify human preferences for
+sets of terms.
+The set of human terms created for use in a back-
+of-the-book index serves as a gold standard. An ad-
+vantage of the task-based evaluation is that a set of
+terms could outperform the gold standard; any system
+that could do this would be a good system indeed.
+The two automatic methods that we evaluated
+performed much less well than the terms created by
+the human indexer; we plan to evaluate additional
+techniques for term identification in the hope of iden-
+tifying automatic methods that identify index terms
+that people prefer over the human terms. We also
+plan to prepare test materials in different domains,
+and assess in greater depth the properties of the terms
+that our experimental subjects preferred; our goal is
+to develop practical guidelines for the identification
+and selection of technical terms that are optimal for
+human users. We will also study the impact of se-
+mantic differences between terms on user preferences
+and investigate whether terms which are preferred for
+information access are equally suitable for other NLP
+tasks.
+</bodyText>
+<sectionHeader confidence="0.99935" genericHeader="acknowledgments">
+6 Acknowledgements
+</sectionHeader>
+<bodyText confidence="0.996717">
+We are grateful to the other members of the Rutgers
+NLP-I research group, Lu Liu, Mark Sharp, and
+Xiaojun Yuan, for their valuable contribution to this
+project. We also thank Paul Kantor, Judith L. Kla-
+vans, Evelyne Tzoukermann , Min Yen Kan, and
+three anonymous reviewers for their helpful sugges-
+tions. Funding for this research has been provided by
+the Rutgers University Information Science and
+Technology Council.
+</bodyText>
+<sectionHeader confidence="0.980521" genericHeader="references">
+References
+</sectionHeader>
+<reference confidence="0.97892913592233">
+Abney, Steven (1991) Parsing by chunks. Principle-
+Based Parsing, edited by Steven Abney, Robert
+Berwick and Carol Tenny. Kluwer: Dordrecht.
+Bates, Marcia J. (1998) Indexing and access for digital
+libraries and the Internet: human, database and do-
+main factors. Journal of the American Society for
+Information Science, 49(13), 1185-1205.
+Boguraev, Branimir and Kennedy, Christopher (1997)
+Salience-based content characterization of text. ACL
+EACL Workshop on Intelligent Scalable Text
+Summarization, 2-9.
+Bourigault, Didier, Jacquemin, Christian and L’Homme,
+Marie Claude (2001) Recent Advances in Computa-
+tional Terminology. John Benjamins: Philadelphia,
+PA.
+Church, Kenneth Ward (1988) A Stochastic Parts Pro-
+gram and Noun Phrase Parser for Unrestricted Text.
+Proceedings of Second Applied Natural Language
+Processing Conference, pp.136-143.
+Dagan, Ido and Church, Kenneth (1994) TERMIGHT:
+Identifying and translating technical terminology.
+Proceedings of the Fourth ACL Conference on Ap-
+plied Natural Language Processing, pp.34-40.
+Daille Beatrice (1996) Study and implementation of
+combined techniques for automatic extraction of ter-
+minology. The Balancing Act, pp.49-66. Edited by
+Judith L. Klavans and Philip Resnik. MIT Press,
+Cambridge, MA.
+Daille, Beatrice, Habert, Benoit., Jacquemin, Christian,
+&amp; Royaute, Jean (2000) Empirical observation of
+term variations and principles for their description.
+Terminology, 3(2):197-258.
+Furnas, George, Landauer, Thomas, Gomez, Louis &amp;
+Dumais, Susan T. (1987) The vocabulary problem
+in human-system communication. Communications
+of the ACM, 30(11), 964-971.
+Galliers, Julia Rose &amp; Jones, Karen Sparck (1995)
+Evaluating natural language processing systems. Lec-
+ture Notes in Artificial Intelligence. Springer, New
+York, 1995.
+Jacquemin, Christian (2001). Spotting and Discovering
+Terms through Natural Language Processing. Cam-
+bridge, MA: MIT Press.
+Jones, Steve and Staveley, Mark S. (1999) Phrasier: a
+system for interactive document retrieval using key-
+phrases. Proceedings of the 22nd annual interna-
+tional ACM SIGIR conference, pp.160-167.
+Justeson, John S. &amp; Slava M. Katz (1995) “Technical
+terminology: some linguistic properties and an algo-
+rithm for identification in text”, Natural Language
+Engineering 1(1):9-27.
+Hindle, Donald and Rooth, Matt (1993) Structural am-
+biguity and lexical relations. Computational Linguis-
+tics 19(1):103-120.
+Lawrie, Dawn and Croft, W. Bruce (2000) Discovering
+and comparing topic hierarchies. Proceedings of
+RIAO 2000 Conference, 314-330.
+McKeown, Kathy, Klavans, Judith, Hatzivassiloglou,
+Vasileios, Barzilay, Regina and Eskin, Eleazar
+(1999) Towards multidocument summarization by
+reformulation: Progress and prospects. Proceedings
+of AAAI-99, pp.453-460.
+Nevill-Manning, Craig, Witten, Ian and Paynter,
+Gordon W. (1999). Lexically-generated subject hi-
+erarchies for browsing large collections. Int’l Jour-
+nal on Digital Libraries, 2(2-3):111-123.
+Oakes, Michael P. and Paice, Chris D. (2001) Term ex-
+traction for automatic abstracting. In Bourigault et
+al., eds.
+Ramshaw, Lance A., and Marcus, Mitchell P. (1995)
+Text chunking using transformation-based learning.
+Proceedings of the Third ACL Workshop on Very
+Large Corpora, pp. 82-94.
+Rice, Ronald E., Maureen McCreadie &amp; Shan-ju L.
+Chang (2001). Accessing and Browsing Information
+and Communication. Cambridge, MA: MIT Press.
+Saracevic, Tefko, Paul Kantor, Alice Y. Chamis &amp;
+Donna Trivison (1988) A study of information
+seeking and retrieving: I. Background and method-
+ology. Journal of the American Society for Infor-
+mation Science, 39(3), 161-176.
+Sharp, M., Liu, L., Yuan, X., Song, P., &amp; Wacholder, N.
+(2003). Question difficulty effects on question an-
+swering involving mandatory use of a term index.
+Under submission.
+Wacholder, N., Sharp, M., Liu, L., Yuan, X., &amp; Song, P.
+(2003). Experimental study of index terms and in-
+formation access. Under submission.
+Wacholder, Nina (1998) &quot;Simplex noun phrases clus-
+tered by head: a method for identifying significant
+topics in a document&quot;, Proceedings of Workshop on
+the Computational Treatment of Nominals, pp.70-
+79. COLING-ACL, October 16, 1998.
+Wacholder, Nina, Judith L. Klavans and David Kirk
+Evans (2000) &quot;Evaluation of automatically identified
+index terms for browsing electronic documents&quot;,
+Proceedings of the NAACL/ANLP2000, Seattle,
+Washington.
+Witten, Ian H., Paynter, Gordon W., Eibe, Frank, Gut-
+win, and Nevill-Manning Craig G. KEA: practical
+automatic keyphrase extraction. Proceedings of the
+fourth ACM Conference on Digital Libraries,
+pp.254-255.
+</reference>
+</variant>
+</algorithm>
+<algorithm name="ParsHed" version="110505">
+<variant no="0" confidence="0.000013">
+<note confidence="0.895418">Proceedings of HLT-NAACL 2003 Main Papers , pp. 189-196 Edmonton, May-June 2003</note>
+<title confidence="0.996612">Toward a Task-based Gold Standard for Evaluation of NP Chunks and Technical Terms</title>
+<author confidence="0.767601">Nina Rutgers</author>
+<email confidence="0.969187">nina@scils.rutgers.edu</email>
+<author confidence="0.4774885">Peng Rutgers</author>
+<email confidence="0.991393">psong@paul.rutgers.edu</email>
+<abstract confidence="0.993665018489987">We propose a gold standard for evaluating two types of information extraction output -noun phrase (NP) chunks (Abney 1991; Ramshaw and Marcus 1995) and technical terms (Justeson and Katz 1995; Daille 2000; Jacquemin 2002). The gold standard is built around the notion that since different semantic and syntactic variants of terms are arguably correct, a fully satisfactory assessment of the quality of the output must include task-based evaluation. We conducted an experiment that assessed subjects’ choice of index terms in an information access task. Subjects showed significant preference for index terms that are longer, as measured by number of words, and more complex, as measured by number of prepositions. These terms, which were identified by a human indexer, serve as the gold standard. The experimental protocol is a reliable and rigorous method for evaluating the quality of a set of terms. An important advantage of this task-based evaluation is that a set of index terms which is different than the gold standard can ‘win’ by providing better information access than the gold standard itself does. And although the individual human subject experiments are time consuming, the experimental interface, test materials and data analysis programs are completely re-usable. The standard metrics for evaluation of the output of NLP systems are precision and recall. Given an arguably correct list of the units that a system would identify if it performed perfectly, there should in principle be no discrepancy between the units identified by a system and the units that are either useful in a particular application or are preferred by human beings for use in a particular task. But when the satisfactory output can take many different forms, as in summarization and generation, evaluation by precision and recall is not sufficient. In these cases, the for system designers and users is to effectively distinguish between systems that provide generally satisfactory output and systems that do not. NP chunks (Abney 1991; Ramshaw and Marcus 1995; Evans and Zhai 1996; Frantzi and Ananiadou 1996) and technical terms (Dagan and Church 1994; Justeson and Katz 1995; Daille 1996; Jacquemin 2001; Bourigault et al. 2002) fall into this difficult-toassess category. NPs are recursive structures. For the NP number of recent newspaper articles biomedical science and clinical fullfledged parser would legitimately identify (at least) NPs in addition to the maximal one: newspaper number of newspaper cliniscience and clinical pracand newspaper articles on biomedical and clinical To evaluate the performance of a parser, NP chunks can usefully be evaluated by a gold standard; many systems (e.g., Ramshaw and Marcus 1995 and Cardie and Pierce 1988) use the Penn Treebank for this type of evaluation. But for most applications, output that lists a maximal NP and each of its component NPs is bulky and redundant. Even a system that achieves 100% precision and recall in identifying all of the NPs in a document needs criteria for determining which units to use in different contexts or applications. Technical terms are a subset of NP chunks. Jac- (2001:3) defines multi-word “vehiof scientific and technical The operational difficulty, of course, is to decide whether a specific term is a vehicle of scientific and technical (e.g., date Evaluation of mechanisms that filter out some terms while retaining others is subject to this difficulty. This is exactly the kind of case where context plays a significant role in deciding whether a term conforms to a definition and where experts disagree. In this paper, we turn to an information access task in order to assess terms identified by different techniques. There are two basic types of information access mechanisms, searching and browsing. In searching, the user generates the search terms; in does not use the modifier lected terms; by this measure the subjects’ preference for the human terms was more than 7 times greater than the preference for either of the automatic techniques. (In Table 1 and in the rest of this paper, all index term counts are by type rather than by token, unless otherwise indicated.) HUM HS TT Total number of terms 673 7980 1788 Number of terms selected 89 114 31 Percentage of 13.22% 1.43% 1.73% terms selected Table 1: Percentage of terms selected by human subjects relative to number of terms in the entire index. This initial experiment strongly indicates that 1) people have a demonstrable preference for different types of index terms; 2) these human terms are a very good gold standard. If subjects use a greater proportion of the terms identified by a particular technique, the terms can be judged better than the terms identified by another technique, even if the terms are different. Any automatic technique capable of identifying terms that are preferred over these human terms would be a very strong system indeed. Furthermore, the properties of the terms preferred by the experimental subjects can be used to guide design of systems for identifying and selecting NP chunks and technical terms. In the next section, we describe the design of the experiment and in Section 3, we report on what the experimental data shows about human preferences for different kinds of index terms. design Our experiment assesses the index terms vis a vis their usefulness in a strictly controlled information access task. Subjects responded to a set of questions whose answers were contained in a 350 page collegelevel text (Rice, Ronald E., McCreadie, Maureen and Shan-ju L. (2001) and Browsing and Cambridge, MA: MIT Press.) Subjects used the Experimental Searching and Browsing Interface (ESBI) which forces them to access text via the index terms; direct text searching was prohibited. 25 subjects participated in the experiment; they were undergraduate and graduate students at Rutgers University. The experiments were conducted by graduate students at the Rutgers University School of Communication, Information and Library Studies (SCILS). browsing, the user recognizes potentially useful terms from a list of terms presented by the system. When an information seeker can readily think up a suitable term or linguistic expression to represent the information need, direct searching of text by user-generated terms is faster and more effective than browsing. However, when users do not know (or can’t remember) the exact expression used in relevant documents, they necessarily struggle to find relevant information in full-text search systems. Experimental studies have repeatedly shown that information seekers use many different terms to describe the same concept and few of these terms are used frequently (Furnas et al. 1987; Saracevic et al. 1988; Bates et al. 1998). When information seekers are unable to figure out the term used to describe a concept in a relevant document, electronic indexes are required for successful information access. NP chunks and technical terms have been proposed for use in this task (Boguraev and Kennedy 1997; Wacholder 1998). NP chunks and technical terms have also been used in phrase browsing and phrase hierarchies (Jones and Staveley 1999; Nevill- Manning et al. 1999; Witten et al. 1999; Lawrie and Croft 2000) and summarization (e.g., McKeown et al. 1999; Oakes and Paice 2001). In fact, the distinction between task-based evaluation of a system and precision/recall evaluation of the quality of system output is similar to the extrinsic/intrinsic evaluation of summarization (Gallier and Jones 1993). In order to focus on the subjects’ choice of index terms rather than on other aspects of the information access process, we asked subject to find answers to questions in a college level text book. Subjects used the Experimental Searching and Browsing Interface (ESBI) to browse a list of terms that were identified by different techniques and then merged. Subjects select an index term by clicking on it in order to hyperlink to the text itself. By design, ESBI forces the subjects to access the text indirectly, by searching and browsing the list of index terms, rather than by direct searching of the text. Three sets of terms were used in the experiment: one set (HS) was identified using the head-sorting method of Wacholder (1998); the second set (TT) was identified by an implementation of the technical term algorithm of Justeson and Katz (1995); a third set (HUM) was created by a human indexer. The methods for identifying these terms will be discussed in greater detail below. Somewhat to our surprise, subjects displayed a very strong preference for the index terms that were identified by the human indexer. Table 1 shows that when measured by percentage terms selected, subjects chose over 13% of the available human terms, only 1.73% and 1.43% of the automatically se- (Experimental Searching and Browsing Interface) Subjects used the Experimental Searching and Browsing Interface (ESBI) to find the answers to the questions. After an initial training session, ESBI presents the user with a Search/Browse screen (not shown); the question appears at the top of the screen. The subject may enter a string to search for in the index, or click on the &quot;Browse&quot; button for access to the whole index. At this point, &quot;search&quot; and &quot;browse&quot; apply only to the list of index terms, not to the text. The user may either browse the entire list of index terms or may enter a search term and specify criteria to select the subset of terms that will be returned. Most people begin with the latter option because the complete list of index terms is too long to be easily browsed. The user may select (click on) an index term to view a list of the contexts in which the term appears. If the context appears useful, the user may choose to view the term in its full context; if not, the user may either do additional browsing or start the process over again. Figure 1 shows a screen shot of ESBI after the has entered the string the search box. This view shows the demo question and the workspace for entering answers. The string was (previously) entered in the search box and all index that include the word displayed. Although it is not illustrated here, ESBI also permits substring searching and the option to specify case sensitivity. Regardless of the technique by which the term was identified, terms are organized by grammatical head of the phrase. Preliminary analysis of our results has shown that most subjects like this analysis, which resembles standard organization of back-of-the-book indexes. may notice that the word appears at the left-most margin, where it represents set of terms whose head is The indented occurrence represents the individual term. Selecting the left-most occurrence brings up contexts all phrases for which a head. Selecting on the indented occurrence brings up contexts the noun when it is not part of a larger phrase. This is explained to subjects during the pre-experimental training and an experimenter is present to remind subjects of this distinction if a question arises during the experiment. Readers may also notice that in Figure 1, one of terms, is ungrammatical. This particular error was caused by a faulty part-ofspeech tag. But since automatically identified index terms typically include some nonsensical terms, we have left these terms in – these terms are one of the problems that information seekers have to cope with in a realistic task-based evaluation. After conducting initial testing to find out what types of questions subjects founder hard or easy, we spent considerable effort to design a set of 26 questions of varying degrees of difficulty. To obtain an initial assessment of difficulty, one of the experimenters used ESBI to answer all of the questions and rate each question with regard to how difficult it was to answer using the ESBI system. For example, the are the characteristics of model of browsing? rated very because searching on the string an index term is linked the text sentence: model of browsing considers five interactions among the informationseeking factors of &quot;task, domain, setting, user characteristics and experience, and system content and inquestion factors when users decide to stop browsing? very difficult because searching on such as cease, end, terminate, finish, etc.) reveals no helpful index terms, while searching an avalanche of over 500 terms, none with any obvious relevance. After subjects finished answering each question, they were asked to rate the question in terms of its difficulty. A positive correlation between judgments Figure 1: ESBI Screen shot of the experimenters and the experimental subjects (Sharp et al., under submission) confirmed that we had successfully devised questions with a range of difficulty. In general, questions that included terms actually used in the index were judged easier; questions where the user had to devise the index terms were judged harder. To avoid effects of user learning, questions were presented to subjects in random order; in the one hour experiment, subjects answered an average of about 9 questions. Although the primary goal of this research is to point the way to improved techniques for automatic creation of index terms, we used human created terms to create a baseline. For the human index terms, we used the pre-existing back-of-the-book index, which believe to be of high The two techniques for automatic identification were the technical terms algorithm of Justeson and Katz (1995) and the head sorting method (Dagan and Church (1994); Wacholder (1998). In the implementation of the Justeson and Katz’ algorithm, technical terms are multi-word NPs repeated above some threshold in a corpus; in the head sorting method, technical terms are identified by grouping noun with a common head (e.g., workand selecting as terms those NPs whose heads appear in two or more phrases. Definitionally, technical terms are a proper subset of terms identified by Head Sorting. Differences in the implementations, especially the preprocessing module, result in there being some terms identified by Termer that were not identified by Head Sorting. Table 2 shows the number of terms identified by each method. (*Because some terms are identified by more than one technique, the percentage adds up to more than 100%.) The fewest terms (673) were identified by the human method; in part this reflects the judgment of the indexer and in part it is a result of restrictions on index length in a printed text. The largest number of terms (7980) was identified by the head sorting method. This is because it applies looser criteria for determining a term than does the Justeson and Katz algorithm which imposes a very strict standard--no single word can be considered a term, and an NP must be repeated in full to be considered a term. Snow prepared the index under the supervision of SCILS Professor James D. Anderson. HUM HS TT Total Total number of terms 673 7980 1788 9992 Per-centage of total number of terms 6.73% 79.86% 17.89% * Table 2: Number of terms in index by method of identification Wacholder et al. (2000) showed that when experimental subjects were asked to assess the usefulness of terms for an information access task without actually using the terms for information access showed that the terms identified by the technical term algorithm, which are considerably fewer than the terms identified by head sorting, were overall of higher quality than the terms identified by the head sorting method. However, the fact that subjects assigned a high rank to many of the terms identified by Head Sorting suggested that the technical term algorithm was failing to pick up many potentially useful index terms. In preparation for the experiment, all index terms were merged into a single list and duplicates were removed, resulting in a list of nearly 10,000 index terms. results In the experiment, we logged the terms that subjects searched for (i.e., entered in a search box) and selected. In this paper, we report only on the terms that the subjects selected (i.e., clicked on). This is because if a subject entered a single word, or a subpart of a word in the search box, ESBI returned to them a list of index terms; the subject then selected a term to view the context in which it appears in the text. This term might have been the same term originally searched for or it might have been a superstring. The terms that subjects selected for searching are interesting in their own right, but are not analyzed here. At the outset of this experiment, we did not know whether it would be possible to discover differences in human preferences for terms in the information access task reported on in this paper. We therefore started our research with the null hypothesis that all index terms are created equal. If users selected index terms in roughly the same proportion as the terms occur in the text, the null hypothesis would be proven. The results strongly discredit the null hypothesis. Table 3 shows that when measured by percentage of terms selected, subjects selected on over 13.2% of the available human terms, but only 1.73% and 1.43% respectively of the automatically selected terms. Table 3 also shows that although the human index terms formed only 6% of the total number of index terms, 40% of the terms which were selected by subjects in order to view the context were identified by human indexing. Although 80% of the index terms were identified by head sorting, only 51% of the terms subjects chose to select had been identified by this method. (*Because of overlap of terms selected by different techniques, total is greater than 100%) HM HS TT Total All terms 673 7980 1788 9992 Percentage of all terms 6.73% 79.9% 17.9% * Total number of terms se-lected 89 114 31 223 Percentage of terms selected 39.9% 51.1% 13.9 * Percentage 13.2% 1.43% 1.73% of able terms selected Table 3: Subject selection of index terms, by method. To determine whether the numbers represent statistically significant evidence that the null hypothesis is we represent the null hypothesis as (1) the falsification of the null hypothesis as (2). the expected percentage of the selected terms are type all the selected terms; the expected percentage if there is no user preference, i.e. proportion of this term type all the terms. We rewrite the above as (3). X = 0 X X = Assuming that X is normally distributed, we can use a one-sample t test on X to decide whether to accept the hypothesis (1). The two-tailed t test (df =222) produces a p-value of less than .01% for the comparison of the expected and selected proportions of a) human terms and head sorted terms and b) human terms and technical terms. In contrast, the p-value for the comparison of head-sorted and technical terms was 33.7%, so we draw no conclusions about relative preferences for head sorted and technical terms. We also considered the possibility that our formulation of questions biased the terms that the subjects selected, perhaps because the words of the questions overlapped more with the terms selected by one of methods. 3We took the following steps: 1) For each search word, calculate the number of terms overlapping with it from each source. 2) Based on these numbers, determine the proportion of terms provided by each method. 3) Sum the proportions of all the search words. As measured by the terms the subjects saw during browsing, 22% were human terms, 62% were head sorted terms and 16% were technical terms. Using the same reasoning about the null hypothesis as above, the p-value for the comparison of the ratios of human and head sorted terms was less than 0.01%, as was the comparison of the ratios of the human and technical terms. This supports the validity of the results of the initial test. In contrast, the p-value for the comparison of the two automatic techniques was 77.3%. Why did the subjects demonstrate such a strong preference for the human terms? Table 4 illustrates some important differences between the human terms and the automatically identified terms. The terms selected on are longer, as measured in number of words, and more complex, as measured by number of prepositions per index terms and by number of content-bearing words. As shown in Table 5, the difference of these complexity measures between human terms and automatically identified terms are statistically significant. Since longer terms are more specific than shorter (for example, in a democracy and more specific than the results suggest that subjects prefer the more specific terms. If this result is upheld in future research, it has practical implications for the design of automatic term identification systems. Number of terms selected length tions per Content-bearing words per in-dex term term index words term HM 89 6.22 1.4 4.54 HS 114 2.59 0.026 2.23 TT 31 2.26 0 2.26 Table 4: Measures of index term complexity length of Number of term in per index contentnumber term bearing words per index term words HM vs HS &amp;lt;0.01% &amp;lt;0.01% &amp;lt;0.01% HM vs TT &amp;lt;0.01% &amp;lt;0.01% &amp;lt;0.01% HS vs TT 0.57% 8.33% 77.8% Table 5: Result of two-independent-sample twotailed t-test on index term complexity. The numbers in the cells are p-value of the test. 4.3 Relationship between Term Source and Search Effectiveness In this paper, our primary focus is on the question of what makes index terms &apos;better&apos;, as measured by user preferences in a question-answering task. Also of interest, of course, is what makes index terms &apos;better&apos; in terms of how accurate the resulting users&apos; answers are. The problem is that any facile judgment of freetext answer accuracy is bound to be arbitrary and potentially unreliable; we discuss this in detail in [26]. Nevertheless, we address the issue in a preliminary way in the current paper. We used an ad hoc set of canonical answers to score subjects&apos; answers on a scale of 1 to 3, where 1 stands for &apos;very accurate&apos;, 2 stands for &apos;partly accurate&apos; and 3 represents &apos;not at all accurate&apos;. Using general loglinear regression (Poisson model) under the hypothesis that these two variables are independent of each other, our analysis showed that there is a systematic relationship (significance probability is 0.0504) between source of selected terms and answer accuracy. Specifically, in cases where subjects used more index terms identified by the human indexer, the answers were more accurate. On the basis of our initial accuracy judgments, we can therefore draw the preliminary conclusion that terms that were better in that they were preferred by the experimental subjects were also better in that they were associated with better answers. We plan to conduct a more in-depth analysis of answer accuracy and will report on it in future work. But the primary question addressed in this paper is how to reliably assess NP chunks and technical terms. These results constitute experimental evidence that the index terms identified by the human indexer constitute a gold standard, at least for the text used in the experiment. Any set of index terms, regardless of the technique by which they were created or the criteria by they were selected, can be compared vis a vis their usefulness in the information access task. The contribution of this paper is the description of a task-based gold-standard method for evaluating the usefulness and therefore the quality of NP chunks and technical terms. In this section, we address a number of questions about this method. 1) What properties of terms can this technique be used to study? One word or many. are two parts to the process of identifying NP terms: NP chunks that are candidate terms must be identified and candidate terms must be filtered in order to select a subset appropriate for use in the intended application. Justeson and Katz (1995) is an example of an algorithm where the process used for identifying NP chunks is also the filtering process. A byproduct of this technique is that singleword terms are excluded. In part, this is because it is much harder to determine in context which single words actually qualify as terms. But dictionaries of technical terminology have many one-word terms. Simplex or complex NPs Church 1988; Hindle and Rooth 1991; Wacholder 1998) identify simplex or base NPs – NPs which do not have any component NPs -at least in part because this bypasses the need to solve the quite difficult attachment problem, i.e., to determine which simpler NPs should be combined to output a more complex NP. But if people find complex NPs more useful than simpler ones, it is important to focus on improvement of techniques to reliably identify more complex terms. • Semantic and syntactic terms variants. Daille et al. (1996), Jacquemin (2001) and others address the question of how to identify semantic (synonymous) and syntactic variants. But independent of the question of how to recognize variants is the question of which variants are to be preferred for different kinds of uses. Impact of errors. NLP systems have a measurable error rate. By conducting experiments in which terms with errors are include in the set of test terms, the impact of these errors can be measured. The usefulness of a set of terms presumably is at least in part a function of the impact of the errors, whether the errors are a by-product of the algorithm or the implementation of the algorithm. 2) Could the set of human index terms be used as a gold standard without conducting the subject experiments? of course could be done, but then the terms are being evaluated by a fixed standard – by definition, no set of terms can do better than the gold standard. This experimental method leaves open the possibility that there is a set of terms that is better than the gold standard. In this case, of course, the gold standard would no longer be a gold standard -perhaps we would have to call it a platinum standard. How reproducible is the experiment? experiment can be re-run with any set of terms deemed to be representative of the content of the Rice text. The preparation of the materials for additional texts is admittedly time-consuming. But over time a sizable corpus of experimental materials in different domains could be built up. These materials could be used for training as well as for testing. How extensible is the gold standard? experimental protocol will be validated only if equally useful index terms can be created for other texts. We anticipate that they can. 5) How can this research help in the design of world NLP systems? technique can help in assessing the relative usefulness of existing techniques for identifying terms. It is possible, for example, there already exist techniques for identifying terms that are superior to the two tested here. If we can find such systems, their algorithms should be preferred. If not, there remains a need for development of algorithms to identify single word terms and complex phrases. 6) Do the benefits of this evaluation technique the costs? the fundamental difficulty of evaluating NP chunks and technical terms, task-based evaluation is a promising supplement to evaluation by precision and recall. These relatively time-consuming human subject experiments surely will not be undertaken by most system developers; ideally, they should be performed by neutral parties who do not have a stake in the outcome. 7) Should automated indexes try to imitate huindexers? indexes should contain terms that are most easily processed by users. If the properties of such terms can be reliably discovered, developers of systems that identify terms intended to be processed by people surely should pay attention. In this paper we have reported on a rigorous experimental technique for black-box evaluation of the usefulness of NP chunks and technical terms in an information access task. Our experiment shows that it is possible to reliably identify human preferences for sets of terms. The set of human terms created for use in a backof-the-book index serves as a gold standard. An advantage of the task-based evaluation is that a set of terms could outperform the gold standard; any system that could do this would be a good system indeed. The two automatic methods that we evaluated performed much less well than the terms created by the human indexer; we plan to evaluate additional techniques for term identification in the hope of identifying automatic methods that identify index terms that people prefer over the human terms. We also plan to prepare test materials in different domains, and assess in greater depth the properties of the terms that our experimental subjects preferred; our goal is to develop practical guidelines for the identification and selection of technical terms that are optimal for human users. We will also study the impact of semantic differences between terms on user preferences and investigate whether terms which are preferred for information access are equally suitable for other NLP tasks. 6 Acknowledgements We are grateful to the other members of the Rutgers NLP-I research group, Lu Liu, Mark Sharp, and Xiaojun Yuan, for their valuable contribution to this project. We also thank Paul Kantor, Judith L. Klavans, Evelyne Tzoukermann , Min Yen Kan, and three anonymous reviewers for their helpful suggestions. Funding for this research has been provided by the Rutgers University Information Science and Technology Council.</abstract>
+<note confidence="0.906385292682927">References Steven (1991) Parsing by chunks. Principleedited by Steven Abney, Robert Berwick and Carol Tenny. Kluwer: Dordrecht. Bates, Marcia J. (1998) Indexing and access for digital libraries and the Internet: human, database and dofactors. of the American Society for 49(13), 1185-1205. Boguraev, Branimir and Kennedy, Christopher (1997) content characterization of text. EACL Workshop on Intelligent Scalable Text 2-9. Bourigault, Didier, Jacquemin, Christian and L’Homme, Claude (2001) Advances in Computa- John Benjamins: Philadelphia, PA. Church, Kenneth Ward (1988) A Stochastic Parts Program and Noun Phrase Parser for Unrestricted Text. Proceedings of Second Applied Natural Language pp.136-143. Dagan, Ido and Church, Kenneth (1994) TERMIGHT: Identifying and translating technical terminology. Proceedings of the Fourth ACL Conference on Ap- Natural Language pp.34-40. Daille Beatrice (1996) Study and implementation of combined techniques for automatic extraction of ter- Balancing pp.49-66. Edited by Judith L. Klavans and Philip Resnik. MIT Press, Cambridge, MA. Daille, Beatrice, Habert, Benoit., Jacquemin, Christian, &amp; Royaute, Jean (2000) Empirical observation of term variations and principles for their description. 3(2):197-258. Furnas, George, Landauer, Thomas, Gomez, Louis &amp; Dumais, Susan T. (1987) The vocabulary problem human-system communication. the 30(11), 964-971. Galliers, Julia Rose &amp; Jones, Karen Sparck (1995) Evaluating natural language processing systems. Lecture Notes in Artificial Intelligence. Springer, New York, 1995.</note>
+<title confidence="0.859765">Jacquemin, Christian (2001). Spotting and Discovering</title>
+<author confidence="0.839164">Cam-</author>
+<affiliation confidence="0.50291">bridge, MA: MIT Press.</affiliation>
+<address confidence="0.922191">Jones, Steve and Staveley, Mark S. (1999) Phrasier: a</address>
+<abstract confidence="0.958329545454545">system for interactive document retrieval using keyof the 22nd annual interna- ACM SIGIR pp.160-167. Justeson, John S. &amp; Slava M. Katz (1995) “Technical terminology: some linguistic properties and an algofor identification in text”, Language Hindle, Donald and Rooth, Matt (1993) Structural amand lexical relations. Linguis- Lawrie, Dawn and Croft, W. Bruce (2000) Discovering comparing topic hierarchies. of 2000 314-330.</abstract>
+<keyword confidence="0.5726565">McKeown, Kathy, Klavans, Judith, Hatzivassiloglou, Vasileios, Barzilay, Regina and Eskin, Eleazar</keyword>
+<note confidence="0.897595833333333">(1999) Towards multidocument summarization by Progress and prospects. pp.453-460. Nevill-Manning, Craig, Witten, Ian and Paynter, Gordon W. (1999). Lexically-generated subject hifor browsing large collections. Jour-</note>
+<title confidence="0.738381">on Digital</title>
+<author confidence="0.718598">P Michael</author>
+<author confidence="0.718598">Chris D ex- Paice</author>
+<abstract confidence="0.783481583333333">for automatic In Bourigault et al., eds. Ramshaw, Lance A., and Marcus, Mitchell P. (1995) Text chunking using transformation-based learning. Proceedings of the Third ACL Workshop on Very pp. 82-94. Rice, Ronald E., Maureen McCreadie &amp; Shan-ju L. Chang (2001). Accessing and Browsing Information and Communication. Cambridge, MA: MIT Press. Saracevic, Tefko, Paul Kantor, Alice Y. Chamis &amp; Donna Trivison (1988) A study of information seeking and retrieving: I. Background and methodology. Journal of the American Society for Information Science, 39(3), 161-176. Sharp, M., Liu, L., Yuan, X., Song, P., &amp; Wacholder, N. (2003). Question difficulty effects on question answering involving mandatory use of a term index. Under submission. Wacholder, N., Sharp, M., Liu, L., Yuan, X., &amp; Song, P. (2003). Experimental study of index terms and information access. Under submission. Wacholder, Nina (1998) &quot;Simplex noun phrases clustered by head: a method for identifying significant in a Proceedings of Workshop on</abstract>
+<note confidence="0.932610333333333">Computational Treatment of pp.70- 79. COLING-ACL, October 16, 1998. Wacholder, Nina, Judith L. Klavans and David Kirk Evans (2000) &quot;Evaluation of automatically identified index terms for browsing electronic documents&quot;, Proceedings of the NAACL/ANLP2000, Seattle,</note>
+<author confidence="0.473095">Ian H Witten</author>
+<author confidence="0.473095">Gordon W Paynter</author>
+<author confidence="0.473095">Frank Eibe</author>
+<author confidence="0.473095">Gut-</author>
+<email confidence="0.796585">win,andNevill-ManningCraigG.KEA:practical</email>
+<note confidence="0.576051">keyphrase extraction. of the ACM Conference on Digital pp.254-255.</note>
+</variant>
+</algorithm>
+<algorithm name="ParsCit" version="110505">
+<citationList>
+<citation valid="true">
+<authors>
+<author>Steven Abney</author>
+</authors>
+<title>Parsing by chunks. PrincipleBased Parsing, edited by Steven Abney, Robert Berwick and Carol Tenny.</title>
+<date>1991</date>
+<publisher>Kluwer: Dordrecht.</publisher>
+<contexts>
+<context position="2333" citStr="Abney 1991" startWordPosition="367" endWordPosition="368">stem would identify if it performed perfectly, there should in principle be no discrepancy between the units identified by a system and the units that are either useful in a particular application or are preferred by human beings for use in a particular task. But when the satisfactory output can take many different forms, as in summarization and generation, evaluation by precision and recall is not sufficient. In these cases, the challenge for system designers and users is to effectively distinguish between systems that provide generally satisfactory output and systems that do not. NP chunks (Abney 1991; Ramshaw and Marcus 1995; Evans and Zhai 1996; Frantzi and Ananiadou 1996) and technical terms (Dagan and Church 1994; Justeson and Katz 1995; Daille 1996; Jacquemin 2001; Bourigault et al. 2002) fall into this difficult-toassess category. NPs are recursive structures. For the maximal NP large number of recent newspaper articles on biomedical science and clinical practice, a fullfledged parser would legitimately identify (at least) seven NPs in addition to the maximal one: large number; recent newspaper articles; large number of recent newspaper articles; biomedical science; clinical practice</context>
+</contexts>
+<marker>Abney, 1991</marker>
+<rawString>Abney, Steven (1991) Parsing by chunks. PrincipleBased Parsing, edited by Steven Abney, Robert Berwick and Carol Tenny. Kluwer: Dordrecht.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Marcia J Bates</author>
+</authors>
+<title>Indexing and access for digital libraries and the Internet: human, database and domain factors.</title>
+<date>1998</date>
+<journal>Journal of the American Society for Information Science,</journal>
+<volume>49</volume>
+<issue>13</issue>
+<pages>1185--1205</pages>
+<marker>Bates, 1998</marker>
+<rawString>Bates, Marcia J. (1998) Indexing and access for digital libraries and the Internet: human, database and domain factors. Journal of the American Society for Information Science, 49(13), 1185-1205.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Branimir Boguraev</author>
+<author>Christopher Kennedy</author>
+</authors>
+<title>Salience-based content characterization of text.</title>
+<date>1997</date>
+<booktitle>ACL EACL Workshop on Intelligent Scalable Text Summarization,</booktitle>
+<pages>2--9</pages>
+<contexts>
+<context position="7653" citStr="Boguraev and Kennedy 1997" startWordPosition="1224" endWordPosition="1227">expression used in relevant documents, they necessarily struggle to find relevant information in full-text search systems. Experimental studies have repeatedly shown that information seekers use many different terms to describe the same concept and few of these terms are used frequently (Furnas et al. 1987; Saracevic et al. 1988; Bates et al. 1998). When information seekers are unable to figure out the term used to describe a concept in a relevant document, electronic indexes are required for successful information access. NP chunks and technical terms have been proposed for use in this task (Boguraev and Kennedy 1997; Wacholder 1998). NP chunks and technical terms have also been used in phrase browsing and phrase hierarchies (Jones and Staveley 1999; NevillManning et al. 1999; Witten et al. 1999; Lawrie and Croft 2000) and summarization (e.g., McKeown et al. 1999; Oakes and Paice 2001). In fact, the distinction between task-based evaluation of a system and precision/recall evaluation of the quality of system output is similar to the extrinsic/intrinsic evaluation of summarization (Gallier and Jones 1993). In order to focus on the subjects’ choice of index terms rather than on other aspects of the informat</context>
+</contexts>
+<marker>Boguraev, Kennedy, 1997</marker>
+<rawString>Boguraev, Branimir and Kennedy, Christopher (1997) Salience-based content characterization of text. ACL EACL Workshop on Intelligent Scalable Text Summarization, 2-9.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Didier Bourigault</author>
+<author>Christian Jacquemin</author>
+<author>Marie Claude L’Homme</author>
+</authors>
+<date>2001</date>
+<booktitle>Recent Advances in Computational Terminology. John Benjamins:</booktitle>
+<location>Philadelphia, PA.</location>
+<marker>Bourigault, Jacquemin, L’Homme, 2001</marker>
+<rawString>Bourigault, Didier, Jacquemin, Christian and L’Homme, Marie Claude (2001) Recent Advances in Computational Terminology. John Benjamins: Philadelphia, PA.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Kenneth Ward Church</author>
+</authors>
+<title>A Stochastic Parts Program and Noun Phrase Parser for Unrestricted Text.</title>
+<date>1988</date>
+<booktitle>Proceedings of Second Applied Natural Language Processing Conference,</booktitle>
+<pages>136--143</pages>
+<contexts>
+<context position="25508" citStr="Church 1988" startWordPosition="4246" endWordPosition="4247">ying NP terms: NP chunks that are candidate terms must be identified and candidate terms must be filtered in order to select a subset appropriate for use in the intended application. Justeson and Katz (1995) is an example of an algorithm where the process used for identifying NP chunks is also the filtering process. A byproduct of this technique is that singleword terms are excluded. In part, this is because it is much harder to determine in context which single words actually qualify as terms. But dictionaries of technical terminology have many one-word terms. • Simplex or complex NPs (e.g., Church 1988; Hindle and Rooth 1991; Wacholder 1998) identify simplex or base NPs – NPs which do not have any component NPs -- at least in part because this bypasses the need to solve the quite difficult attachment problem, i.e., to determine which simpler NPs should be combined to output a more complex NP. But if people find complex NPs more useful than simpler ones, it is important to focus on improvement of techniques to reliably identify more complex terms. • Semantic and syntactic terms variants. Daille et al. (1996), Jacquemin (2001) and others address the question of how to identify semantic (synon</context>
+</contexts>
+<marker>Church, 1988</marker>
+<rawString>Church, Kenneth Ward (1988) A Stochastic Parts Program and Noun Phrase Parser for Unrestricted Text. Proceedings of Second Applied Natural Language Processing Conference, pp.136-143.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Ido Dagan</author>
+<author>Kenneth Church</author>
+</authors>
+<title>TERMIGHT: Identifying and translating technical terminology.</title>
+<date>1994</date>
+<booktitle>Proceedings of the Fourth ACL Conference on Applied Natural Language Processing,</booktitle>
+<pages>34--40</pages>
+<contexts>
+<context position="2451" citStr="Dagan and Church 1994" startWordPosition="384" endWordPosition="387">s identified by a system and the units that are either useful in a particular application or are preferred by human beings for use in a particular task. But when the satisfactory output can take many different forms, as in summarization and generation, evaluation by precision and recall is not sufficient. In these cases, the challenge for system designers and users is to effectively distinguish between systems that provide generally satisfactory output and systems that do not. NP chunks (Abney 1991; Ramshaw and Marcus 1995; Evans and Zhai 1996; Frantzi and Ananiadou 1996) and technical terms (Dagan and Church 1994; Justeson and Katz 1995; Daille 1996; Jacquemin 2001; Bourigault et al. 2002) fall into this difficult-toassess category. NPs are recursive structures. For the maximal NP large number of recent newspaper articles on biomedical science and clinical practice, a fullfledged parser would legitimately identify (at least) seven NPs in addition to the maximal one: large number; recent newspaper articles; large number of recent newspaper articles; biomedical science; clinical practice; biomedical science and clinical practice; and recent newspaper articles on biomedical science and clinical practice.</context>
+<context position="14544" citStr="Dagan and Church (1994)" startWordPosition="2353" endWordPosition="2356">ffects of user learning, questions were presented to subjects in random order; in the one hour experiment, subjects answered an average of about 9 questions. 2.3 Terms Although the primary goal of this research is to point the way to improved techniques for automatic creation of index terms, we used human created terms to create a baseline. For the human index terms, we used the pre-existing back-of-the-book index, which we believe to be of high quality.2 The two techniques for automatic identification were the technical terms algorithm of Justeson and Katz (1995) and the head sorting method (Dagan and Church (1994); Wacholder (1998). In the implementation of the Justeson and Katz’ algorithm, technical terms are multi-word NPs repeated above some threshold in a corpus; in the head sorting method, technical terms are identified by grouping noun phrases with a common head (e.g., health-care workers and asbestos workers), and selecting as terms those NPs whose heads appear in two or more phrases. Definitionally, technical terms are a proper subset of terms identified by Head Sorting. Differences in the implementations, especially the preprocessing module, result in there being some terms identified by Terme</context>
+</contexts>
+<marker>Dagan, Church, 1994</marker>
+<rawString>Dagan, Ido and Church, Kenneth (1994) TERMIGHT: Identifying and translating technical terminology. Proceedings of the Fourth ACL Conference on Applied Natural Language Processing, pp.34-40.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Daille Beatrice</author>
+</authors>
+<title>Study and implementation of combined techniques for automatic extraction of terminology. The Balancing Act,</title>
+<date>1996</date>
+<pages>49--66</pages>
+<publisher>MIT Press,</publisher>
+<location>Cambridge, MA.</location>
+<note>Edited by</note>
+<marker>Beatrice, 1996</marker>
+<rawString>Daille Beatrice (1996) Study and implementation of combined techniques for automatic extraction of terminology. The Balancing Act, pp.49-66. Edited by Judith L. Klavans and Philip Resnik. MIT Press, Cambridge, MA.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Beatrice Daille</author>
+<author>Benoit Habert</author>
+<author>Christian Jacquemin</author>
+<author>Jean Royaute</author>
+</authors>
+<title>Empirical observation of term variations and principles for their description.</title>
+<date>2000</date>
+<journal>Terminology,</journal>
+<pages>3--2</pages>
+<marker>Daille, Habert, Jacquemin, Royaute, 2000</marker>
+<rawString>Daille, Beatrice, Habert, Benoit., Jacquemin, Christian, &amp; Royaute, Jean (2000) Empirical observation of term variations and principles for their description. Terminology, 3(2):197-258.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>George Furnas</author>
+<author>Thomas Landauer</author>
+<author>Louis Gomez</author>
+<author>Susan T Dumais</author>
+</authors>
+<title>The vocabulary problem in human-system communication.</title>
+<date>1987</date>
+<journal>Communications of the ACM,</journal>
+<volume>30</volume>
+<issue>11</issue>
+<pages>964--971</pages>
+<contexts>
+<context position="7335" citStr="Furnas et al. 1987" startWordPosition="1169" endWordPosition="1172"> terms presented by the system. When an information seeker can readily think up a suitable term or linguistic expression to represent the information need, direct searching of text by user-generated terms is faster and more effective than browsing. However, when users do not know (or can’t remember) the exact expression used in relevant documents, they necessarily struggle to find relevant information in full-text search systems. Experimental studies have repeatedly shown that information seekers use many different terms to describe the same concept and few of these terms are used frequently (Furnas et al. 1987; Saracevic et al. 1988; Bates et al. 1998). When information seekers are unable to figure out the term used to describe a concept in a relevant document, electronic indexes are required for successful information access. NP chunks and technical terms have been proposed for use in this task (Boguraev and Kennedy 1997; Wacholder 1998). NP chunks and technical terms have also been used in phrase browsing and phrase hierarchies (Jones and Staveley 1999; NevillManning et al. 1999; Witten et al. 1999; Lawrie and Croft 2000) and summarization (e.g., McKeown et al. 1999; Oakes and Paice 2001). In fac</context>
+</contexts>
+<marker>Furnas, Landauer, Gomez, Dumais, 1987</marker>
+<rawString>Furnas, George, Landauer, Thomas, Gomez, Louis &amp; Dumais, Susan T. (1987) The vocabulary problem in human-system communication. Communications of the ACM, 30(11), 964-971.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Julia Rose Galliers</author>
+<author>Karen Sparck Jones</author>
+</authors>
+<title>Evaluating natural language processing systems.</title>
+<date>1995</date>
+<journal>Lecture Notes in Artificial Intelligence.</journal>
+<publisher>Springer,</publisher>
+<location>New York,</location>
+<marker>Galliers, Jones, 1995</marker>
+<rawString>Galliers, Julia Rose &amp; Jones, Karen Sparck (1995) Evaluating natural language processing systems. Lecture Notes in Artificial Intelligence. Springer, New York, 1995.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Christian Jacquemin</author>
+</authors>
+<title>Spotting and Discovering Terms through Natural Language Processing.</title>
+<date>2001</date>
+<publisher>MIT Press.</publisher>
+<location>Cambridge, MA:</location>
+<contexts>
+<context position="2504" citStr="Jacquemin 2001" startWordPosition="394" endWordPosition="395">l in a particular application or are preferred by human beings for use in a particular task. But when the satisfactory output can take many different forms, as in summarization and generation, evaluation by precision and recall is not sufficient. In these cases, the challenge for system designers and users is to effectively distinguish between systems that provide generally satisfactory output and systems that do not. NP chunks (Abney 1991; Ramshaw and Marcus 1995; Evans and Zhai 1996; Frantzi and Ananiadou 1996) and technical terms (Dagan and Church 1994; Justeson and Katz 1995; Daille 1996; Jacquemin 2001; Bourigault et al. 2002) fall into this difficult-toassess category. NPs are recursive structures. For the maximal NP large number of recent newspaper articles on biomedical science and clinical practice, a fullfledged parser would legitimately identify (at least) seven NPs in addition to the maximal one: large number; recent newspaper articles; large number of recent newspaper articles; biomedical science; clinical practice; biomedical science and clinical practice; and recent newspaper articles on biomedical science and clinical practice. To evaluate the performance of a parser, NP chunks c</context>
+<context position="26041" citStr="Jacquemin (2001)" startWordPosition="4339" endWordPosition="4340">l terminology have many one-word terms. • Simplex or complex NPs (e.g., Church 1988; Hindle and Rooth 1991; Wacholder 1998) identify simplex or base NPs – NPs which do not have any component NPs -- at least in part because this bypasses the need to solve the quite difficult attachment problem, i.e., to determine which simpler NPs should be combined to output a more complex NP. But if people find complex NPs more useful than simpler ones, it is important to focus on improvement of techniques to reliably identify more complex terms. • Semantic and syntactic terms variants. Daille et al. (1996), Jacquemin (2001) and others address the question of how to identify semantic (synonymous) and syntactic variants. But independent of the question of how to recognize variants is the question of which variants are to be preferred for different kinds of uses. • Impact of errors. Real-world NLP systems have a measurable error rate. By conducting experiments in which terms with errors are include in the set of test terms, the impact of these errors can be measured. The usefulness of a set of terms presumably is at least in part a function of the impact of the errors, whether the errors are a by-product of the alg</context>
+</contexts>
+<marker>Jacquemin, 2001</marker>
+<rawString>Jacquemin, Christian (2001). Spotting and Discovering Terms through Natural Language Processing. Cambridge, MA: MIT Press.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Steve Jones</author>
+<author>Mark S Staveley</author>
+</authors>
+<title>Phrasier: a system for interactive document retrieval using keyphrases.</title>
+<date>1999</date>
+<booktitle>Proceedings of the 22nd annual international ACM SIGIR conference,</booktitle>
+<pages>160--167</pages>
+<contexts>
+<context position="7788" citStr="Jones and Staveley 1999" startWordPosition="1245" endWordPosition="1248">tudies have repeatedly shown that information seekers use many different terms to describe the same concept and few of these terms are used frequently (Furnas et al. 1987; Saracevic et al. 1988; Bates et al. 1998). When information seekers are unable to figure out the term used to describe a concept in a relevant document, electronic indexes are required for successful information access. NP chunks and technical terms have been proposed for use in this task (Boguraev and Kennedy 1997; Wacholder 1998). NP chunks and technical terms have also been used in phrase browsing and phrase hierarchies (Jones and Staveley 1999; NevillManning et al. 1999; Witten et al. 1999; Lawrie and Croft 2000) and summarization (e.g., McKeown et al. 1999; Oakes and Paice 2001). In fact, the distinction between task-based evaluation of a system and precision/recall evaluation of the quality of system output is similar to the extrinsic/intrinsic evaluation of summarization (Gallier and Jones 1993). In order to focus on the subjects’ choice of index terms rather than on other aspects of the information access process, we asked subject to find answers to questions in a college level text book. Subjects used the Experimental Searchin</context>
+</contexts>
+<marker>Jones, Staveley, 1999</marker>
+<rawString>Jones, Steve and Staveley, Mark S. (1999) Phrasier: a system for interactive document retrieval using keyphrases. Proceedings of the 22nd annual international ACM SIGIR conference, pp.160-167.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>John S Justeson</author>
+<author>Slava M Katz</author>
+</authors>
+<title>Technical terminology: some linguistic properties and an algorithm for identification in text”,</title>
+<date>1995</date>
+<journal>Natural Language Engineering</journal>
+<pages>1--1</pages>
+<contexts>
+<context position="2475" citStr="Justeson and Katz 1995" startWordPosition="388" endWordPosition="391">m and the units that are either useful in a particular application or are preferred by human beings for use in a particular task. But when the satisfactory output can take many different forms, as in summarization and generation, evaluation by precision and recall is not sufficient. In these cases, the challenge for system designers and users is to effectively distinguish between systems that provide generally satisfactory output and systems that do not. NP chunks (Abney 1991; Ramshaw and Marcus 1995; Evans and Zhai 1996; Frantzi and Ananiadou 1996) and technical terms (Dagan and Church 1994; Justeson and Katz 1995; Daille 1996; Jacquemin 2001; Bourigault et al. 2002) fall into this difficult-toassess category. NPs are recursive structures. For the maximal NP large number of recent newspaper articles on biomedical science and clinical practice, a fullfledged parser would legitimately identify (at least) seven NPs in addition to the maximal one: large number; recent newspaper articles; large number of recent newspaper articles; biomedical science; clinical practice; biomedical science and clinical practice; and recent newspaper articles on biomedical science and clinical practice. To evaluate the perform</context>
+<context position="9004" citStr="Justeson and Katz (1995)" startWordPosition="1446" endWordPosition="1449">Searching and Browsing Interface (ESBI) to browse a list of terms that were identified by different techniques and then merged. Subjects select an index term by clicking on it in order to hyperlink to the text itself. By design, ESBI forces the subjects to access the text indirectly, by searching and browsing the list of index terms, rather than by direct searching of the text. Three sets of terms were used in the experiment: one set (HS) was identified using the head-sorting method of Wacholder (1998); the second set (TT) was identified by an implementation of the technical term algorithm of Justeson and Katz (1995); a third set (HUM) was created by a human indexer. The methods for identifying these terms will be discussed in greater detail below. Somewhat to our surprise, subjects displayed a very strong preference for the index terms that were identified by the human indexer. Table 1 shows that when measured by percentage terms selected, subjects chose over 13% of the available human terms, but only 1.73% and 1.43% of the automatically se2.1 ESBI (Experimental Searching and Browsing Interface) Subjects used the Experimental Searching and Browsing Interface (ESBI) to find the answers to the questions. A</context>
+<context position="14491" citStr="Justeson and Katz (1995)" startWordPosition="2344" endWordPosition="2347"> devise the index terms were judged harder. To avoid effects of user learning, questions were presented to subjects in random order; in the one hour experiment, subjects answered an average of about 9 questions. 2.3 Terms Although the primary goal of this research is to point the way to improved techniques for automatic creation of index terms, we used human created terms to create a baseline. For the human index terms, we used the pre-existing back-of-the-book index, which we believe to be of high quality.2 The two techniques for automatic identification were the technical terms algorithm of Justeson and Katz (1995) and the head sorting method (Dagan and Church (1994); Wacholder (1998). In the implementation of the Justeson and Katz’ algorithm, technical terms are multi-word NPs repeated above some threshold in a corpus; in the head sorting method, technical terms are identified by grouping noun phrases with a common head (e.g., health-care workers and asbestos workers), and selecting as terms those NPs whose heads appear in two or more phrases. Definitionally, technical terms are a proper subset of terms identified by Head Sorting. Differences in the implementations, especially the preprocessing module,</context>
+<context position="25104" citStr="Justeson and Katz (1995)" startWordPosition="4172" endWordPosition="4175">he information access task. 4 Discussion The contribution of this paper is the description of a task-based gold-standard method for evaluating the usefulness and therefore the quality of NP chunks and technical terms. In this section, we address a number of questions about this method. 1) What properties of terms can this technique be used to study? • One word or many. There are two parts to the process of identifying NP terms: NP chunks that are candidate terms must be identified and candidate terms must be filtered in order to select a subset appropriate for use in the intended application. Justeson and Katz (1995) is an example of an algorithm where the process used for identifying NP chunks is also the filtering process. A byproduct of this technique is that singleword terms are excluded. In part, this is because it is much harder to determine in context which single words actually qualify as terms. But dictionaries of technical terminology have many one-word terms. • Simplex or complex NPs (e.g., Church 1988; Hindle and Rooth 1991; Wacholder 1998) identify simplex or base NPs – NPs which do not have any component NPs -- at least in part because this bypasses the need to solve the quite difficult atta</context>
+</contexts>
+<marker>Justeson, Katz, 1995</marker>
+<rawString>Justeson, John S. &amp; Slava M. Katz (1995) “Technical terminology: some linguistic properties and an algorithm for identification in text”, Natural Language Engineering 1(1):9-27.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Donald Hindle</author>
+<author>Matt Rooth</author>
+</authors>
+<title>Structural ambiguity and lexical relations.</title>
+<date>1993</date>
+<journal>Computational Linguistics</journal>
+<pages>19--1</pages>
+<marker>Hindle, Rooth, 1993</marker>
+<rawString>Hindle, Donald and Rooth, Matt (1993) Structural ambiguity and lexical relations. Computational Linguistics 19(1):103-120.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Dawn Lawrie</author>
+<author>W Bruce Croft</author>
+</authors>
+<title>Discovering and comparing topic hierarchies.</title>
+<date>2000</date>
+<booktitle>Proceedings of RIAO 2000 Conference,</booktitle>
+<pages>314--330</pages>
+<contexts>
+<context position="7859" citStr="Lawrie and Croft 2000" startWordPosition="1258" endWordPosition="1261"> terms to describe the same concept and few of these terms are used frequently (Furnas et al. 1987; Saracevic et al. 1988; Bates et al. 1998). When information seekers are unable to figure out the term used to describe a concept in a relevant document, electronic indexes are required for successful information access. NP chunks and technical terms have been proposed for use in this task (Boguraev and Kennedy 1997; Wacholder 1998). NP chunks and technical terms have also been used in phrase browsing and phrase hierarchies (Jones and Staveley 1999; NevillManning et al. 1999; Witten et al. 1999; Lawrie and Croft 2000) and summarization (e.g., McKeown et al. 1999; Oakes and Paice 2001). In fact, the distinction between task-based evaluation of a system and precision/recall evaluation of the quality of system output is similar to the extrinsic/intrinsic evaluation of summarization (Gallier and Jones 1993). In order to focus on the subjects’ choice of index terms rather than on other aspects of the information access process, we asked subject to find answers to questions in a college level text book. Subjects used the Experimental Searching and Browsing Interface (ESBI) to browse a list of terms that were ide</context>
+</contexts>
+<marker>Lawrie, Croft, 2000</marker>
+<rawString>Lawrie, Dawn and Croft, W. Bruce (2000) Discovering and comparing topic hierarchies. Proceedings of RIAO 2000 Conference, 314-330.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Kathy McKeown</author>
+<author>Judith Klavans</author>
+<author>Vasileios Hatzivassiloglou</author>
+<author>Regina Barzilay</author>
+<author>Eleazar Eskin</author>
+</authors>
+<title>Towards multidocument summarization by reformulation: Progress and prospects.</title>
+<date>1999</date>
+<booktitle>Proceedings of AAAI-99,</booktitle>
+<pages>453--460</pages>
+<contexts>
+<context position="7904" citStr="McKeown et al. 1999" startWordPosition="1265" endWordPosition="1268">hese terms are used frequently (Furnas et al. 1987; Saracevic et al. 1988; Bates et al. 1998). When information seekers are unable to figure out the term used to describe a concept in a relevant document, electronic indexes are required for successful information access. NP chunks and technical terms have been proposed for use in this task (Boguraev and Kennedy 1997; Wacholder 1998). NP chunks and technical terms have also been used in phrase browsing and phrase hierarchies (Jones and Staveley 1999; NevillManning et al. 1999; Witten et al. 1999; Lawrie and Croft 2000) and summarization (e.g., McKeown et al. 1999; Oakes and Paice 2001). In fact, the distinction between task-based evaluation of a system and precision/recall evaluation of the quality of system output is similar to the extrinsic/intrinsic evaluation of summarization (Gallier and Jones 1993). In order to focus on the subjects’ choice of index terms rather than on other aspects of the information access process, we asked subject to find answers to questions in a college level text book. Subjects used the Experimental Searching and Browsing Interface (ESBI) to browse a list of terms that were identified by different techniques and then merg</context>
+</contexts>
+<marker>McKeown, Klavans, Hatzivassiloglou, Barzilay, Eskin, 1999</marker>
+<rawString>McKeown, Kathy, Klavans, Judith, Hatzivassiloglou, Vasileios, Barzilay, Regina and Eskin, Eleazar (1999) Towards multidocument summarization by reformulation: Progress and prospects. Proceedings of AAAI-99, pp.453-460.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Craig Nevill-Manning</author>
+<author>Ian Witten</author>
+<author>Gordon W Paynter</author>
+</authors>
+<title>Lexically-generated subject hierarchies for browsing large collections.</title>
+<date>1999</date>
+<booktitle>Int’l Journal on Digital Libraries,</booktitle>
+<pages>2--2</pages>
+<marker>Nevill-Manning, Witten, Paynter, 1999</marker>
+<rawString>Nevill-Manning, Craig, Witten, Ian and Paynter, Gordon W. (1999). Lexically-generated subject hierarchies for browsing large collections. Int’l Journal on Digital Libraries, 2(2-3):111-123.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Michael P Oakes</author>
+<author>Chris D Paice</author>
+</authors>
+<title>Term extraction for automatic abstracting.</title>
+<date>2001</date>
+<editor>In Bourigault et al., eds.</editor>
+<contexts>
+<context position="7927" citStr="Oakes and Paice 2001" startWordPosition="1269" endWordPosition="1272">requently (Furnas et al. 1987; Saracevic et al. 1988; Bates et al. 1998). When information seekers are unable to figure out the term used to describe a concept in a relevant document, electronic indexes are required for successful information access. NP chunks and technical terms have been proposed for use in this task (Boguraev and Kennedy 1997; Wacholder 1998). NP chunks and technical terms have also been used in phrase browsing and phrase hierarchies (Jones and Staveley 1999; NevillManning et al. 1999; Witten et al. 1999; Lawrie and Croft 2000) and summarization (e.g., McKeown et al. 1999; Oakes and Paice 2001). In fact, the distinction between task-based evaluation of a system and precision/recall evaluation of the quality of system output is similar to the extrinsic/intrinsic evaluation of summarization (Gallier and Jones 1993). In order to focus on the subjects’ choice of index terms rather than on other aspects of the information access process, we asked subject to find answers to questions in a college level text book. Subjects used the Experimental Searching and Browsing Interface (ESBI) to browse a list of terms that were identified by different techniques and then merged. Subjects select an </context>
+</contexts>
+<marker>Oakes, Paice, 2001</marker>
+<rawString>Oakes, Michael P. and Paice, Chris D. (2001) Term extraction for automatic abstracting. In Bourigault et al., eds.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Lance A Ramshaw</author>
+<author>Mitchell P Marcus</author>
+</authors>
+<title>Text chunking using transformation-based learning.</title>
+<date>1995</date>
+<booktitle>Proceedings of the Third ACL Workshop on Very Large Corpora,</booktitle>
+<pages>82--94</pages>
+<contexts>
+<context position="2358" citStr="Ramshaw and Marcus 1995" startWordPosition="369" endWordPosition="372">dentify if it performed perfectly, there should in principle be no discrepancy between the units identified by a system and the units that are either useful in a particular application or are preferred by human beings for use in a particular task. But when the satisfactory output can take many different forms, as in summarization and generation, evaluation by precision and recall is not sufficient. In these cases, the challenge for system designers and users is to effectively distinguish between systems that provide generally satisfactory output and systems that do not. NP chunks (Abney 1991; Ramshaw and Marcus 1995; Evans and Zhai 1996; Frantzi and Ananiadou 1996) and technical terms (Dagan and Church 1994; Justeson and Katz 1995; Daille 1996; Jacquemin 2001; Bourigault et al. 2002) fall into this difficult-toassess category. NPs are recursive structures. For the maximal NP large number of recent newspaper articles on biomedical science and clinical practice, a fullfledged parser would legitimately identify (at least) seven NPs in addition to the maximal one: large number; recent newspaper articles; large number of recent newspaper articles; biomedical science; clinical practice; biomedical science and </context>
+</contexts>
+<marker>Ramshaw, Marcus, 1995</marker>
+<rawString>Ramshaw, Lance A., and Marcus, Mitchell P. (1995) Text chunking using transformation-based learning. Proceedings of the Third ACL Workshop on Very Large Corpora, pp. 82-94.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Ronald E Rice</author>
+<author>Maureen McCreadie</author>
+<author>Shan-ju L Chang</author>
+</authors>
+<title>Accessing and Browsing Information and Communication.</title>
+<date>2001</date>
+<publisher>MIT Press.</publisher>
+<location>Cambridge, MA:</location>
+<marker>Rice, McCreadie, Chang, 2001</marker>
+<rawString>Rice, Ronald E., Maureen McCreadie &amp; Shan-ju L. Chang (2001). Accessing and Browsing Information and Communication. Cambridge, MA: MIT Press.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Tefko Saracevic</author>
+<author>Paul Kantor</author>
+<author>Alice Y Chamis</author>
+<author>Donna Trivison</author>
+</authors>
+<title>A study of information seeking and retrieving: I. Background and methodology.</title>
+<date>1988</date>
+<journal>Journal of the American Society for Information Science,</journal>
+<volume>39</volume>
+<issue>3</issue>
+<pages>161--176</pages>
+<contexts>
+<context position="7358" citStr="Saracevic et al. 1988" startWordPosition="1173" endWordPosition="1176">the system. When an information seeker can readily think up a suitable term or linguistic expression to represent the information need, direct searching of text by user-generated terms is faster and more effective than browsing. However, when users do not know (or can’t remember) the exact expression used in relevant documents, they necessarily struggle to find relevant information in full-text search systems. Experimental studies have repeatedly shown that information seekers use many different terms to describe the same concept and few of these terms are used frequently (Furnas et al. 1987; Saracevic et al. 1988; Bates et al. 1998). When information seekers are unable to figure out the term used to describe a concept in a relevant document, electronic indexes are required for successful information access. NP chunks and technical terms have been proposed for use in this task (Boguraev and Kennedy 1997; Wacholder 1998). NP chunks and technical terms have also been used in phrase browsing and phrase hierarchies (Jones and Staveley 1999; NevillManning et al. 1999; Witten et al. 1999; Lawrie and Croft 2000) and summarization (e.g., McKeown et al. 1999; Oakes and Paice 2001). In fact, the distinction betw</context>
+</contexts>
+<marker>Saracevic, Kantor, Chamis, Trivison, 1988</marker>
+<rawString>Saracevic, Tefko, Paul Kantor, Alice Y. Chamis &amp; Donna Trivison (1988) A study of information seeking and retrieving: I. Background and methodology. Journal of the American Society for Information Science, 39(3), 161-176.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>M Sharp</author>
+<author>L Liu</author>
+<author>X Yuan</author>
+<author>P Song</author>
+<author>N Wacholder</author>
+</authors>
+<title>Question difficulty effects on question answering involving mandatory use of a term index. Under submission.</title>
+<date>2003</date>
+<marker>Sharp, Liu, Yuan, Song, Wacholder, 2003</marker>
+<rawString>Sharp, M., Liu, L., Yuan, X., Song, P., &amp; Wacholder, N. (2003). Question difficulty effects on question answering involving mandatory use of a term index. Under submission.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>N Wacholder</author>
+<author>M Sharp</author>
+<author>L Liu</author>
+<author>X Yuan</author>
+<author>P Song</author>
+</authors>
+<title>Experimental study of index terms and information access. Under submission.</title>
+<date>2003</date>
+<marker>Wacholder, Sharp, Liu, Yuan, Song, 2003</marker>
+<rawString>Wacholder, N., Sharp, M., Liu, L., Yuan, X., &amp; Song, P. (2003). Experimental study of index terms and information access. Under submission.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Nina Wacholder</author>
+</authors>
+<title>Simplex noun phrases clustered by head: a method for identifying significant topics in a document&quot;,</title>
+<date>1998</date>
+<booktitle>Proceedings of Workshop on the Computational Treatment of Nominals,</booktitle>
+<pages>70--79</pages>
+<publisher>COLING-ACL,</publisher>
+<contexts>
+<context position="7670" citStr="Wacholder 1998" startWordPosition="1228" endWordPosition="1229"> documents, they necessarily struggle to find relevant information in full-text search systems. Experimental studies have repeatedly shown that information seekers use many different terms to describe the same concept and few of these terms are used frequently (Furnas et al. 1987; Saracevic et al. 1988; Bates et al. 1998). When information seekers are unable to figure out the term used to describe a concept in a relevant document, electronic indexes are required for successful information access. NP chunks and technical terms have been proposed for use in this task (Boguraev and Kennedy 1997; Wacholder 1998). NP chunks and technical terms have also been used in phrase browsing and phrase hierarchies (Jones and Staveley 1999; NevillManning et al. 1999; Witten et al. 1999; Lawrie and Croft 2000) and summarization (e.g., McKeown et al. 1999; Oakes and Paice 2001). In fact, the distinction between task-based evaluation of a system and precision/recall evaluation of the quality of system output is similar to the extrinsic/intrinsic evaluation of summarization (Gallier and Jones 1993). In order to focus on the subjects’ choice of index terms rather than on other aspects of the information access proces</context>
+<context position="8887" citStr="Wacholder (1998)" startWordPosition="1429" endWordPosition="1430">, we asked subject to find answers to questions in a college level text book. Subjects used the Experimental Searching and Browsing Interface (ESBI) to browse a list of terms that were identified by different techniques and then merged. Subjects select an index term by clicking on it in order to hyperlink to the text itself. By design, ESBI forces the subjects to access the text indirectly, by searching and browsing the list of index terms, rather than by direct searching of the text. Three sets of terms were used in the experiment: one set (HS) was identified using the head-sorting method of Wacholder (1998); the second set (TT) was identified by an implementation of the technical term algorithm of Justeson and Katz (1995); a third set (HUM) was created by a human indexer. The methods for identifying these terms will be discussed in greater detail below. Somewhat to our surprise, subjects displayed a very strong preference for the index terms that were identified by the human indexer. Table 1 shows that when measured by percentage terms selected, subjects chose over 13% of the available human terms, but only 1.73% and 1.43% of the automatically se2.1 ESBI (Experimental Searching and Browsing Inte</context>
+<context position="14562" citStr="Wacholder (1998)" startWordPosition="2357" endWordPosition="2358">questions were presented to subjects in random order; in the one hour experiment, subjects answered an average of about 9 questions. 2.3 Terms Although the primary goal of this research is to point the way to improved techniques for automatic creation of index terms, we used human created terms to create a baseline. For the human index terms, we used the pre-existing back-of-the-book index, which we believe to be of high quality.2 The two techniques for automatic identification were the technical terms algorithm of Justeson and Katz (1995) and the head sorting method (Dagan and Church (1994); Wacholder (1998). In the implementation of the Justeson and Katz’ algorithm, technical terms are multi-word NPs repeated above some threshold in a corpus; in the head sorting method, technical terms are identified by grouping noun phrases with a common head (e.g., health-care workers and asbestos workers), and selecting as terms those NPs whose heads appear in two or more phrases. Definitionally, technical terms are a proper subset of terms identified by Head Sorting. Differences in the implementations, especially the preprocessing module, result in there being some terms identified by Termer that were not id</context>
+<context position="25548" citStr="Wacholder 1998" startWordPosition="4252" endWordPosition="4253">ndidate terms must be identified and candidate terms must be filtered in order to select a subset appropriate for use in the intended application. Justeson and Katz (1995) is an example of an algorithm where the process used for identifying NP chunks is also the filtering process. A byproduct of this technique is that singleword terms are excluded. In part, this is because it is much harder to determine in context which single words actually qualify as terms. But dictionaries of technical terminology have many one-word terms. • Simplex or complex NPs (e.g., Church 1988; Hindle and Rooth 1991; Wacholder 1998) identify simplex or base NPs – NPs which do not have any component NPs -- at least in part because this bypasses the need to solve the quite difficult attachment problem, i.e., to determine which simpler NPs should be combined to output a more complex NP. But if people find complex NPs more useful than simpler ones, it is important to focus on improvement of techniques to reliably identify more complex terms. • Semantic and syntactic terms variants. Daille et al. (1996), Jacquemin (2001) and others address the question of how to identify semantic (synonymous) and syntactic variants. But indep</context>
+</contexts>
+<marker>Wacholder, 1998</marker>
+<rawString>Wacholder, Nina (1998) &quot;Simplex noun phrases clustered by head: a method for identifying significant topics in a document&quot;, Proceedings of Workshop on the Computational Treatment of Nominals, pp.70-79. COLING-ACL, October 16, 1998.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Nina Wacholder</author>
+<author>Judith L Klavans</author>
+<author>David Kirk Evans</author>
+</authors>
+<title>Evaluation of automatically identified index terms for browsing electronic documents&quot;,</title>
+<date>2000</date>
+<booktitle>Proceedings of the NAACL/ANLP2000,</booktitle>
+<location>Seattle, Washington.</location>
+<contexts>
+<context position="16161" citStr="Wacholder et al. (2000)" startWordPosition="2630" endWordPosition="2633">text. The largest number of terms (7980) was identified by the head sorting method. This is because it applies looser criteria for determining a term than does the Justeson and Katz algorithm which imposes a very strict standard--no single word can be considered a term, and an NP must be repeated in full to be considered a term. 2 Jim Snow prepared the index under the supervision of SCILS Professor James D. Anderson. HUM HS TT Total Total 673 7980 1788 9992 number of terms Per- 6.73% 79.86% 17.89% * centage of total number of terms Table 2: Number of terms in index by method of identification Wacholder et al. (2000) showed that when experimental subjects were asked to assess the usefulness of terms for an information access task without actually using the terms for information access showed that the terms identified by the technical term algorithm, which are considerably fewer than the terms identified by head sorting, were overall of higher quality than the terms identified by the head sorting method. However, the fact that subjects assigned a high rank to many of the terms identified by Head Sorting suggested that the technical term algorithm was failing to pick up many potentially useful index terms. </context>
+</contexts>
+<marker>Wacholder, Klavans, Evans, 2000</marker>
+<rawString>Wacholder, Nina, Judith L. Klavans and David Kirk Evans (2000) &quot;Evaluation of automatically identified index terms for browsing electronic documents&quot;, Proceedings of the NAACL/ANLP2000, Seattle, Washington.</rawString>
+</citation>
+<citation valid="false">
+<authors>
+<author>Ian H Witten</author>
+<author>Gordon W Paynter</author>
+<author>Frank Eibe</author>
+<author>Gutwin</author>
+<author>Nevill-Manning Craig G</author>
+</authors>
+<title>KEA: practical automatic keyphrase extraction.</title>
+<booktitle>Proceedings of the fourth ACM Conference on Digital Libraries,</booktitle>
+<pages>254--255</pages>
+<marker>Witten, Paynter, Eibe, Gutwin, G, </marker>
+<rawString>Witten, Ian H., Paynter, Gordon W., Eibe, Frank, Gutwin, and Nevill-Manning Craig G. KEA: practical automatic keyphrase extraction. Proceedings of the fourth ACM Conference on Digital Libraries, pp.254-255.</rawString>
+</citation>
+</citationList>
+</algorithm>
+</algorithms>

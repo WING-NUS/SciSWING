@@ -1,0 +1,1170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<algorithms version="110505">
+<algorithm name="SectLabel" version="110505">
+<variant no="0" confidence="0.000000">
+<title confidence="0.99465">
+A Generative Lexicon Perspective for Adjectival Modification
+</title>
+<author confidence="0.934686">
+Patrick Saint-Dizier
+</author>
+<affiliation confidence="0.637416">
+IRIT-CNRS, Universite Paul sabatier
+</affiliation>
+<address confidence="0.148727">
+1.18 route de Narbonne F-31062 Toulouse Cedex France
+</address>
+<email confidence="0.213666">
+stdizierOirit .fr
+</email>
+<sectionHeader confidence="0.722082" genericHeader="abstract">
+Abstract
+</sectionHeader>
+<bodyText confidence="0.99978">
+This paper presents a semantic interpretation of adjecti-
+val modification in terms of the Generative Lexicon. It
+highlights the elements which can be borrowed from the
+GL and develops limitations and extensions. We show
+how elements of the Qualia structure can be incorpo-
+rated into semantic composition rules to make explicit
+the semantics of the combination adjective + noun.
+</bodyText>
+<sectionHeader confidence="0.983503" genericHeader="keywords">
+1 Aims
+</sectionHeader>
+<bodyText confidence="0.999804541666667">
+Investigations within the generative perspective aim
+at modelling, by means of a small number of rules,
+principles and constraints, linguistic phenomena at
+a high level of abstraction, level which seems to be
+appropriate for research on multi-linguism and lan-
+guage learning.
+Among works within the generative perspect ive,
+one of the most, innovative is the Generative Lexi-
+con (GL) (Pustejovsky 91, 95) which introduces an
+abstract model opposed to sense enumeration lexi-
+cons. The GL is based (1) on the close cooperation
+of three lexical semantic structures: the argument
+structure, the aspectual structure and the Qualia
+structure (with four roles: Telic, Agentive, Consti-
+tutive and Formal), (2) on a detailed type theory and
+a type coercion inference rule and (3) on a refined
+theory of compositionality. The Generative Lexicon
+investigates the problem of polysemy and of the null-
+tiplicity of usages from a core sense of a lexeme and
+shows how these usages can be analyzed in terms
+of possible type shiftings w.r.t. the type expected
+by the core usage. Type shifting is modelled by a
+specific inference mechanism: type coercion.
+In this paper, the following points are addressed:
+</bodyText>
+<listItem confidence="0.775066222222222">
+• Generative systems require a clear analysis of
+the notions of word-sense and of sense delimita-
+tion. Depending on the strategy adopted (e.g.
+large number or narrow senses for a lexeme as
+in WordNet„ or very few but large senses as in
+many Al works), the nature and the scope of
+generative operations may be very different.
+• The Qualia structure is a complex structure,
+quite difficult to describe, in spite of evidence
+</listItem>
+<bodyText confidence="0.990081083333333">
+of its existence, in particular for the &amp;apos;relic role,
+(explored e.g. in the EuroWordNet project, the
+European WordNet). Qualias are well-designed
+and useful for nouns, but look more artificial for
+other lexical categories. We show that it is the
+telic role of nouns which is the most useful. We
+also show how the internal structure or this role
+can be made more precise and its use more re-
+liable and accurate by means of types and how
+it can be partitioned by means of types into on-
+tological domains for modelling some forms of
+metaphors.
+</bodyText>
+<listItem confidence="0.998083967741935">
+• Types are not sufficiently &amp;apos;constrained&amp;apos; to ac-
+count for the constraints holding, for each
+predicate, on the different sense/usage varia-
+tions they may be subject, to. We show that
+an underspecified Lexical Conceptual Structure
+(LCS) (Jackendoff 90) is more appropriate be-
+cause of its ability to represent underspecified
+meaning and therefore the polymorphism of
+senses in the GL, because of the relevat ice and
+low-granularity of its primitives (that we have
+slightly enhanced).
+• Elements of the Qualia structure can be in-
+corporated into semantic composition rules to
+make explicit the semantics of the combination
+predicate-argument, instead of developing lexi-
+cal redundancy rules.
+• A rule-based approach (also used by other
+authors such as (Copestake and Briscoe 95),
+(Ostler and Atkins 92), (Nurnberg and Zaenen
+79)) is contrasted with the Qualia-based ap-
+proach to deal with sense shiftings and in partic-
+ular selective binding, metaphors (that the GL
+cannot resolve a priori) and metonymies. An-
+other view is presented in (Jackendoff 97) with
+the principle of enriched composition, which is
+in fact quite close to our view, but, restricted
+to a few specific coercion situations (aspectual,
+&amp;apos;miss-count, picture, begin-enjoy).
+• The rules for type shifting we present, here are
+not lexical rules, as in (Copestake and Briscoe
+95), but they are part of the semantic composi-
+</listItem>
+<page confidence="0.987152">
+1143
+</page>
+<bodyText confidence="0.998839153846154">
+tion system, which makes them more general.
+This paper is devoted to adjectival modification
+(see also (Bouillon 97, 98)). The goal is to study
+the use and impact of the Qualia structure of the
+modified noun in the determination of the semantic
+representation of the association Noun + Adjective.
+To illustrate this study, we have chosen one of the
+most polysemic French adjectives: bon (good), which
+covers most of the main situations. Other adjectives,
+often cited in the GL literature, such as sad, fast,
+difficult or noisy have been studied and confirm tins
+analysis. We observed also many similarities within
+semantic families of adjectives.
+</bodyText>
+<sectionHeader confidence="0.967993" genericHeader="introduction">
+2 Conceptual versus Lexicographic
+</sectionHeader>
+<subsectionHeader confidence="0.919877">
+Analysis of Lexical Items
+</subsectionHeader>
+<bodyText confidence="0.9998504">
+In this section, we outline the differences but also the
+cooperation between conceptual and lexicographic
+analysis of the semantics of lexical items to build
+a lexicon suitable for the development of generative
+devices.
+</bodyText>
+<subsectionHeader confidence="0.954389">
+2.1 Adjectives in technical texts
+</subsectionHeader>
+<bodyText confidence="0.9663672">
+We have considered a sample of technical texts in
+French from various origins and used a simple tag-
+ging and extraction system developed for our needs.
+We have considered a total of 386 pages of text, with
+a total of 193 1.46 word occurences, among which,
+we have ii 598 occurences of adjectives. These
+occurences correspond to 754 different adjectives,
+among which 720 are restrictive adjectives. We will
+only consider this latter set.
+A srnall number of adjectives appear frequently:
+</bodyText>
+<subsectionHeader confidence="0.55558">
+Fig. I Adjective frequencies
+</subsectionHeader>
+<bodyText confidence="0.985943428571429">
+interval nb. of adjectives concerned
+&amp;gt; 300 5
+&amp;gt; 300 and --&amp;lt; 150 12
+&amp;gt; 150 and --‹ 50 81
+This means that 98 adjectives appear relatively
+frequently in texts, i.e. only about 13.6% of the to-
+tal. In terms of occurences, these adjectives cover
+11887 occurences, i.e. about 81% of the occurences.
+Adjectives from eight main &amp;apos;semantic&amp;apos; families ap-
+pear frequently. These families do not correspond
+exactly to those defined by (Dixon 91) (see also an
+introduction in (Raskin et al. 95)), which look too
+vague (figures have been rounded up or down to the
+closest integer):
+</bodyText>
+<table confidence="0.994289181818182">
+Fig. 2 Adjective semantic families
+Name example freq. (%)
+temporal actuel, passe 10
+evaluative bon, grand, cher 24
+locational central, externe 10
+aspectual courant, final 8
+technical chimique 17
+nationalities international 3
+shapes rond, rectangulaire 4
+society, culture econoinique, social 6
+others 18
+</table>
+<bodyText confidence="0.9991576">
+In terms of (po ysemic power&amp;apos;, evaluative, loca-
+tional, and shapes are the families which are the
+most polysemic, with a ratio of an average of 3.8
+senses per adjective. Nationalities, technical and as-
+pectual adjectives are munch less polysemic.
+</bodyText>
+<subsectionHeader confidence="0.999801">
+2.2 A conceptual analysis of adjectives
+</subsectionHeader>
+<bodyText confidence="0.999983454545454">
+The GL approach requires a conceptual analysis of
+adjectives in order to focus on a relatively small
+number of senses. The idea is to isolate generic con-
+ceptual &amp;apos;behaviors&amp;apos;, while taking also into account
+the constraints on linguistic realizations as in the
+lexicographic approach.
+The principle that we attempt at validating is to
+define a &amp;apos;deep&amp;apos; LCS representation for each predica-
+tive lexical item, which is generic enough to accomo-
+date variations within a sense and precise enough to
+be meaningful and discriminatory w.r.t. other word-
+senses. be able to represent sense variations in an
+efficient and reliable way, the variable or underspec-
+ified elements should be &amp;apos;low level&amp;apos; elements such as
+functions or paths. Semantic fields may also be al-
+tered, e.g. going from location to psychological or
+to epistemological (Pinker 93). Such an approach is
+being validated on various semantic families of verbs.
+The variable elements seem to belong to various
+ontologies (a crucial topic under intense investiga-
+tion), such as the ontology of events (active, sleep-
+ing, terminated, etc.), of people&amp;apos;s quilities, etc.
+</bodyText>
+<subsectionHeader confidence="0.999837">
+2.3 Meanings of bon
+</subsectionHeader>
+<bodyText confidence="0.998235181818182">
+In this short document, for the purpose of illustra-
+tion, let us consider the adjective bon (corresponding
+quite well to good), which is one of the most pol-
+ysemic adjective: 25 senses identified in WordNet
+(e.g. (Fellbaurn 93)). In fact, bon can be combined
+with almost any noun in French, and as (Katz 66)
+pointed out, good would need as many different read-
+ings as there are functions for objects.
+We have identified the following senses and sense
+variations (metaphors and metonymies in particular,
+expressed as in (Lakoff 80)):
+</bodyText>
+<listItem confidence="0.665545333333333">
+1. Idea of a good working of a concrete object
+w.r.t. what it has been designed for: un bon
+tournevis, de bons yew: (good screw-driver, good
+</listItem>
+<page confidence="0.982007">
+1144
+</page>
+<bodyText confidence="0.971373431818182">
+eyes). Metaphors abound: e.g.: &amp;apos;communica-
+tion acts as tools&amp;apos;: une bonne plaisanterie/mise
+an point (a good joke), &amp;apos;function for tool&amp;apos; (un
+bon odorat), &amp;apos;paths as tools&amp;apos; (a good road).
+Metonymies are rather unusual since if X is a
+part of Y, a good X does not entail a good Y 2.
+2. Positive evaluation of moral, psychological,
+physical or intellectual qualities in humans:
+bonne personne, bon musicien, (good person, good
+musician). The basic sense concerns professions
+and related activites or humans as a whole: it
+is the ability of someone to realize something
+for professions, and, for humans, the high level
+of their moral qualities (an enumeration can be
+given or a kind of higher-order, typed expres-
+sion).
+This second sense could be viewed as a
+large metaphor of the first, with a structure-
+preserving transposition to a different ontology:
+from tools to professional or moral skills.
+There are some &amp;apos;light&amp;apos; metaphors such as: &amp;apos;so-
+cial positions or ranks as professions&amp;apos; (a good
+boss/ father /fr-iend / citizen), and a large num-
+ber of metonymies: &amp;apos;image for person, image be-
+ing a part of a person&amp;apos; (a good reputation), &amp;apos;tool
+for profession&amp;apos; (a good scalpel), &amp;apos;place for pro-
+fession&amp;apos; (a good restaurant). These metaphors
+have a good degree of systematicity.
+3. Intensifier of one or more properties of the noun,
+producing an idea of pleasure and satisfaction
+(this is different for sense 5) 3:
+noun(+edible): good meal/dish/taste , tasty,
+with metonymies such as &amp;apos;container for con-
+tainee&amp;apos; (a good bottle/ glass),
+noun ( I le- a r t ): good filin/book/paiiiting ,
+valuable. with metonymies such as &amp;apos;physical
+support for contents&amp;apos; (good CD),
+noun(±sinelling): good odor,
+noun(-1-psyclio): good relation/ experience
+noun(-Flunnan relations): good neighbours.
+Note that bon can only be used with neutral or
+positive nouns, we indeed do not have ill French
+*good ennetnies, *good humidity with the sense
+outlined here.
+</bodyText>
+<listItem confidence="0.9213395">
+4. Quantification applied to measures or to quan-
+tities: a good meter, a good liter, a good
+</listItem>
+<bodyText confidence="0.97113194117647">
+1In the combination noun -4- adjective, the noun is the
+element that undergo the metaphor. The adjective being a
+predicate, it is its relation to the noun it modifies which is
+metaphorical, similarly to the relation verb-noun. The se-
+mantics of the noun remains a priori unaltered.
+&amp;apos;This needs refinements: there are some weak forms of
+upward inheritance in the part-of relation: e.g. if the body of
+a car is red, then the car is said to be red.
+3 Norms are being defined for about 600 top-most nodes of
+a general purpose ontology in different projects and research
+groups (e.g. NMS11, NI, Eagles EEC project), they will be
+used as soon as available.
+amount/salary, a good wind. In this case, good
+means a slightly more than the unit/measure
+indicated or above the average (for terms which
+are not measure units such as wind or salary).
+This sense being quite different since it is basi-
+cally a quantifier, it won&amp;apos;t, be studied hereafter.
+5. Idea of exactness, accuracy, correctness,
+validity, freshness, etc.: un bon raison-
+neinent/calcul = exact, accurate (a good deduc-
+tion/computation), good note/ticket = valid, a
+good meat = fresh or eatable, a good use , ap-
+propriate, good knowledge efficient, large and
+of good quality. The meaning of bon is there-
+fore underdetermined. Depending on the noun,
+the semantics of bon is slightly different, this is
+not really a case of co-composition. It is the se-
+mantic type of the noun and that of the selected
+predicate in the telic role of the noun which de-
+termine the meaning of the adjective in this par-
+ticular NP. We call this phenomenon, by com-
+parison with selective binding, selective pro-
+jection, because the meaning is projected front
+the noun&amp;apos;s telic role. Sense 5 is substantially dif-
+ferent from sense 1: it is basically boolean (e.g.
+exact or not), there is no idea of tool, function
+or even activity.
+Bora appears in a large number of fixed or semi-fixed
+forms such as: le bon goat, le bon SellS, lc bon temps,
+urnc bonne giffle.
+Almost, the same behavior is observed for all eval-
+uative adjectives such as excellent, terrific, bad or
+lousy in French. For example, for -ma-ova-ms (bad),
+senses 2 and 3 are identical, sense 4 is only ap-
+plicable to amounts (maimais salaire), not to units
+and sense 5 is almost identical, it, conveys the idea
+of erroneous deduction, invalid ticket, bad use and
+rotting meat. Note that in WordNet, bad has only
+14 senses, whereas good has 25 senses, with no clear
+justification.
+</bodyText>
+<subsectionHeader confidence="0.945305">
+2.4 A comparison with WordNet
+</subsectionHeader>
+<bodyText confidence="0.999592571428571">
+We have carried out a comparison of our conceptual
+analysis with the lexicographic analysis in WordNet.
+We have compared manually a subset of 54 adjec-
+tives among the above mentioned frequently used
+adjectives. Among these adjectives, 30 are poly-
+scone in our approach while 44 belong to several
+synsets in WordNet:
+</bodyText>
+<figureCaption confidence="0.895570571428571">
+Fig. 3 A comparison with WordNet
+criterion (1) (2)
+total number of senses found 114 256
+average lib. of senses/item 2.11 4.0
+(1): Conceptual approach, (2) WordNet 1.6. 22
+of our descriptions are close to WordNet (for adjec-
+tives which are not much polysemic) while 32 differ
+</figureCaption>
+<page confidence="0.957023">
+1145
+</page>
+<bodyText confidence="0.999682">
+largely (for highly polysemic adjectives), for which
+our approach identifies much less senses.
+</bodyText>
+<subsectionHeader confidence="0.781436">
+2.5 Underspecification versus polysemy
+</subsectionHeader>
+<bodyText confidence="0.996749193548387">
+Each of the senses of bon has many facets and inter-
+pretations depending on the noun it modifies. As
+for verbs or nouns (Busa 97), polymorphic types
+are used to represent the semantics of the expected
+nouns, viewed as arguments of the adjective predi-
+cate. The semantic representation associated with
+a sense is therefore underspecified and tuned to re-
+flect this polymorphism. The scope of underspec-
+ified elements must however be bounded and pre-
+cisely defined by &amp;apos;lexical&amp;apos; types and by additional
+constraints. The generative expansion of underspec-
+ified fields can be defined from lexical items using a
+fix-point semantics approach (Saint-llizier 96).
+2.6 Towards an automatic acquisition of
+conceptual descriptions
+Some on-line resources and dictionaries may effi-
+ciently contribute to this task. We have consid-
+ered several mono- and bi-lingual dictionaries in or-
+der to evaluate convergences. Only those struc-
+tured on a conceptual basis are worth considering.
+Among them, the Harrap&amp;apos;s German-French dictio-
+nary is very nicely structured in a conceptual per-
+spective, providing translations on an accurate se-
+mantic basis. Senses are slightly more expanded
+than in the GL approach to account for translation
+variations, but, closely related senses can be grouped
+to form the senses defined above.
+Another source of knowledge for English is
+Corelex 4, which is just being made accessible. It
+contains word definitions specifically designed for
+the GL. Its evaluation is about to start.
+</bodyText>
+<sectionHeader confidence="0.9973605" genericHeader="method">
+3 Generative Devices and Semantic
+Cornposition
+</sectionHeader>
+<bodyText confidence="0.98573875">
+Let us now analyze from a GL point of view the
+meanings of the adjective bon.
+In (Pustejovsky 95), to deal with the compound
+adjective+noun, a predicate in the telic of the noun
+is considered. For example, fast, modifying a noun
+such as typist, is represented as follows:
+.Xe [type&amp;apos; (e, x) A f ast(e)]
+where e denotes an event. This formula says that the
+event of typing is fast. A similar representation is
+given for long, in a long record. This approach is ap-
+propriate to represent temporal notions in a coarse-
+grained way, i.e. the event is said to be fast (with
+e.g. potential inferences on its expected duration)
+or long. But this approach is not viable for bon, and
+many other adjectives with little or no temporal di-
+mension. In:
+</bodyText>
+<footnote confidence="0.706031">
+4 available at:
+www.cs.brandeis.edu/paulb/CoreLex/corelex.html
+</footnote>
+<bodyText confidence="0.993302235294118">
+Ac [type&amp;apos; (e,x) A good(e)]
+it is not the typing event which is &amp;apos;good&amp;apos; but the
+way the typing has been performed (certainly fast,
+but also with no typos, good layout, etc.). A precise
+event should not be considered in isolation, but the
+representation should express that, in general, some-
+one types well, allowing exceptions (some average or
+bad typing events). This involves a quantification,
+more or less explicit, over typing events of x. Finally,
+bon being polysemous, a single representation is not
+sufficient to accomodate all the senses.
+As introduced in section 1, the semantic represen-
+tation framework we consider here is the LCS. The
+nature of its primitives and its low-level granularity
+seem to be appropriate for our current purpose. Un-
+derdetermined structures are represented by a typed
+A-calculus.
+</bodyText>
+<subsectionHeader confidence="0.920016">
+3.1 sense 1: Bon .----=- that works well
+</subsectionHeader>
+<bodyText confidence="0.9994755">
+This first sense applies to any noun of type tool,
+machine or technique: a good car, a good screw-
+driver. The semantic representation of bon requires
+a predicate from the telic role of the Qualia struc-
+ture of the noun. It is the set (potentially infinite)
+of those predicates that characterizes the polymor-
+phism. We have here a typical situation of selective
+binding (Pustejovsky 91), where the representation
+of the adjective is a priori largely underspecified. Let
+us assume that any noun which can be modified by
+bon has a telic role in which the main function(s) of
+the object is described (e.g. execute programmes for
+a computer, run for a car 5), then the semantics of
+the compound adjective + noun can be defined as
+follows:
+Let N be a noun of semantic type a, and of Qualia:
+</bodyText>
+<equation confidence="0.521866">
+[ Telic: T, ...]
+</equation>
+<bodyText confidence="0.975432888888889">
+where T denotes the set of predicates associated with
+the telic role of the noun N. Let Y the variable as-
+sociated with N and let us assume that T is a list of
+predicates of the form Then the LCS-based
+representation of bon is:
+A Y : a, AF,[tat, BE+char,-Hdent ([thing Y ],
+[-Fprop ABILITY —TO(h(Y,...))= high ])] .
+which means that the entity denoted by the noun
+works well, expressed by the evaluation function
+ABILITY-TO and the value &amp;apos;high&amp;apos;. This type of
+low-level function abounds in the LCS, this princi-
+ple is introduced in (Jackendoff 97). Note that the
+second argument of the predicate Fi does not need to
+be explicit (we use the Prolog notation `_&amp;apos; for these
+positions).
+The Qualia allows us to introduce in a direct, way
+a pragmatic or interpretative dimension via
+the instanciation of
+</bodyText>
+<footnote confidence="0.829709333333333">
+5bess prototypical predicates can also be considered, e.g.
+comfort or security for a car, which are properties probably
+described in the constitutive: role of the Qualia of car.
+</footnote>
+<page confidence="0.993957">
+1146
+</page>
+<bodyText confidence="0.978399123595506">
+The constant &amp;apos;high&amp;apos; can be replaced by a more
+accurate representation, e.g. &amp;apos;above average&amp;apos;, but
+the problem of evaluating a functionality remains
+open. More generally, the introduction of low level
+functions, such as ABILITY-TO, and specific values,
+such as &amp;apos;low&amp;apos;, should be introduced in a principled
+way, following the definition of ontologies of different
+domains, e.g. action, intensities, etc. This is quite
+challenging, but necessary for any accurate semantic
+framework.
+Note finally that instead of quantifying over
+events, bon is described as a state: the function-
+alities of the object remain good, even when it is
+not used effectively. If several functionalities are at
+stake, we may have a conjunction or a more complex
+combination of functions
+From a compositional point of view, the combina-
+tion Adjective + Noun is treated as follows, where
+R is the semantic representation of the adjective, T,
+the contents of the telic role of the Quaint of the
+noun N of type n , r, a particular element of T, and
+Y, the variable associated with the noun:
+sem-composition ( Adj (B.) ,Noun (Qualia(T))
+: , ( Y, _) E T,
+(N(Y) A II( Y )(Fi(Y, _))).
+The open position in R(Y) is instanciated by
+reduction. The selection of Fi is simple: kr basic
+tools, there is probably only one predicate in the
+Qualia (screw-driver screw), for more complex
+nouns, there is an ambiguity which is reflected by
+the non-deterministic choice of but probably or-
+ganized with preferences, which should be added in
+the Qualia. It is the constraint on the type of 17
+that restricts the application of that semantic com-
+position rule. This notation is particularly simple
+and convenient.
+Metaphors are treated in a direct way: the con-
+straint on the type of Y can be enlarged to:
+AY : A , mclaphor(11, a)
+and the remainder of the semantic composition rule
+and semantic krinula remains unchanged. We have,
+for example:
+metaphor(communication — act, tool) (joke).
+met aphor(communication — path, tool) (road).
+which is paraphrased as &amp;apos;communication path
+viewed as a tool&amp;apos;.
+We have evaluated that, in French, there are about
+12 frequent forms of metaphors for this sense. The
+study of this first sense suggests that the introduc-
+tion of a hierarchy of preferences would be a useful
+extension to the &amp;apos;folic role, reflecting forms of proto-
+typicality among predicates.
+3.2 Sense 2: Bon restricted to cognitive or
+moral qualities
+Another sense of bon modifies nouns of type pro-
+fession or human. The treatment is the sante as
+in the above section, but the selection of the pred-
+icate(s) r = Fi(X ,Y) in the telic of the noun&amp;apos;s
+qualia must be restricted to properties related to
+the moral behavior (makes-charity, has-compassion,
+has-integrity) when the noun is a person; and to
+some psychological attitudes and cognitive capabil-
+ities when the noun denotes a profession (e.g. a
+good composer). Alternatively, some of these prop-
+erties could be found in the constitutive role (ap-
+proximately the part-of relation), if properties can
+be parts of entities.
+The typing of the predicates in the Qualia roles
+can be done in two ways, (1) by means of labels iden-
+tifying the different facets of a role, as in (Bergler
+91) for report verbs, but these facets are often quite
+ad &amp;apos;hoc and hard to define, or (2) by means of types
+directly associated with each predicate. These types
+can, for example, directly reflect different verb se-
+mantic classes as those defined in (Levitt 93) or
+(Saint-Dizier 96) on a syntactic basis, or the ma-
+jor ontological classes of WordNet or EuroWordNet
+and their respective subdivisions. This solution is
+preferable, since it does not involve any additional
+development of the Telic role, but simply the adjunc-
+tion of types from a separate, pre-defined ontology.
+The WordNet or EuroWordNet types also seem to
+be quite easy to handle and well-adapted to the phe-
+nomena we model. This remains to be validated on
+a large scale.
+An LCS representation for this sense of bon is, as-
+suming the following types for Pi:
+: human, F, : action -- related — to --
+pro f cssion V moral — behavior, Y :ci,
+</bodyText>
+<equation confidence="0.4328395">
+[snac B dun,,+identannuy ],
+AB I L ITY — TO(Fi(Y, _)) = high ])]
+</equation>
+<bodyText confidence="0.986465529411765">
+When several predicates are at stake, a set of
+F1 (Y, _) can be considered in the representation, or
+the statement is ambiguous.
+Metonymies such as a good scalpel are resolved by
+the general rule: &amp;apos;tools for professions&amp;apos;. This infor-
+mation could be in a knowledge base or, alterna-
+tively, it can be infered from the &amp;apos;relic role of the
+tool: any instrument has a predicate in its telic role
+that describes its use: the type of the first argument
+of the predicate is directly related to the profession
+that uses it. For example, scalpel has in its telic role:
+cut(X : surgeon V biologist, Y : body).
+When the profession is identified, the standard pro-
+cedure for determining the meaning of the com-
+pound can be applied. Metonymies using the part-of
+relation are quite simple to resolve using the consti-
+tutive role, as in the CL.
+</bodyText>
+<subsectionHeader confidence="0.59066">
+3.3 Sense 3: Bon as an intensifier
+</subsectionHeader>
+<bodyText confidence="0.99482625">
+Another main role of bon is to einphasize a quality of
+the object denoted by the noun. As shown in section
+2, there is a certain action associated with the telic of
+the modified noun that produces a certain pleasure.
+</bodyText>
+<page confidence="0.988044">
+1147
+</page>
+<bodyText confidence="0.999799333333333">
+For example, watching a good film entails a certain
+pleasure.
+Let us consider again a noun N of type a (e.g.
+edible object) associated with the variable Y. The
+entity (human) undergoing the pleasure is not. ex-
+plicit in the NP, it is represented by X, and included
+in the scope of a A-abstraction. Let Fi(X, Y) be the
+predicate selected in the telic role of N. The LCS
+representation is then:
+</bodyText>
+<figure confidence="0.584661333333333">
+AX : human, Y : a, Fi(X,Y)
+[event CAUSEffevent Fi(X,Y)],
+[tate BE-f-psgatiung Xi)
+</figure>
+<figureCaption confidence="0.430743">
+[place AT-l-5( [+p/ace pleasure ])])])].
+</figureCaption>
+<bodyText confidence="0.9999104">
+We have here another form of representation for bon,
+where Fi is a CAUSE.
+The term &amp;apos;pleasure&amp;apos; is an element of an ontology
+describing e.g. mental attitudes and feelings. It is
+relatively generic and can be replaced by a more pre-
+cise term, via selective projection (see below for sense
+5), depending on the nature of the pleasure.
+An alternative representation describes a path to-
+wards the value &amp;apos;pleasure&amp;apos;, giving an idea of progres-
+sion:
+</bodyText>
+<equation confidence="0.967254">
+AX : human, Y : a, Fi(X,Y)
+[event CAUSEGevent Fi(X117)1)
+[event GO-Fpsy([thing X 1,
+TOW ARDS+„„([+pi.„ pleasure ])])])].
+</equation>
+<bodyText confidence="0.9892049">
+Notice that this sense of bon does not imply an
+idea of quantity: a good meal does not entail that
+the meal is big, a good temperature does not entail
+that the temperature is high, but rather mild. The
+semantic composition rule is similar as in 3.1.
+The metonymy &amp;apos;container for containee (a good
+bottle) is resolved by a type shifting on Y. Y may be
+of type 13 if:
+3 Z : a, Y : container A container — or(1/ , Z).
+Inferences are identical for e.g. a good CD.
+</bodyText>
+<subsectionHeader confidence="0.991348">
+3.4 Sense 5: Bon = exact or correct
+</subsectionHeader>
+<bodyText confidence="0.845664615384615">
+We have here a. situation of selective projection: the
+exact meaning of bon is projected from the type of
+the modified noun and the type of the predicate se-
+lected in the noun&amp;apos;s Telic role.
+For example, if the noun is of type bank — note V
+ticket and the type of the predicate selected in the
+noun&amp;apos;s &amp;apos;relic role is pay V give — access — to, then
+the meaning of bon is &amp;apos;valid&amp;apos;:
+AX :bank — note V ticket,
+[state BE-Echar,-Hdentathing X 1,
+[place AT-Fehar,-Fident([4-propValid(X)])M.
+The constraint on the type of the telic role is stated
+in the semantic composition rule:
+</bodyText>
+<equation confidence="0.660834">
+sem-composition(Adj(R),Noun(X,Qualia(T))) =
+AX : bank — note V ticket,
+</equation>
+<bodyText confidence="0.9337341">
+: pay V give — access — to ET,
+(N(X) A n( X )
+It is necessary to have both a constraint. on the
+noun and on the predicate(s) in the telic role: (I)
+the type of the predicate in the telic role is certainly
+not a sufficient constraint , e.g. every noun&amp;apos;s telic
+role in which there is the predicate pay cannot be
+combined with bon with sense 5; (2) the constraint
+on the type of the noun is also not sufficient, e.g. a
+medecine is a kind of food, but we don&amp;apos;t eat it.
+</bodyText>
+<sectionHeader confidence="0.952684" genericHeader="method">
+4 Representing the core meaning of
+a word-sense
+</sectionHeader>
+<bodyText confidence="0.98632996875">
+The work presented here has shown the necessity of
+describing the semantics of a lexical item at a rel-
+atively &amp;apos;deep&amp;apos; level, in order to make explicit the
+meaning elements subject to alterations in the sense.
+variations shown above. It turns out, so far, that
+these elements can be represented by LCS primitives
+and a few functions and values, assumed to belong
+to general-purpose, and often commonly-admitted,
+ontologies. This remains an assumption since this
+type of ontological knowledge is still under devel-
+opment, but the elements used are relatively simple
+and standard. Besides ontologies, and not very far
+from them, we also find information contained in the
+noun&amp;apos;s Qualias, but in a less structured way, making
+selection more difficult.
+Core meaning definition requires a good analysis
+of a word-sense and of its behavior in different con-
+texts. This is however not. so difficult to elaborate
+once the formalism is stabilized. Also, we noted that
+semantically close words share a lot, making descrip-
+tions easier. This is in particular true for verbs.
+Besides adjectives, we have also studied a. number
+of different types of verbs, as e.g. the verb cooper
+(cut), often used as an example in the literature. Its
+core representation would be the following:
+A I, J [event CAUSE([tnotg 1],
+[event GDA( X, [path Y
+with the following values for the core sense:
+A = +/oc ; X = [thin, PART — 041) ]
+AW AY — FROMAaplace, LOCATION — OF(
+For the metaphor: &amp;apos;to cut a conversation/ a fihn,
+etc...&amp;apos;, the values for the above variables become:
+</bodyText>
+<equation confidence="0.985263333333333">
+A = +char, +ident, X r
+Levent/state
+Y = AW AY — FROMAGnrop ACT IV EGO])
+</equation>
+<bodyText confidence="0.999961444444444">
+where ACTIVE(J) is an elementary property of an
+ontology describing the status of events. A conver-
+sation is viewed as a flow which becomes non-active.
+A similar treatment is observed for other types of
+metaphors, with elliptic forms, such as cover Venn/
+l&amp;apos;electricite/ les credits, also viewed as flows. The
+property AVAILABLE(J) will then be used, which
+is at a comparable abstract level in an ontology than
+ACTIVE(J).
+</bodyText>
+<sectionHeader confidence="0.99438" genericHeader="method">
+5 Long-distance compositionality
+</sectionHeader>
+<bodyText confidence="0.976217">
+The NP a good meat is related to senses 2 or 5, it
+therefore includes in its domain of meanings struc-
+tures presented in sections 3.2 and 3.4. Instead of
+</bodyText>
+<page confidence="0.976174">
+1148
+</page>
+<bodyText confidence="0.999972413793104">
+choosing one solution solution (a generate and test
+strategy), a set can be provided (as in constraint
+programming). Now, if we have an NP of the form:
+one viande bonne a consommer, then the parsing
+of consommer will provoque the selection of sense 5
+(and subsense &amp;apos;fresh/consumable&amp;apos; via selective pro-
+jection) because of the type of consommer. If, con-
+versely, we have one viande bonne a deguster, then,
+since deguster is of type &amp;apos;eat.enjoy&amp;apos; (a dotted type in
+the GL), sense 2 is selected. The space of meanings
+is restricted when additional information is found.
+A second case involves default reasoning (as in
+(Pernelle 98)). ln on bon couteau pour sculpter (a
+good knife to carve), by default, the action that the
+knife performs well is that protypically found in its
+telic role. But, if&amp;apos; a less prototypical action is found
+explicitly in the, sentence, then this latter is prefered
+and incorporated into the semantic representation
+instead of the default case. Indeed, the telic role
+describes prototypical actions, since the others are
+often unpredictable. The default meaning of bon is
+kept and &amp;apos;frozen&amp;apos; until the whole sentence has been
+parsed. If there is no contracdiction with that sense,
+then it is assigned to the adjective, otherwise, it is
+discarded in favor of the sense explicitly found in the
+sentence.
+Finally, we consider the expressions Y makes a
+good X, Y is a good X as collocations where good is
+not fully treated (-:onipositionally.
+</bodyText>
+<sectionHeader confidence="0.999295" genericHeader="conclusions">
+6 Conclusion
+</sectionHeader>
+<bodyText confidence="0.999757137931034">
+In this paper, we have presented an analysis of ad-
+jectival modification within the GL perspective. with
+the illustration of the French adjective bon. We have
+proposed several extensions to the Telic role to be
+able to account for the representation of the differ-
+ent forms of sense variations. In particular, we have
+shown how types can be added, and how predicates
+from the telic participate to the construction of the
+semantic representation of the compound noun +
+adjective.
+Coercions and the treatment of metaphors and
+metonymies are generally assumed to be general
+principles, however, they are in fact more specialized
+than they seem at. first glance (e.g. one bonne toque/
+plume a good cook/ writer is quite specific, or
+very constrained). It is then necessary to introduce
+narrow selectional restrictions on their use. Also,
+the similarities, quite important, outlined between
+the different cases presented here and observed for
+other families of adjectives suggest that there is a
+common typology for adjectival modification. What
+then would be a general formalism ? How much are
+these rules subject to linguistic variation ?
+Acknowledgements I thank James Pustejovsky,
+Federica Rusa aid Francoise Gayral for discussions
+which helped improving this work.
+I don&amp;apos;t thank my university administration, in par-
+ticular the accounting dept., who made every possi-
+ble effort to make this research more difficult.
+</bodyText>
+<reference confidence="0.988314280701754">
+II,eferences
+Bugler, S., (1991) The semantics of collocational pat-
+terns for reporting verbs, in proc. 5th EACL.
+Bouillon, P., Mental State Adjectives: the Perspective
+of Generative Lexicon, in proc. Coling&amp;apos;96, Copenhaguen,
+1996.
+Bouillon P., Polymorphic et semantique lexicale,
+These de troisieme cycle, Universite de Paris VII, 1997.
+Busa, F., (1996), Compositionality and the Seman-
+tics of Nominals, PhD. Dissertation, Brandeis Univer-
+sity, MA.
+Copestake, A., Briscoe, T., (1995), Semi-Productive
+polysenly and sense extension, journal of semantics, vol.
+12-1.
+Dixon, R.M. W., (1991) A new approach to English
+grammar on setnantic principles, Oxford, Clarendon
+Press.
+Fellbaurn, C., (1993), &amp;quot;English Verbs as Semantic
+Net&amp;quot;, Journal of Lexicography.
+jackendoff, R., (1990), Semantic Structures, MIT
+Press.
+Jackendoff, R., (1997), The Architecture of the Lan-
+guage Faculty, MIT Press.
+Katz, G. (1966), The philosophy of Language, Harper
+and Row, New-York.
+Lakoff, G., Johnson, M. (1980), Metaphors we Live
+By, University of Chicago Press.
+Levin, B., (1993), English verb Classes and Alter-
+nations: A Preliminary Investigation, Chicago Univ.
+Press.
+Nunberg, GD., Zaenen, A., (1992), Systematic Pol-
+ysetny in Lexicology and Lexicography, proc Euralex92,
+Tampere, Finland.
+Ostler, N., Atkins, S., (1992), Predictable Meaning
+Shifts: some lexical properties of lexical implication
+rules, in J. Pustcjovsky and S. Bergler (eds.) Lexical
+Semantics and Knowledge Representation, Springer Ver-
+lag.
+PerneIle, N., (1998), Raisonnement par dqaut et lex-
+ique generatif, PhD dissertation, LIPN, Paris.
+Pinker, S., (1993), Learnability and Cognition, MEI&amp;apos;
+Press.
+Pustejovsky, j., (1991), The Generative Lexicon,
+Computational Linguistics, vol 17-4.
+Pustejovsky, J., (1995), The Generative Lexicon, MIT
+Press.
+Raskin, V., Niremburg, S., (1995) Lexical semantics of
+adjectrives, a micro-theory of adjectival meaning, MCCS
+report 95-288.
+Saint-Dizier, P. (1986) A Logic Programming inter-
+pretation of Type Coercion Mille generative lexicon, in
+proc. NLULP&amp;apos;96, Lisbon.
+Saint-Dizier, P., (1996), Verb semantic classes based
+on &amp;apos;alternations&amp;apos; and on WordNet-like semantic criteria:
+a powerful convergence, in proc. Predicative Forms in
+Natural language and in lexical knowledge bases, 1111T,
+Toulouse.
+</reference>
+<page confidence="0.996662">
+1149
+</page>
+</variant>
+</algorithm>
+<algorithm name="ParsHed" version="110505">
+<variant no="0" confidence="0.215241">
+<title confidence="0.99994">A Generative Lexicon Perspective for Adjectival Modification</title>
+<author confidence="0.9686195">Patrick Saint-Dizier Paul sabatier</author>
+<address confidence="0.617215">1.18 route de Narbonne F-31062 Toulouse Cedex France</address>
+<email confidence="0.893836">stdizierOirit.fr</email>
+<abstract confidence="0.99808573015873">This paper presents a semantic interpretation of adjectival modification in terms of the Generative Lexicon. It highlights the elements which can be borrowed from the GL and develops limitations and extensions. We show how elements of the Qualia structure can be incorporated into semantic composition rules to make explicit the semantics of the combination adjective + noun. 1 Aims Investigations within the generative perspective aim at modelling, by means of a small number of rules, principles and constraints, linguistic phenomena at high level of abstraction, level which seems be appropriate for research on multi-linguism and language learning. Among works within the generative perspect ive, one of the most, innovative is the Generative Lexicon (GL) (Pustejovsky 91, 95) which introduces an abstract model opposed to sense enumeration lexicons. The GL is based (1) on the close cooperation of three lexical semantic structures: the argument structure, the aspectual structure and the Qualia structure (with four roles: Telic, Agentive, Constitutive and Formal), (2) on a detailed type theory and a type coercion inference rule and (3) on a refined theory of compositionality. The Generative Lexicon investigates the problem of polysemy and of the nulltiplicity of usages from a core sense of a lexeme and shows how these usages can be analyzed in terms of possible type shiftings w.r.t. the type expected by the core usage. Type shifting is modelled by a specific inference mechanism: type coercion. In this paper, the following points are addressed: • Generative systems require a clear analysis of the notions of word-sense and of sense delimitation. Depending on the strategy adopted (e.g. number senses for a lexeme as in WordNet„ or very few but large senses as in Al works), the nature and scope generative operations may be very different. • The Qualia structure is a complex structure, quite difficult to describe, in spite of evidence its existence, particular for the &amp;apos;relic role, in the EuroWordNet project, the European WordNet). Qualias are well-designed and useful for nouns, but look more artificial for other lexical categories. We show that it is the telic role of nouns which is the most useful. We show how the internal structure role can be made more precise and its use more reliable and accurate by means of types and how it can be partitioned by means of types into ontological domains for modelling some forms of metaphors. • Types are not sufficiently &amp;apos;constrained&amp;apos; to account for the constraints holding, for each predicate, on the different sense/usage variations they may be subject, to. We show that an underspecified Lexical Conceptual Structure (LCS) (Jackendoff 90) is more appropriate because of its ability to represent underspecified meaning and therefore the polymorphism of senses in the GL, because of the relevat ice and low-granularity of its primitives (that we have slightly enhanced). • Elements of the Qualia structure can be incorporated into semantic composition rules to make explicit the semantics of the combination predicate-argument, instead of developing lexical redundancy rules. • A rule-based approach (also used by other authors such as (Copestake and Briscoe 95), (Ostler and Atkins 92), (Nurnberg and Zaenen 79)) is contrasted with the Qualia-based approach to deal with sense shiftings and in particular selective binding, metaphors (that the GL cannot resolve a priori) and metonymies. Another view is presented in (Jackendoff 97) with of enriched composition, is in fact quite close to our view, but, restricted to a few specific coercion situations (aspectual, &amp;apos;miss-count, picture, begin-enjoy). • The rules for type shifting we present, here are not lexical rules, as in (Copestake and Briscoe but they are part of the semantic composi- 1143 tion system, which makes them more general. This paper is devoted to adjectival modification (see also (Bouillon 97, 98)). The goal is to study the use and impact of the Qualia structure of the modified noun in the determination of the semantic representation of the association Noun + Adjective. To illustrate this study, we have chosen one of the polysemic French adjectives: which covers most of the main situations. Other adjectives, cited in the GL literature, such as fast, been studied and confirm tins analysis. We observed also many similarities within semantic families of adjectives. 2 Conceptual versus Lexicographic Analysis of Lexical Items In this section, we outline the differences but also the cooperation between conceptual and lexicographic analysis of the semantics of lexical items to build a lexicon suitable for the development of generative devices. in technical texts have a sample of technical texts in French from various origins and used a simple tagging and extraction system developed for our needs. have considered a total of 386 pages with a total of 193 1.46 word occurences, among which, we have ii 598 occurences of adjectives. These occurences correspond to 754 different adjectives, among which 720 are restrictive adjectives. We will this latter set. A srnall number of adjectives appear frequently: Fig. I Adjective frequencies interval nb. of adjectives concerned &amp;gt; 300 5 &amp;gt; 300 and --&amp;lt; 150 12 &amp;gt; 150 and --‹ 50 81 means that adjectives appear relatively frequently in texts, i.e. only about 13.6% of the toterms of occurences, these adjectives cover 11887 occurences, i.e. about 81% of the occurences.</abstract>
+<note confidence="0.538055333333333">Adjectives from eight main &amp;apos;semantic&amp;apos; families appear frequently. These families do not correspond those by (Dixon 91) (see also an</note>
+</variant>
+</algorithm>
+<algorithm name="ParsCit" version="110505">
+<citationList>
+<citation valid="false">
+<pages>II,eferences</pages>
+<marker></marker>
+<rawString>II,eferences</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>S Bugler</author>
+</authors>
+<title>The semantics of collocational patterns for reporting verbs,</title>
+<date>1991</date>
+<booktitle>in proc. 5th EACL.</booktitle>
+<marker>Bugler, 1991</marker>
+<rawString>Bugler, S., (1991) The semantics of collocational patterns for reporting verbs, in proc. 5th EACL.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>P Bouillon</author>
+</authors>
+<title>Mental State Adjectives: the Perspective of Generative Lexicon,</title>
+<date>1996</date>
+<booktitle>in proc. Coling&amp;apos;96, Copenhaguen,</booktitle>
+<marker>Bouillon, 1996</marker>
+<rawString>Bouillon, P., Mental State Adjectives: the Perspective of Generative Lexicon, in proc. Coling&amp;apos;96, Copenhaguen, 1996.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>P Bouillon</author>
+</authors>
+<title>Polymorphic et semantique lexicale, These de troisieme cycle, Universite de Paris VII,</title>
+<date>1997</date>
+<marker>Bouillon, 1997</marker>
+<rawString>Bouillon P., Polymorphic et semantique lexicale, These de troisieme cycle, Universite de Paris VII, 1997.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>F Busa</author>
+</authors>
+<title>Compositionality and the Semantics of Nominals,</title>
+<date>1996</date>
+<location>PhD. Dissertation, Brandeis University, MA.</location>
+<marker>Busa, 1996</marker>
+<rawString>Busa, F., (1996), Compositionality and the Semantics of Nominals, PhD. Dissertation, Brandeis University, MA.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>A Copestake</author>
+<author>T Briscoe</author>
+</authors>
+<title>Semi-Productive polysenly and sense extension, journal of semantics,</title>
+<date>1995</date>
+<volume>vol.</volume>
+<pages>12--1</pages>
+<marker>Copestake, Briscoe, 1995</marker>
+<rawString>Copestake, A., Briscoe, T., (1995), Semi-Productive polysenly and sense extension, journal of semantics, vol. 12-1.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>R M W Dixon</author>
+</authors>
+<title>A new approach to English grammar on setnantic principles,</title>
+<date>1991</date>
+<publisher>Press.</publisher>
+<location>Oxford, Clarendon</location>
+<marker>Dixon, 1991</marker>
+<rawString>Dixon, R.M. W., (1991) A new approach to English grammar on setnantic principles, Oxford, Clarendon Press.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>C Fellbaurn</author>
+</authors>
+<title>English Verbs as Semantic Net&amp;quot;,</title>
+<date>1993</date>
+<journal>Journal of Lexicography.</journal>
+<marker>Fellbaurn, 1993</marker>
+<rawString>Fellbaurn, C., (1993), &amp;quot;English Verbs as Semantic Net&amp;quot;, Journal of Lexicography.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>R jackendoff</author>
+</authors>
+<title>Semantic Structures,</title>
+<date>1990</date>
+<publisher>MIT Press.</publisher>
+<marker>jackendoff, 1990</marker>
+<rawString>jackendoff, R., (1990), Semantic Structures, MIT Press.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>R Jackendoff</author>
+</authors>
+<title>The Architecture of the Language Faculty,</title>
+<date>1997</date>
+<publisher>MIT Press.</publisher>
+<marker>Jackendoff, 1997</marker>
+<rawString>Jackendoff, R., (1997), The Architecture of the Language Faculty, MIT Press.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>G Katz</author>
+</authors>
+<title>The philosophy of Language,</title>
+<date>1966</date>
+<location>Harper and Row, New-York.</location>
+<marker>Katz, 1966</marker>
+<rawString>Katz, G. (1966), The philosophy of Language, Harper and Row, New-York.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>G Lakoff</author>
+<author>M Johnson</author>
+</authors>
+<title>Metaphors we Live By,</title>
+<date>1980</date>
+<publisher>University of Chicago Press.</publisher>
+<marker>Lakoff, Johnson, 1980</marker>
+<rawString>Lakoff, G., Johnson, M. (1980), Metaphors we Live By, University of Chicago Press.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>B Levin</author>
+</authors>
+<title>English verb Classes and Alternations: A Preliminary Investigation,</title>
+<date>1993</date>
+<publisher>Univ. Press.</publisher>
+<location>Chicago</location>
+<marker>Levin, 1993</marker>
+<rawString>Levin, B., (1993), English verb Classes and Alternations: A Preliminary Investigation, Chicago Univ. Press.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>GD Nunberg</author>
+<author>A Zaenen</author>
+</authors>
+<date>1992</date>
+<booktitle>Systematic Polysetny in Lexicology and Lexicography, proc Euralex92,</booktitle>
+<location>Tampere, Finland.</location>
+<marker>Nunberg, Zaenen, 1992</marker>
+<rawString>Nunberg, GD., Zaenen, A., (1992), Systematic Polysetny in Lexicology and Lexicography, proc Euralex92, Tampere, Finland.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>N Ostler</author>
+<author>S Atkins</author>
+</authors>
+<title>Predictable Meaning Shifts: some lexical properties of lexical implication rules,</title>
+<date>1992</date>
+<booktitle>Lexical Semantics and Knowledge Representation,</booktitle>
+<editor>in J. Pustcjovsky and S. Bergler (eds.)</editor>
+<publisher>Springer Verlag.</publisher>
+<marker>Ostler, Atkins, 1992</marker>
+<rawString>Ostler, N., Atkins, S., (1992), Predictable Meaning Shifts: some lexical properties of lexical implication rules, in J. Pustcjovsky and S. Bergler (eds.) Lexical Semantics and Knowledge Representation, Springer Verlag.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>N PerneIle</author>
+</authors>
+<title>Raisonnement par dqaut et lexique generatif,</title>
+<date>1998</date>
+<location>LIPN, Paris.</location>
+<note>PhD dissertation,</note>
+<marker>PerneIle, 1998</marker>
+<rawString>PerneIle, N., (1998), Raisonnement par dqaut et lexique generatif, PhD dissertation, LIPN, Paris.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>S Pinker</author>
+</authors>
+<title>Learnability and Cognition,</title>
+<date>1993</date>
+<publisher>MEI&amp;apos; Press.</publisher>
+<marker>Pinker, 1993</marker>
+<rawString>Pinker, S., (1993), Learnability and Cognition, MEI&amp;apos; Press.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>j Pustejovsky</author>
+</authors>
+<date>1991</date>
+<journal>The Generative Lexicon, Computational Linguistics,</journal>
+<volume>vol</volume>
+<pages>17--4</pages>
+<marker>Pustejovsky, 1991</marker>
+<rawString>Pustejovsky, j., (1991), The Generative Lexicon, Computational Linguistics, vol 17-4.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>J Pustejovsky</author>
+</authors>
+<title>The Generative Lexicon,</title>
+<date>1995</date>
+<publisher>MIT Press.</publisher>
+<marker>Pustejovsky, 1995</marker>
+<rawString>Pustejovsky, J., (1995), The Generative Lexicon, MIT Press.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>V Raskin</author>
+<author>S Niremburg</author>
+</authors>
+<title>Lexical semantics of adjectrives, a micro-theory of adjectival meaning,</title>
+<date>1995</date>
+<journal>MCCS report</journal>
+<pages>95--288</pages>
+<marker>Raskin, Niremburg, 1995</marker>
+<rawString>Raskin, V., Niremburg, S., (1995) Lexical semantics of adjectrives, a micro-theory of adjectival meaning, MCCS report 95-288.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>P Saint-Dizier</author>
+</authors>
+<title>A Logic Programming interpretation of Type Coercion Mille generative lexicon,</title>
+<date>1986</date>
+<booktitle>in proc. NLULP&amp;apos;96,</booktitle>
+<location>Lisbon.</location>
+<marker>Saint-Dizier, 1986</marker>
+<rawString>Saint-Dizier, P. (1986) A Logic Programming interpretation of Type Coercion Mille generative lexicon, in proc. NLULP&amp;apos;96, Lisbon.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>P Saint-Dizier</author>
+</authors>
+<title>Verb semantic classes based on &amp;apos;alternations&amp;apos; and on WordNet-like semantic criteria:</title>
+<date>1996</date>
+<marker>Saint-Dizier, 1996</marker>
+<rawString>Saint-Dizier, P., (1996), Verb semantic classes based on &amp;apos;alternations&amp;apos; and on WordNet-like semantic criteria:</rawString>
+</citation>
+<citation valid="false">
+<title>a powerful convergence, in proc.</title>
+<booktitle>Predicative Forms in Natural language and in lexical knowledge bases, 1111T,</booktitle>
+<location>Toulouse.</location>
+<marker></marker>
+<rawString>a powerful convergence, in proc. Predicative Forms in Natural language and in lexical knowledge bases, 1111T, Toulouse.</rawString>
+</citation>
+</citationList>
+</algorithm>
+</algorithms>

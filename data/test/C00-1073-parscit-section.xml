@@ -1,0 +1,864 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<algorithms version="110505">
+<algorithm name="SectLabel" version="110505">
+<variant no="0" confidence="0.000057">
+<title confidence="0.71406">
+Automatic Optimization of Dialogue Management
+</title>
+<note confidence="0.86486775">
+Diane J. Litman, Michael S. Kearns, Satinder Singh, Marilyn A. Walker
+AT&amp;T Labs Research
+180 Park Avenue
+Florham Park, NJ 07932 USA
+</note>
+<email confidence="0.966788">
+{diane,mkearns,baveja,walkerg@research.att.com
+</email>
+<sectionHeader confidence="0.999457" genericHeader="abstract">
+Abstract
+</sectionHeader>
+<bodyText confidence="0.999714888888889">
+Designing the dialogue strategy of a spoken dialogue
+system involves many nontrivial choices. This pa-
+per presents a reinforcement learning approach for
+automatically optimizing a dialogue strategy that
+addresses the technical challenges in applying re-
+inforcement learning to a working dialogue system
+with human users. We then show that our approach
+measurably improves performance in an experimen-
+tal system.
+</bodyText>
+<sectionHeader confidence="0.968724" genericHeader="keywords">
+1 Introduction
+</sectionHeader>
+<bodyText confidence="0.9998936875">
+Recent advances in spoken language understanding
+have made it possible to develop dialogue systems
+for many applications. The role of the dialogue man-
+ager in such systems is to interact in a natural way
+to help the user complete the tasks that the system
+is designed to support. Typically, an expert designs
+a dialogue manager by hand, and has to make many
+nontrivial design choices that can seriously impact
+system performance. This paper applies reinforce-
+ment learning (RL) to automatically learn design
+choices that optimize system performance for a cho-
+sen performance measure (Levin et al., 2000; Walker
+et al., 1998).
+Consider the spoken dialogue system named NJ-
+Fun, which we built to help users find fun places
+to go in New Jersey. A sample dialogue with NJ-
+Fun is shown in Figure 1, with system utterances
+labeled Si and user utterances labeled Ui. When
+NJFun greets the user, it can provide an open greet-
+ing such as utterance S1, expecting that the user
+will take the initiative. Alternatively, it can pro-
+vide a directive greeting in which the system takes
+the initiative, as in &amp;quot;Welcome to NJFun. Please say
+an activity name or say `list activities&apos; for a list of
+activities I know about.&amp;quot; After the user&apos;s response
+U1, NJFun must decide whether it should explicitly
+confirm its understanding, as in utterances S2 and
+S3. NJFun can also simply continue on with the di-
+alogue, as when it does not explicitly confirm that
+the user wants to find out about wineries. In NJFun,
+as shown in more detail below, decisions about ini-
+tiative and confirmation strategies alone result in a
+</bodyText>
+<footnote confidence="0.467711666666667">
+S1: Welcome to NJRun. How may I help you?
+U1: I&apos;d like to find um winetasting in Lambertville
+in the morning. (ASR output: I&apos;d like to find
+out wineries the in the Lambertville in the
+morning.)
+S2: Did you say you are interested in Lambertville?
+U2: Yes.
+S3: Did you say you want to go in the morning?
+U3: Yes.
+</footnote>
+<note confidence="0.31989675">
+S4: I found a winery near Lambertville that is
+open in the morning. It is [. . . ] Please give
+me feedback by saying `good&apos;, `so-so&apos;, or `bad&apos;.
+U4: Good.
+</note>
+<figureCaption confidence="0.998552">
+Figure 1: An example dialogue with NJFun.
+</figureCaption>
+<bodyText confidence="0.999971891304348">
+search space of 242 potential global dialogue strate-
+gies. Furthermore, the performance of a dialogue
+strategy depends on many other factors, such as
+the user population, the robustness of the automatic
+speech recognizer (ASR), and task difficulty (Kamm
+et al., 1998; Danieli and Gerbino, 1995).
+In the main, previous research has treated the
+specification of the dialogue management strategy
+as an iterative design problem: several versions of a
+system are created, dialogue corpora are collected
+with human users interacting with different ver-
+sions of the system, a number of evaluation met-
+rics are collected for each dialogue, and the differ-
+ent versions are statistically compared (Danieli and
+Gerbino, 1995; Sanderman et al., 1998). Due to the
+costs of experimentation, only a few global strategies
+are typically explored in any one experiment.
+However, recent work has suggested that dialogue
+strategy can be designed using the formalism of
+Markov decision processes (MDPs) and the algo-
+rithms of RL (Biermann and Long, 1996; Levin et
+al., 2000; Walker et al., 1998; Singh et al., 1999).
+More specifically, the MDP formalism suggests a
+method for optimizing dialogue strategies from sam-
+ple dialogue data. The main advantage of this ap-
+proach is the potential for computing an optimal di-
+alogue strategy within a much larger search space,
+using a relatively small number of training dialogues.
+This paper presents an application of RL to the
+problem of optimizing dialogue strategy selection in
+the NJFun system, and experimentally demonstrates
+the utility of the approach. Section 2 explains how
+we apply RL to dialogue systems, then Section 3
+describes the NJFun system in detail. Section 4 de-
+scribes how NJFun optimizes its dialogue strategy
+from experimentally obtained dialogue data. Sec-
+tion 5 reports results from testing the learned strat-
+egy demonstrating that our approach improves task
+completion rates (our chosen measure for perfor-
+mance optimization). A companion paper provides
+only an abbreviated system and dialogue manager
+description, but includes additional results not pre-
+sented here (Singh et al., 2000), such as analysis es-
+tablishing the veracity of the MDP we learn, and
+comparisons of our learned strategy to strategies
+hand-picked by dialogue experts.
+</bodyText>
+<sectionHeader confidence="0.942347" genericHeader="introduction">
+2 Reinforcement Learning for
+Dialogue
+</sectionHeader>
+<bodyText confidence="0.98962854">
+Due to space limitations, we present only a brief
+overview of how dialogue strategy optimization can
+be viewed as an RL problem; for more details,
+see Singh et al. (1999), Walker et al. (1998), Levin
+et al. (2000). A dialogue strategy is a mapping from
+a set of states (which summarize the entire dialogue
+so far) to a set of actions (such as the system&apos;s utter-
+ances and database queries). There are multiple rea-
+sonable action choices in each state; typically these
+choices are made by the system designer. Our RL-
+based approach is to build a system that explores
+these choices in a systematic way through experi-
+ments with representative human users. A scalar
+performance measure, called a reward, is then cal-
+culated for each experimental dialogue. (We dis-
+cuss various choices for this reward measure later,
+but in our experiments only terminal dialogue states
+have nonzero rewards, and the reward measures are
+quantities directly obtainable from the experimental
+set-up, such as user satisfaction or task completion.)
+This experimental data is used to construct an MDP
+which models the users&apos; interaction with the system.
+The problem of learning the best dialogue strategy
+from data is thus reduced to computing the optimal
+policy for choosing actions in an MDP that is, the
+system&apos;s goal is to take actions so as to maximize
+expected reward. The computation of the optimal
+policy given the MDP can be done efficiently using
+standard RL algorithms.
+How do we build the desired MDP from sample
+dialogues? Following Singh et al. (1999), we can
+view a dialogue as a trajectory in the chosen state
+space determined by the system actions and user
+responses:
+s1 —�a1;r1 s2 —�a2;r2 s3 —�a3;r3 ...
+Here si —�ai;ri si+1 indicates that at the ith ex-
+change, the system was in state si, executed action
+ai, received reward ri, and then the state changed
+to si+1. Dialogue sequences obtained from training
+data can be used to empirically estimate the transi-
+tion probabilities P(s&apos;ls, a) (denoting the probabil-
+ity of a transition to state s&apos;, given that the system
+was in state s and took action a), and the reward
+function R(s, a). The estimated transition probabil-
+ities and reward function constitute an MDP model
+of the user population&apos;s interaction with the system.
+Given this MDP, the expected cumulative reward
+(or Q-value) Q(s, a) of taking action a from state s
+can be calculated in terms of the Q-values of succes-
+sor states via the following recursive equation:
+</bodyText>
+<equation confidence="0.926579">
+P(s&apos;ls, a) max Q(s&apos;, a&apos;).
+al
+</equation>
+<bodyText confidence="0.999950032258065">
+These Q-values can be estimated to within a desired
+threshold using the standard RL value iteration al-
+gorithm (Sutton, 1991), which iteratively updates
+the estimate of Q(s, a) based on the current Q-values
+of neighboring states. Once value iteration is com-
+pleted, the optimal dialogue strategy (according to
+our estimated model) is obtained by selecting the
+action with the maximum Q-value at each dialogue
+state.
+While this approach is theoretically appealing, the
+cost of obtaining sample human dialogues makes it
+crucial to limit the size of the state space, to mini-
+mize data sparsity problems, while retaining enough
+information in the state to learn an accurate model.
+Our approach is to work directly in a minimal but
+carefully designed state space (Singh et al., 1999).
+The contribution of this paper is to empirically
+validate a practical methodology for using RL to
+build a dialogue system that optimizes its behav-
+ior from dialogue data. Our methodology involves
+1) representing a dialogue strategy as a mapping
+from each state in the chosen state space S to a
+set of dialogue actions, 2) deploying an initial train-
+ing system that generates exploratory training data
+with respect to S, 3) constructing an MDP model
+from the obtained training data, 4) using value iter-
+ation to learn the optimal dialogue strategy in the
+learned MDP, and 4) redeploying the system using
+the learned state/action mapping. The next section
+details the use of this methodology to design the
+NJFun system.
+</bodyText>
+<sectionHeader confidence="0.858161" genericHeader="method">
+3 The NJFun System
+</sectionHeader>
+<bodyText confidence="0.999766833333333">
+NJFun is a real-time spoken dialogue system that
+provides users with information about things to do
+in New Jersey. NJFun is built using a general pur-
+pose platform for spoken dialogue systems (Levin
+et al., 1999), with support for modules for auto-
+matic speech recognition (ASR), spoken language
+</bodyText>
+<figure confidence="0.465850666666667">
+Q(s, a) = R(s, a) +
+s&apos;
+Action Prompt
+</figure>
+<note confidence="0.9752096">
+GreetS Welcome to NJFun. Please say an activity name or say `list activities&apos; for a list of activities I know
+GreetU about.
+Welcome to NJFun. How may I help you?
+ReAsk1S I know about amusement parks, aquariums, cruises, historic sites, museums, parks, theaters,
+ReAsk1M wineries, and zoos. Please say an activity name from this list.
+Please tell me the activity type.You can also tell me the location and time.
+Ask2S Please say the name of the town or city that you are interested in.
+Ask2U Please give me more information.
+ReAsk2S Please tell me the name of the town or city that you are interested in.
+ReAsk2M Please tell me the location that you are interested in. You can also tell me the time.
+</note>
+<figureCaption confidence="0.998908">
+Figure 2: Sample initiative strategy choices.
+</figureCaption>
+<bodyText confidence="0.999865">
+understanding, text-to-speech (TTS), database ac-
+cess, and dialogue management. NJFun uses a
+speech recognizer with stochastic language and un-
+derstanding models trained from example user ut-
+terances, and a TTS system based on concatena-
+tive diphone synthesis. Its database is populated
+from the nj.online webpage to contain information
+about activities. NJFun indexes this database using
+three attributes: activity type, location, and time of
+day (which can assume values morning, afternoon,
+or evening).
+Informally, the NJFun dialogue manager sequen-
+tially queries the user regarding the activity, loca-
+tion and time attributes, respectively. NJFun first
+asks the user for the current attribute (and possibly
+the other attributes, depending on the initiative).
+If the current attribute&apos;s value is not obtained, NJ-
+Fun asks for the attribute (and possibly the later
+attributes) again. If NJFun still does not obtain
+a value, NJFun moves on to the next attribute(s).
+Whenever NJFun successfully obtains a value, it
+can confirm the value, or move on to the next at-
+tribute(s). When NJFun has finished acquiring at-
+tributes, it queries the database (using a wildcard
+for each unobtained attribute value). The length of
+NJFun dialogues ranges from 1 to 12 user utterances
+before the database query. Although the NJFun di-
+alogues are fairly short (since NJFun only asks for
+an attribute twice), the information access part of
+the dialogue is similar to more complex tasks.
+As discussed above, our methodology for using RL
+to optimize dialogue strategy requires that all poten-
+tial actions for each state be specified. Note that at
+some states it is easy for a human to make the cor-
+rect action choice. We made obvious dialogue strat-
+egy choices in advance, and used learning only to
+optimize the difficult choices (Walker et al., 1998).
+In NJFun, we restricted the action choices to 1) the
+type of initiative to use when asking or reasking for
+an attribute, and 2) whether to confirm an attribute
+value once obtained. The optimal actions may vary
+with dialogue state, and are subject to active debate
+in the literature.
+The examples in Figure 2 show that NJFun can
+ask the user about the first 2 attributes) using three
+types of initiative, based on the combination of the
+wording of the system prompt (open versus direc-
+tive), and the type of grammar NJFun uses during
+ASR (restrictive versus non-restrictive). If NJFun
+uses an open question with an unrestricted gram-
+mar, it is using user initiative (e.g., GreetU). If NJ-
+Fun instead uses a directive prompt with a restricted
+grammar, the system is using system initiative (e.g.,
+GreetS). If NJFun uses a directive question with a
+non-restrictive grammar, it is using mixed initiative,
+because it allows the user to take the initiative by
+supplying extra information (e.g., ReAsk1M).
+NJFun can also vary the strategy used to confirm
+each attribute. If NJFun asks the user to explicitly
+verify an attribute, it is using explicit confirmation
+(e.g., ExpConf2 for the location, exemplified by S2
+in Figure 1). If NJFun does not generate any con-
+firmation prompt, it is using no confirmation (the
+NoConf action).
+Solely for the purposes of controlling its operation
+(as opposed to the learning, which we discuss in a
+moment), NJFun internally maintains an operations
+vector of 14 variables. 2 variables track whether the
+system has greeted the user, and which attribute
+the system is currently attempting to obtain. For
+each of the 3 attributes, 4 variables track whether
+the system has obtained the attribute&apos;s value, the
+system&apos;s confidence in the value (if obtained), the
+number of times the system has asked the user about
+the attribute, and the type of ASR grammar most
+recently used to ask for the attribute.
+The formal state space S maintained by NJFun
+for the purposes of learning is much simpler than
+the operations vector, due to the data sparsity con-
+cerns already discussed. The dialogue state space
+S contains only 7 variables, as summarized in Fig-
+ure 3. S is computed from the operations vector us-
+ing a hand-designed algorithm. The &amp;quot;greet&amp;quot; variable
+</bodyText>
+<footnote confidence="0.979956333333333">
+1&amp;quot;Greet&amp;quot; is equivalent to asking for the first attribute. NJ-
+Fun always uses system initiative for the third attribute, be-
+cause at that point the user can only provide the time of day.
+</footnote>
+<note confidence="0.833962">
+greet attr conf val times gram hist
+0,1 1,2,3,4 0,1,2,3,4 0,1 0,1,2 0,1 0,1
+</note>
+<figureCaption confidence="0.959536">
+Figure 3: State features and values.
+</figureCaption>
+<bodyText confidence="0.999948697674419">
+tracks whether the system has greeted the user or
+not (no=0, yes=1). &amp;quot;Attr&amp;quot; specifies which attribute
+NJFun is currently attempting to obtain or ver-
+ify (activity=1, location=2, time=3, done with at-
+tributes=4). &amp;quot;Conf&amp;quot; represents the confidence that
+NJFun has after obtaining a value for an attribute.
+The values 0, 1, and 2 represent the lowest, middle
+and highest ASR confidence values.2 The values 3
+and 4 are set when ASR hears &amp;quot;yes&amp;quot; or &amp;quot;no&amp;quot; after a
+confirmation question. &amp;quot;Val&amp;quot; tracks whether NJFun
+has obtained a value for the attribute (no=0, yes=1).
+&amp;quot;Times&amp;quot; tracks the number of times that NJFun has
+asked the user about the attribute. &amp;quot;Gram&amp;quot; tracks
+the type of grammar most recently used to obtain
+the attribute (0=non-restrictive, 1=restrictive). Fi-
+nally, &amp;quot;hist&amp;quot; (history) represents whether NJFun had
+trouble understanding the user in the earlier part of
+the conversation (bad=0, good=1). We omit the full
+definition, but as an example, when NJFun is work-
+ing on the second attribute (location), the history
+variable is set to 0 if NJFun does not have an ac-
+tivity, has an activity but has no confidence in the
+value, or needed two queries to obtain the activity.
+As mentioned above, the goal is to design a small
+state space that makes enough critical distinctions to
+support learning. The use of S reduces the number
+of states to only 62, and supports the construction of
+an MDP model that is not sparse with respect to S,
+even using limited training data.3 The state space
+that we utilize here, although minimal, allows us
+to make initiative decisions based on the success of
+earlier exchanges, and confirmation decisions based
+on ASR confidence scores and grammars.
+The state/action mapping representing NJFun&apos;s
+initial dialogue strategy EIC (Exploratory for Ini-
+tiative and Confirmation) is in Figure 4. Only the
+exploratory portion of the strategy is shown, namely
+those states for which NJFun has an action choice.
+For each such state, we list the two choices of actions
+available. (The action choices in boldface are the
+ones eventually identified as optimal by the learning
+process, and are discussed in detail later.) The EIC
+strategy chooses randomly between these two ac-
+</bodyText>
+<footnote confidence="0.721007888888889">
+2For each utterance, the ASR output includes not only the
+recognized string, but also an associated acoustic confidence
+score. Based on data obtained during system development,
+we defined a mapping from raw confidence values into 3 ap-
+proximately equally populated partitions.
+362 refers to those states that can actually occur in a di-
+alogue. For example, greet=0 is only possible in the initial
+dialogue state &amp;quot;0 1 0 0 0 0 0&amp;quot;. Thus, all other states beginning
+with 0 (e.g. &amp;quot;0 1 0 0 1 0 0&amp;quot;) will never occur.
+</footnote>
+<table confidence="0.998241818181819">
+g a State g h Action Choices
+c v t
+0 1 0 0 0 0 0 GreetS,GreetU
+1 1 0 0 1 0 0 ReAsk1S,ReAsk1M
+1 1 0 1 0 0 0 NoConf,ExpConf1
+1 1 0 1 0 1 0 NoConf,ExpConf1
+1 1 1 1 0 0 0 NoConf,ExpConf1
+1 1 1 1 0 1 0 NoConf,ExpConf1
+1 1 2 1 0 0 0 NoConf,ExpConf1
+1 1 2 1 0 1 0 NoConf,ExpConf1
+1 1 4 0 0 0 0 ReAsk1S,ReAsk1M
+1 1 4 0 1 0 0 ReAsk1S,ReAsk1M
+1 2 0 0 0 0 0 Ask2S,Ask2U
+1 2 0 0 0 0 1 Ask2S,Ask2U
+1 2 0 0 1 0 0 ReAsk2S,ReAsk2M
+1 2 0 0 1 0 1 ReAsk2S,ReAsk2M
+1 2 0 1 0 0 0 NoConf,ExpConf2
+1 2 0 1 0 0 1 NoConf,ExpConf2
+1 2 0 1 0 1 0 NoConf,ExpConf2
+1 2 0 1 0 1 1 NoConf,ExpConf2
+1 2 1 1 0 0 0 NoConf,ExpConf2
+1 2 1 1 0 0 1 NoConf,ExpConf2
+1 2 1 1 0 1 0 NoConf,ExpConf2
+1 2 1 1 0 1 1 NoConf,ExpConf2
+1 2 2 1 0 0 0 NoConf,ExpConf2
+1 2 2 1 0 0 1 NoConf,ExpConf2
+1 2 2 1 0 1 0 NoConf,ExpConf2
+1 2 2 1 0 1 1 NoConf,ExpConf2
+1 2 4 0 0 0 0 ReAsk2S,ReAsk2M
+1 2 4 0 0 0 1 ReAsk2S,ReAsk2M
+1 2 4 0 1 0 0 ReAsk2S,ReAsk2M
+1 2 4 0 1 0 1 ReAsk2S,ReAsk2M
+1 3 0 1 0 0 0 NoConf,ExpConf3
+1 3 0 1 0 0 1 NoConf,ExpConf3
+1 3 0 1 0 1 0 NoConf,ExpConf3
+1 3 0 1 0 1 1 NoConf,ExpConf�
+1 3 1 1 0 0 0 NoConf,ExpConf�
+1 3 1 1 0 0 1 NoConf,ExpConf3
+1 3 1 1 0 1 0 NoConf,ExpConf3
+1 3 1 1 0 1 1 NoConf,ExpConf�
+1 3 2 1 0 0 0 NoConf,ExpConf�
+1 3 2 1 0 0 1 NoConf,ExpConf3
+1 3 2 1 0 1 0 NoConf,ExpConf3
+1 3 2 1 0 1 1 NoConf,ExpConf�
+</table>
+<figureCaption confidence="0.996362">
+Figure 4: Exploratory portion of EIC strategy.
+</figureCaption>
+<bodyText confidence="0.983531777777778">
+tions in the indicated state, to maximize exploration
+and minimize data sparseness when constructing our
+model. Since there are 42 states with 2 choices each,
+there is a search space of 242 potential global di-
+alogue strategies; the goal of RL is to identify an
+apparently optimal strategy from this large search
+space. Note that due to the randomization of the
+EIC strategy, the prompts are designed to ensure
+the coherence of all possible action sequences.
+</bodyText>
+<figureCaption confidence="0.929124333333333">
+Figure 5 illustrates how the dialogue strategy in
+Figure 4 generates the dialogue in Figure 1. Each
+row indicates the state that NJFun is in, the ac-
+</figureCaption>
+<table confidence="0.726352285714286">
+State Action Turn Reward
+g a c v t g h
+0 1 0 0 0 0 0 GreetU S1 0
+1 1 2 1 0 0 0 NoConf - 0
+1 2 2 1 0 0 1 ExpConf2 S2 0
+1 3 2 1 0 0 1 ExpConf3 S3 0
+1 4 0 0 0 0 0 Tell S4 1
+</table>
+<figureCaption confidence="0.999179">
+Figure 5: Generating the dialogue in Figure 1.
+</figureCaption>
+<bodyText confidence="0.999981888888889">
+tion executed in this state, the corresponding turn
+in Figure 1, and the reward received. The initial
+state represents that NJFun will first attempt to ob-
+tain attribute 1. NJFun executes GreetU (although
+as shown in Figure 4, GreetS is also possible), gen-
+erating the first utterance in Figure 1. After the
+user&apos;s response, the next state represents that NJ-
+Fun has now greeted the user and obtained the ac-
+tivity value with high confidence, by using a non-
+restrictive grammar. NJFun then chooses the No-
+Conf strategy, so it does not attempt to confirm
+the activity, which causes the state to change but
+no prompt to be generated. The third state repre-
+sents that NJFun is now working on the second at-
+tribute (location), that it already has this value with
+high confidence (location was obtained with activity
+after the user&apos;s first utterance), and that the dia-
+logue history is good.4 This time NJFun chooses the
+ExpConf2 strategy, and confirms the attribute with
+the second NJFun utterance, and the state changes
+again. The processing of time is similar to that of lo-
+cation, which leads NJFun to the final state, where it
+performs the action &amp;quot;Tell&amp;quot; (corresponding to query-
+ing the database, presenting the results to the user,
+and asking the user to provide a reward). Note that
+in NJFun, the reward is always 0 except at the ter-
+minal state, as shown in the last column of Figure 5.
+</bodyText>
+<sectionHeader confidence="0.616088" genericHeader="method">
+4 Experimentally Optimizing a
+Strategy
+</sectionHeader>
+<bodyText confidence="0.999212357142857">
+We collected experimental dialogues for both train-
+ing and testing our system. To obtain training di-
+alogues, we implemented NJFun using the EIC dia-
+logue strategy described in Section 3. We used these
+dialogues to build an empirical MDP, and then com-
+puted the optimal dialogue strategy in this MDP (as
+described in Section 2). In this section we describe
+our experimental design and the learned dialogue
+strategy. In the next section we present results from
+testing our learned strategy and show that it im-
+proves task completion rates, the performance mea-
+sure we chose to optimize.
+Experimental subjects were employees not associ-
+ated with the NJFun project. There were 54 sub-
+</bodyText>
+<footnote confidence="0.809673666666667">
+4Recall that only the current attribute&apos;s features are in the
+state. However, the operations vector contains information
+regarding previous attributes.
+</footnote>
+<bodyText confidence="0.998018">
+jects for training and 21 for testing. Subjects were
+distributed so the training and testing pools were
+balanced for gender, English as a first language, and
+expertise with spoken dialogue systems.
+During both training and testing, subjects carried
+out free-form conversations with NJFun to complete
+six application tasks. For example, the task exe-
+cuted by the user in Figure 1 was: &amp;quot;You feel thirsty
+and want to do some winetasting in the morning.
+Are there any wineries close by your house in Lam-
+bertville?&amp;quot; Subjects read task descriptions on a web
+page, then called NJFun from their office phone.
+At the end of the task, NJFun asked for feedback
+on their experience (e.g., utterance S4 in Figure 1).
+Users then hung up the phone and filled out a user
+survey (Singh et al., 2000) on the web.
+The training phase of the experiment resulted in
+311 complete dialogues (not all subjects completed
+all tasks), for which NJFun logged the sequence
+of states and the corresponding executed actions.
+The number of samples per state for the initial ask
+choices are:
+</bodyText>
+<equation confidence="0.990964">
+0 1 0 0 0 0 0 GreetS=155 GreetU=156
+1 2 0 0 0 0 0 Ask2S=93 Ask2U=72
+1 2 0 0 0 0 1 Ask2S=36 Ask2U=48
+</equation>
+<bodyText confidence="0.999878562500001">
+Such data illustrates that the random action choice
+strategy led to a fairly balanced action distribution
+per state. Similarly, the small state space, and the
+fact that we only allowed 2 action choices per state,
+prevented a data sparseness problem. The first state
+in Figure 4, the initial state for every dialogue, was
+the most frequently visited state (with 311 visits).
+Only 8 states that occur near the end of a dialogue
+were visited less than 10 times.
+The logged data was then used to construct the
+empirical MDP. As we have mentioned, the measure
+we chose to optimize is a binary reward function
+based on the strongest possible measure of task com-
+pletion, called StrongComp, that takes on value
+1 if NJFun queries the database using exactly the
+attributes specified in the task description, and 0
+otherwise. Then we computed the optimal dialogue
+strategy in this MDP using RL (cf. Section 2). The
+action choices constituting the learned strategy are
+in boldface in Figure 4. Note that no choice was
+fixed for several states, meaning that the Q-values
+were identical after value iteration. Thus, even when
+using the learned strategy, NJFun still sometimes
+chooses randomly between certain action pairs.
+Intuitively, the learned strategy says that the op-
+timal use of initiative is to begin with user initia-
+tive, then back off to either mixed or system ini-
+tiative when reasking for an attribute. Note, how-
+ever, that the specific backoff method differs with
+attribute (e.g., system initiative for attribute 1, but
+generally mixed initiative for attribute 2). With
+respect to confirmation, the optimal strategy is to
+mainly confirm at lower confidence values. Again,
+however, the point where confirmation becomes un-
+necessary differs across attributes (e.g., confidence
+level 2 for attribute 1, but sometimes lower levels
+for attributes 2 and 3), and also depends on other
+features of the state besides confidence (e.g., gram-
+mar and history). This use of ASR confidence by the
+dialogue strategy is more sophisticated than previ-
+ous approaches, e.g. (Niimi and Kobayashi, 1996;
+Litman and Pan, 2000). NJFun can learn such fine-
+grained distinctions because the optimal strategy is
+based on a comparison of 242 possible exploratory
+strategies. Both the initiative and confirmation re-
+sults suggest that the beginning of the dialogue was
+the most problematic for NJFun. Figure 1 is an ex-
+ample dialogue using the optimal strategy.
+</bodyText>
+<sectionHeader confidence="0.753052" genericHeader="method">
+5 Experimentally Evaluating the
+Strategy
+</sectionHeader>
+<bodyText confidence="0.957504512820513">
+For the testing phase, NJFun was reimplemented to
+use the learned strategy. 21 test subjects then per-
+formed the same 6 tasks used during training, re-
+sulting in 124 complete test dialogues. One of our
+main results is that task completion as measured by
+StrongComp increased from 52% in training to 64%
+in testing (p &lt; .06).5
+There is also a significant interaction effect
+between strategy and task (p&lt;.01) for Strong-
+Comp. Previous work has suggested that novice
+users perform comparably to experts after only 2
+tasks (Kamm et al., 1998). Since our learned strat-
+egy was based on 6 tasks with each user, one expla-
+nation of the interaction effect is that the learned
+strategy is slightly optimized for expert users. To
+explore this hypothesis, we divided our corpus into
+dialogues with &amp;quot;novice&amp;quot; (tasks 1 and 2) and &amp;quot;ex-
+pert&amp;quot; (tasks 3-6) users. We found that the learned
+strategy did in fact lead to a large and significant
+improvement in StrongComp for experts (EIC=.46,
+learned=.69, p&lt;.001), and a non-significant degra-
+dation for novices (EIC=.66, learned=.55, p&lt;.3).
+An apparent limitation of these results is that EIC
+may not be the best baseline strategy for comparison
+to our learned strategy. A more standard alternative
+would be comparison to the very best hand-designed
+fixed strategy. However, there is no agreement in the
+literature, nor amongst the authors, as to what the
+best hand-designed strategy might have been. There
+is agreement, however, that the best strategy is sen-
+sitive to many unknown and unmodeled factors: the
+5The experimental design described above consists of 2
+factors: the within-in group factor strategy and the between-
+groups factor task. We use a two-way analysis of variance
+(ANOVA) to compute whether main and interaction effects
+of strategy are statistically significant (p&lt;.05) or indicative
+of a statistical trend (p &lt; .10). Main effects of strategy are
+task-independent, while interaction effects involving strategy
+are task-dependent.
+</bodyText>
+<table confidence="0.999444285714286">
+Measure EIC Learned p
+(n=311) (n=124)
+StrongComp 0.52 0.64 .06
+WeakComp 1.75 2.19 .02
+ASR 2.50 2.67 .04
+Feedback 0.18 0.11 .42
+UserSat 13.38 13.29 .86
+</table>
+<tableCaption confidence="0.99991">
+Table 1: Main effects of dialogue strategy.
+</tableCaption>
+<bodyText confidence="0.999973351851852">
+user population, the specifics of the task, the par-
+ticular ASR used, etc. Furthermore, EIC was care-
+fully designed so that the random choices it makes
+never results in an unnatural dialogue. Finally, a
+companion paper (Singh et al., 2000) shows that the
+performance of the learned strategy is better than
+several &amp;quot;standard&amp;quot; fixed strategies (such as always
+use system-initiative and no-confirmation).
+Although many types of measures have been used
+to evaluate dialogue systems (e.g., task success,
+dialogue quality, efficiency, usability (Danieli and
+Gerbino, 1995; Kamm et al., 1998)), we optimized
+only for one task success measure, StrongComp.
+However, we also examined the performance of the
+learned strategy using other evaluation measures
+(which possibly could have been used as our reward
+function). WeakComp is a relaxed version of task
+completion that gives partial credit: if all attribute
+values are either correct or wildcards, the value is the
+sum of the correct number of attributes. Otherwise,
+at least one attribute is wrong (e.g., the user says
+&amp;quot;Lambertville&amp;quot; but the system hears &amp;quot;Morristown&amp;quot;),
+and the value is -1. ASR is a dialogue quality mea-
+sure that approximates speech recognition accuracy
+for the database query, and is computed by adding
+1 for each correct attribute value and .5 for every
+wildcard. Thus, if the task is to go winetasting
+near Lambertville in the morning, and the system
+queries the database for an activity in New Jersey
+in the morning, StrongComp=0, WeakComp=1, and
+ASR=2. In addition to the objective measures dis-
+cussed above, we also computed two subjective us-
+ability measures. Feedback is obtained from the
+dialogue (e.g. S4 in Figure 5), by mapping good,
+so-so, bad to 1, 0, and -1, respectively. User satis-
+faction (UserSat, ranging from 0-20) is obtained by
+summing the answers of the web-based user survey.
+Table 1 summarizes the difference in performance
+of NJFun for our original reward function and the
+above alternative evaluation measures, from train-
+ing (EIC) to test (learned strategy for StrongComp).
+For WeakComp, the average reward increased from
+1.75 to 2.19 (p &lt; 0.02), while for ASR the average
+reward increased from 2.5 to 2.67 (p &lt; 0.04). Again,
+these improvements occur even though the learned
+strategy was not optimized for these measures.
+The last two rows of the table show that for the
+subjective measures, performance does not signifi-
+cantly differ for the EIC and learned strategies. In-
+terestingly, the distributions of the subjective mea-
+sures move to the middle from training to testing,
+i.e., test users reply to the survey using less extreme
+answers than training users. Explaining the subjec-
+tive results is an area for future work.
+</bodyText>
+<sectionHeader confidence="0.999152" genericHeader="conclusions">
+6 Discussion
+</sectionHeader>
+<bodyText confidence="0.999967673913044">
+This paper presents a practical methodology for ap-
+plying RL to optimizing dialogue strategies in spo-
+ken dialogue systems, and shows empirically that the
+method improves performance over the EIC strategy
+in NJFun. A companion paper (Singh et al., 2000)
+shows that the learned strategy is not only better
+than EIC, but also better than other fixed choices
+proposed in the literature. Our results demonstrate
+that the application of RL allows one to empirically
+optimize a system&apos;s dialogue strategy by searching
+through a much larger search space than can be ex-
+plored with more traditional methods (i.e. empiri-
+cally testing several versions of a system).
+RL has been appled to dialogue systems in pre-
+vious work, but our approach differs from previous
+work in several respects. Biermann and Long (1996)
+did not test RL in an implemented system, and the
+experiments of Levin et al. (2000) utilized a simu-
+lated user model. Walker et al. (1998)&apos;s methodol-
+ogy is similar to that used here, in testing RL with
+an implemented system with human users. However
+that work only explored strategy choices at 13 states
+in the dialogue, which conceivably could have been
+explored with more traditional methods (as com-
+pared to the 42 choice states explored here).
+We also note that our learned strategy made di-
+alogue decisions based on ASR confidence in con-
+junction with other features, and also varied initia-
+tive and confirmation decisions at a finer grain than
+previous work; as such, our learned strategy is not
+a standard strategy investigated in the dialogue sys-
+tem literature. For example, we would not have pre-
+dicted the complex and interesting back-off strategy
+with respect to initiative when reasking for an at-
+tribute.
+To see how our method scales, we are applying RL
+to dialogue systems for customer care and for travel
+planning, which are more complex task-oriented do-
+mains. As future work, we wish to understand
+the aforementioned results on the subjective reward
+measures, explore the potential difference between
+optimizing for expert users and novices, automate
+the choice of state space for dialogue systems, inves-
+tigate the use of a learned reward function (Walker
+et al., 1998), and explore the use of more informative
+non-terminal rewards.
+</bodyText>
+<sectionHeader confidence="0.98855" genericHeader="acknowledgments">
+Acknowledgements
+</sectionHeader>
+<bodyText confidence="0.7769205">
+The authors thank Fan Jiang for his substantial effort
+in implementing NJFun, Wieland Eckert, Esther Levin,
+Roberto Pieraccini, and Mazin Rahim for their technical
+help, Julia Hirschberg for her comments on a draft of this
+paper, and David McAllester, Richard Sutton, Esther
+Levin and Roberto Pieraccini for helpful conversations.
+</bodyText>
+<sectionHeader confidence="0.790213" genericHeader="references">
+References
+</sectionHeader>
+<reference confidence="0.991938673076923">
+A. W. Biermann and P. M. Long. 1996. The composition
+of messages in speech-graphics interactive systems. In
+Proc. of the International Symposium on Spoken Dia-
+logue, pages 97{100.
+M. Danieli and E. Gerbino. 1995. Metrics for evaluating
+dialogue strategies in a spoken language system. In
+Proc. of the AAAI Spring Symposium on Empirical
+Methods in Discourse Interpretation and Generation,
+pages 34{39.
+C. Kamm, D. Litman, and M. A. Walker. 1998. From
+novice to expert: The effect of tutorials on user exper-
+tise with spoken dialogue systems. In Proc. of the In-
+ternational Conference on Spoken Language Process-
+ing, ICSLP98.
+E. Levin, R. Pieraccini, W. Eckert, G. Di Fabbrizio, and
+S. Narayanan. 1999. Spoken language dialogue: From
+theory to practice. In Proc. IEEE Workshop on Au-
+tomatic Speech Recognition and Understanding, AS-
+RUU99.
+E. Levin, R. Pieraccini, and W. Eckert. 2000. A stochas-
+tic model of human machine interaction for learning
+dialog strategies. IEEE Transactions on Speech and
+Audio Processing, 8(1):11-23.
+D. J. Litman and S. Pan. 2000. Predicting and adapting
+to poor speech recognition in a spoken dialogue sys-
+tem. In Proc. of the Seventeenth National Conference
+on Artificial Intelligence, AAAI-2000.
+Y. Niimi and Y. Kobayashi. 1996. A dialog control strat-
+egy based on the reliability of speech recognition. In
+Proc. of the International Symposium on Spoken Dia-
+logue, pages 157{160.
+A. Sanderman, J. Sturm, E. den Os, L. Boves, and
+A. Cremers. 1998. Evaluation of the dutchtrain
+timetable information system developed in the arise
+project. In Interactive Voice Technology for Telecom-
+munications Applications, IVTTA, pages 91{96.
+S. Singh, M. S. Kearns, D. J. Litman, and M. A. Walker.
+1999. Reinforcement learning for spoken dialogue sys-
+tems. In Proc. NIPS99.
+S. B. Singh, M. S. Kearns, D. J. Litman, and
+M. A. Walker. 2000. Empirical evaluation of a rein-
+forcement learning spoken dialogue system. In Proc.
+of the Seventeenth National Conference on Artificial
+Intelligence, AAAI-2000.
+R. S. Sutton. 1991. Planning by incremental dynamic
+programming. In Proc. Ninth Conference on Machine
+Learning, pages 353{357.
+M. A. Walker, J. C. Fromer, and S. Narayanan. 1998.
+Learning optimal dialogue strategies: A case study of
+a spoken dialogue agent for email. In Proc. of the 86th
+Annual Meeting of the Association of Computational
+Linguistics, COLING/ACL 98, pages 1345{1352.
+</reference>
+</variant>
+</algorithm>
+<algorithm name="AAMatching" version="110505">
+  <results time="1336549349" date="Wed May  9 15:42:29 SGT 2012">
+    <authors></authors>
+    <institutions></institutions>
+  </results>
+</algorithm>
+
+</algorithms>

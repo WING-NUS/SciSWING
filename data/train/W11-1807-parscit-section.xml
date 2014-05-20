@@ -1,0 +1,881 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<algorithms version="110505">
+<algorithm name="SectLabel" version="110505">
+<variant no="0" confidence="0.001146">
+<title confidence="0.9451195">
+Robust Biomedical Event Extraction with Dual Decomposition and Minimal
+Domain Adaptation
+</title>
+<author confidence="0.999004">
+Sebastian Riedel Andrew McCallum
+</author>
+<affiliation confidence="0.999517">
+Department of Computer Science
+University of Massachusetts, Amherst
+</affiliation>
+<email confidence="0.997554">
+{riedel,mccallum}@cs.umass.edu
+</email>
+<sectionHeader confidence="0.998594" genericHeader="abstract">
+Abstract
+</sectionHeader>
+<bodyText confidence="0.9996685">
+We present a joint model for biomedical event
+extraction and apply it to four tracks of the
+BioNLP 2011 Shared Task. Our model de-
+composes into three sub-models that concern
+(a) event triggers and outgoing arguments, (b)
+event triggers and incoming arguments and
+(c) protein-protein bindings. For efficient de-
+coding we employ dual decomposition. Our
+results are very competitive: With minimal
+adaptation of our model we come in second
+for two of the tasks—right behind a version
+of the system presented here that includes pre-
+dictions of the Stanford event extractor as fea-
+tures. We also show that for the Infectious
+Diseases task using data from the Genia track
+is a very effective way to improve accuracy.
+</bodyText>
+<sectionHeader confidence="0.999517" genericHeader="introduction">
+1 Introduction
+</sectionHeader>
+<bodyText confidence="0.9999153125">
+This paper presents the UMass entry to the BioNLP
+2011 shared task (Kim et al., 2011a). We introduce
+a simple joint model for the extraction of biomedical
+events, and show competitive results for four tracks
+of the competition. Our model subsumes three
+tractable sub-models, one for extracting event trig-
+gers and outgoing edges, one for event triggers and
+incoming edges and one for protein-protein bind-
+ings. Fast and accurate joint inference is provided by
+combining optimizing methods for these three sub-
+models via dual decomposition (Komodakis et al.,
+2007; Rush et al., 2010). Notably, our model con-
+stitutes the first joint approach that explicitly pre-
+dicts which protein should share the same binding
+event. So far this has either been done through post-
+processing heuristics (Bj6rne et al., 2009; Riedel et
+</bodyText>
+<page confidence="0.990031">
+46
+</page>
+<bodyText confidence="0.99666024">
+al., 2009; Poon and Vanderwende, 2010), or through
+a local classifier at the end of a pipeline (Miwa et al.,
+2010).
+Our model is very competitive. For Genia (GE)
+Task 1 (Kim et al., 2011b) we achieve the second-
+best results. In addition, the best-performing FAUST
+system (Riedel et al., 2011) is a variant of the model
+presented here. Its advantage stems from the fact
+that it uses predictions of the Stanford system (Mc-
+Closky et al., 2011a; McClosky et al., 2011b), and
+hence performs model combination. The same holds
+for the Infectious Diseases (ID) track (Pyysalo et al.,
+2011), where we come in as second right behind
+the FAUST system. For the Epigenetics and Post-
+translational Modifications (EPI) track (Ohta et al.,
+2011) we achieve the 4th rank, partly because we did
+not aim to extract speculations, negations or cellular
+locations. Finally, for Genia Task 2 we rank 3rd—
+with the 1st rank achieved by the FAUST system.
+In the following we will briefly describe our
+model and inference algorithm, as far as this is pos-
+sible in limited space. Then we show our results on
+the three tasks and conclude. Note we will assume
+familiarity with the task, and refer the reader to the
+shared task overview paper for more details.
+</bodyText>
+<sectionHeader confidence="0.971214" genericHeader="method">
+2 Biomedical Event Extraction
+</sectionHeader>
+<bodyText confidence="0.999946285714286">
+Our goal is to extract biomedical events as shown
+in figure 1a). To formulate the search for such
+structures as an optimization problem, we represent
+structures through a set of binary variables. Our rep-
+resentation is inspired by previous work (Riedel et
+al., 2009; Bj6rne et al., 2009) and based on a projec-
+tion of events to a labelled graph over tokens in the
+</bodyText>
+<subsubsectionHeader confidence="0.612056">
+Proceedings of BioNLP Shared Task 2011 Workshop, pages 46–50,
+</subsubsectionHeader>
+<page confidence="0.286899">
+Portland, Oregon, USA, 24 June, 2011. c�2011 Association for Computational Linguistics
+</page>
+<sectionHeader confidence="0.993328" genericHeader="method">
+3 Model
+</sectionHeader>
+<bodyText confidence="0.999948">
+We use the following objective to score the struc-
+tures we like to extract:
+</bodyText>
+<figure confidence="0.937804238095238">
+�s (e, a, b) def = sT (i, t) + � sR (i, j, r) +
+ei,t=1 ai,7,,=1
+Regulation
+Cause Theme
+Phosphorylation
+Binding
+Theme
+Theme
+Theme
+2 3 4 5 6 7 8 9
+... phosphorylation of TRAF2 inhibits binding to the CD40 ...
+Phosphorylation
+e2,Fn...
+Theme
+Cause
+Regulation Binding
+Theme Theme
+Theme
+Same Binding
+a6,9,xn.M
+b4,9
+</figure>
+<figureCaption confidence="0.999939">
+Figure 1: (a) sentence with target event structure; (b) pro- � sB (p, q)
+jection to labelled graph. bn,e=1
+</figureCaption>
+<bodyText confidence="0.993393859649123">
+sentence, as seen figure 1b).
+We will first present some basic notation to sim-
+plify our exposition. For each sentence x we have
+a set candidate trigger words Trig (x), and a set of
+candidate proteins Prot (x). We will generally use
+the indices i and l to denote members of Trig (x), the
+indices p, q for members of Prot (x) and the index j
+for members of Cand (x) def = Trig (x) U Prot (x).
+We label each candidate trigger i with an event
+Type t E T (with None E T), and use the binary
+variable ei,t to indicate this labeling. We use binary
+variables ai,l,r to indicate that between i and l there
+is an edge labelled r E R (with None E R).
+The representation so far has been used in previ-
+ous work (Riedel et al., 2009; Björne et al., 2009).
+Its shortcoming is that it does not capture whether
+two proteins are arguments of the same binding
+event, or arguments of two binding events with the
+same trigger. To overcome this problem, we intro-
+duce binary “same Binding” variables bp,Q that are
+active whenever there is a binding event that has
+both p and q as arguments. Our inference algorithm
+will also need, for each trigger i and protein pair p, q,
+a binary variable ti,p,Q that indicates that at i there is
+a binding event with arguments p and q. All ti,p,Q are
+summarized in t.
+Constructing events from solutions (e, a, b) can
+be done almost exactly as described by Björne et al.
+(2009). However, while Björne et al. (2009) group
+arguments according to ad-hoc rules based on de-
+pendency paths from trigger to argument, we simply
+query the variables bp,Q.
+with local scoring functions sT (i, t) def =
+(wT, fT (i, t)), sR (i, j, r)def = (wR, fR (i, j, r))
+and sB (p, q) def= (wB, fB (p, q)).
+Our model scores all parts of the structure in isola-
+tion. It is a joint model due to the three types of con-
+straints we enforce. The first type acts on trigger la-
+bels and their outgoing edges. It includes constraints
+such as “an active label at trigger i requires at least
+one active outgoing Theme argument”. The second
+type enforces consistency between trigger labels and
+their incoming edges. That is, if an incoming edge
+has a label that is not None, the trigger must not be
+labelled None either. The third type of constraints
+ensures that when two proteins p and q are part of
+the same binding (as indicated by bp,Q = 1), there
+needs to be a binding event at some trigger i that
+has p and q as arguments. We will denote the set of
+structures (e, a, b) that satisfy all above constraints
+as Y.
+To learn w we choose the passive-aggressive
+online learning algorithm (Crammer and Singer,
+2003). As loss function we apply a weighted sum of
+false positives and false negative labels and edges.
+The weighting scheme penalizes false negatives 3.8
+times more than false positives.
+</bodyText>
+<subsectionHeader confidence="0.988644">
+3.1 Features
+</subsectionHeader>
+<bodyText confidence="0.999719083333333">
+For feature vector fT (i, t) we use a collection of
+representations for the token i: word-form, lemma,
+POS tag, syntactic heads, syntactic children; mem-
+bership in two dictionaries used by Riedel et al.
+(2009).For fR (a; i, j, r) we use representations of
+the token pair (i, j) inspired by Miwa et al. (2010) .
+They contain: labelled and unlabeled n-gram depen-
+dency paths; edge and vertex walk features (Miwa et
+al., 2010), argument and trigger modifiers and heads,
+words in between (for close distance i and j). For
+fB (b; p, q) we use a small subset of the token pair
+representations in fR.
+</bodyText>
+<page confidence="0.99738">
+47
+</page>
+<bodyText confidence="0.327167">
+Algorithm 1 Dual Decomposition.
+</bodyText>
+<subsectionHeader confidence="0.851196">
+3.2 Inference
+</subsectionHeader>
+<bodyText confidence="0.983154280701754">
+Inference in our model amounts to solving
+arg max s(e,a,b). (1)
+(e,a,b)EY
+Our approach to finding the maximizer is dual de-
+composition (Komodakis et al., 2007; Rush et al.,
+2010), a technique that allows us to exploit effi-
+cient search algorithms for tractable substructures
+of our problem. We divide the problem into three
+sub-problems: (1) finding the highest-scoring trig-
+ger labels and edges (e, a) such that constraints on
+triggers and their outgoing edges are fulfilled; (2)
+finding the highest-scoring trigger labels and edges
+(e, a) such that constraints on triggers and their in-
+coming edges are fulfilled; (3) finding the highest-
+scoring pairs of proteins b to appear in the same
+binding, and make binding event trigger decisions
+t for these. Due to space constraints we only state
+that the first two problems can be solved exactly in
+O (n2 + nm) time while the last needs O (m2n).
+Here n is the number of trigger candidates and m
+the number of proteins.
+The subroutines to solve these three sub-problems
+are combined in algorithm 1—an instantiation of
+subgradient descent on the dual of an LP relaxation
+of problem 1. In the first three steps in the main
+loop of this algorithm, the individual sub-problems
+are solved. Note that to each subroutine a parame-
+ter is passed. For example, when finding the struc-
+ture (e, a) that maximizes the objective under the
+incoming edge constraints, we pass the parameter
+−λ. This parameter represents a set of penalties to
+be added to the objective used for the subproblem.
+In this case we have penalties −Ai,e to be added to
+the scores of trigger-label pairs (i, e), and penalties
+−Ai,j,r to be added for labelled edges i r→ j.
+One way to understand dual decomposition is as
+iterative tuning of the penalties such that eventu-
+ally all individual solutions are consistent with each
+other. In our case this would mean, among other
+things, that the solutions (e, a) and (e, a) are iden-
+tical. This tuning happens in the second part of the
+main loop which updates the dual variables λ and µ.
+We see, for example, how the penalties Ai,e are de-
+creased by ei,e − ei,e scaled by a step-size at. Effec-
+tively this change to Ai,e will decrease the score of
+ei,e within bestIn (−λ) by at if ei,e was true while
+ei,e was false in the current solutions.1 If ei,e was
+false but ei,e was true, the score is increased by at.
+If both agree, no change is needed.
+Consistency between solutions also means that
+the binding decisions in b and t are consistent
+with the rest of the solution. This is achieved in
+algorithm 1 through tuning of the dual variables
+µ but we omit details for brevity. For complete-
+ness we state how the penalties used for solving
+the other subproblems are set based on the dual
+variables λ and µ. We set cout
+</bodyText>
+<equation confidence="0.930831">
+i,t (λ, µ)def � Ai,t +
+P
+�t,Bind p,q µtrig
+</equation>
+<bodyText confidence="0.9688085">
+i,p,q; for the case that j ∈ Prot (x) we
+get cout
+i,j,r (λ, µ) def Ai,j,r + Pp µazgl + Pq µazq ,
+otherwise cout
+i,j,r (λ, µ) def � Ai,j,r . For bestBind (c)
+we set cq_ —,,2P µiq µl,qµi,Pq.
+</bodyText>
+<subsectionHeader confidence="0.998135">
+3.3 Preprocessing
+</subsectionHeader>
+<bodyText confidence="0.999902875">
+After basic tokenization and sentence segmentation,
+we generate a set of protein head tokens Prot (x)
+for each sentence x based on protein span defi-
+nitions from the shared task. To ensure tokens
+contain not more than one protein we split them
+at protein boundaries. Parsing is performed using
+the Charniak-Johnson parser (Charniak and John-
+son, 2005) with the self-trained biomedical parsing
+</bodyText>
+<footnote confidence="0.84756">
+1We refer to Koo et al. (2010) for details on how to set αt.
+</footnote>
+<equation confidence="0.829455266666667">
+require:
+R: max. iteration, at: stepsizes
+t ← 0 λ ← 0 µ ← 0
+repeat
+(e, a)← bestIncoming (−λ)
+(e, a)← bestOutgoing (cout (λ, µ))
+(b, t)← bestBinding (cbind (µ))
+Ai,t ← Ai,t − at (ei,t − ei,t)
+Ai,j,r ← Ai,j,r − at (ai,j,r − ai,j,r)
+µtrigk ←hµ gi,j,k − at (ei,B jind — ti,k)]+
+µiargj k ← hµ&quot;&amp;apos; − at (ai,j,Theme − ti,j,k)i +
+µilk←hµarg2 − at (ai,k,Theme − ti,j,k)i+
+t ← t + 1
+until no λ, µ changed or t &amp;gt; R
+return(e, a, b)
+</equation>
+<page confidence="0.955257">
+48
+</page>
+<figure confidence="0.911757222222222">
+SVT BIND REG TOT
+Task 1
+Task 1 (abst.)
+Task 1 (full)
+Task 2
+73.5 48.8 43.8 55.2
+71.5 50.8 45.5 56.1
+79.2 44.4 40.1 53.1
+71.4 38.6 39.1 51.0
+</figure>
+<tableCaption confidence="0.7451245">
+Table 1: Results for the GE track, task 1 and 2;
+abst.=abstract; full=full text.
+</tableCaption>
+<table confidence="0.999724">
+I/G BIND REG PRO TOT
+DEV 1/0 18.6 27.1 34.3 41.5
+DEV 0/1 18.2 26.8 0.00 35.5
+DEV 1/1 20.0 33.1 49.3 47.2
+DEV 2/1 20.0 34.5 52.0 48.5
+TEST 2/1 34.6 46.4 62.3 53.4
+</table>
+<tableCaption confidence="0.9952125">
+Table 2: ID results for different amounts of ID (I) and (G)
+training data.
+</tableCaption>
+<bodyText confidence="0.993731">
+model of McClosky and Charniak (2008). Finally,
+based on the set of trigger words in the training data,
+we generate a set of candidate triggers Trig (4
+</bodyText>
+<sectionHeader confidence="0.999887" genericHeader="evaluation">
+4 Results
+</sectionHeader>
+<bodyText confidence="0.9999705">
+We apply the same model to the GE, ID and EPI
+tracks, with minor modifications in order to deal
+with the different event type sets T and role sets R
+of each track. Training and testing together took be-
+tween 30 (EPI) to 120 (GE) minutes using a single-
+core implementation.
+</bodyText>
+<subsectionHeader confidence="0.991634">
+4.1 Genia
+</subsectionHeader>
+<bodyText confidence="0.999404555555556">
+Our results for GE task 1 and 2 can be seen in table
+1. We also show results for abstracts only (abst.),
+and for full text only (full). Note that binding events
+(BIND) and general regulation events (REG) seem
+to be harder to extract in full text. Somewhat surpris-
+ingly, for simple events (SVT) the opposite holds.
+We also like to point out that for full text extrac-
+tion we rank first—the second best FAUST system
+achieves an F1 score of 52.67.
+</bodyText>
+<subsectionHeader confidence="0.979824">
+4.2 Infectious Diseases
+</subsectionHeader>
+<bodyText confidence="0.999942142857143">
+The Infectious Diseases track differs from the Genia
+track in two important ways. First, it introduces the
+event type Process that is allowed to have no ar-
+guments at all. Second, it comes with significantly
+less training data (152 vs 908 documents). We can
+accommodate the first difference by making simple
+changes in our inference algorithms. For example,
+for Process events we do not force the algorithm to
+pick a Theme argument.
+To compensate for the lack of training data we
+simply add data from the GE track. This is reason-
+able because annotations overlap quite significantly.
+In table 2 we show the impact of mixing different
+amounts of ID data (I) and GE data (G) into the
+training set. We point out that adding the ID training
+set twice, and the GENIA set once, leads to the best
+performance (I/G=2/1). Remarkably, the F1 score
+for Process increases by including data, although
+this data does not include any such events. This may
+stem from a shared model of None arguments that is
+improved with more data.
+</bodyText>
+<subsectionHeader confidence="0.998299">
+4.3 Epigenetics and Post-translational
+Modifications
+</subsectionHeader>
+<bodyText confidence="0.999995916666667">
+For this track a different set of events is to be pre-
+dicted. However, it is straightforward to adapt our
+model and algorithms to this setting. For brevity we
+only report our total results here and omit a table
+with details. The first metric (ALL) includes nega-
+tion, speculation and cellular location targets. We
+omitted these in our model and hence our result of
+33.52 F1 is relatively weak. For the metric that ne-
+glects these aspects (CORE), we achieve 64.15 F1
+and come in 4th. Note that in this metric the FAUST
+system, based on the model presented here, comes
+in as very close second.
+</bodyText>
+<sectionHeader confidence="0.999449" genericHeader="conclusions">
+5 Conclusion
+</sectionHeader>
+<bodyText confidence="0.999950666666667">
+We have presented a robust joint model for event
+extraction from biomedical text that performs well
+across all tasks. Remarkably, no feature set or pa-
+rameter tuning was necessary to achieve this. We
+also show substantial improvements for the ID task
+by adding GENIA data into the training set.
+</bodyText>
+<sectionHeader confidence="0.996182" genericHeader="acknowledgments">
+Acknowledgements
+</sectionHeader>
+<bodyText confidence="0.999078666666667">
+This work was supported in part by the Center for Intelli-
+gent Information Retrieval. The University of Massachusetts
+gratefully acknowledges the support of Defense Advanced Re-
+search Projects Agency (DARPA) Machine Reading Program
+under Air Force Research Laboratory (AFRL) prime contract
+no. FA8750-09-C-0181. Any opinions, findings, and conclu-
+sion or recommendations expressed in this material are those
+of the authors and do not necessarily reflect the view of the
+DARPA, AFRL, or the US government.
+</bodyText>
+<page confidence="0.999277">
+49
+</page>
+<sectionHeader confidence="0.994669" genericHeader="references">
+References
+</sectionHeader>
+<reference confidence="0.999153215909091">
+Jari Björne, Juho Heimonen, Filip Ginter, Antti Airola,
+Tapio Pahikkala, and Tapio Salakoski. 2009. Extract-
+ing complex biological events with rich graph-based
+feature sets. In Proceedings of the Natural Language
+Processing in Biomedicine NAACL 2009 Workshop
+(BioNLP ’09), pages 10–18, Morristown, NJ, USA.
+Association for Computational Linguistics.
+Eugene Charniak and Mark Johnson. 2005. Coarse-to-
+fine n-best parsing and maxent discriminative rerank-
+ing. In Proceedings of the 43rd Annual Meeting of the
+Association for Computational Linguistics (ACL ’05),
+pages 173–180.
+Koby Crammer and Yoram Singer. 2003. Ultraconserva-
+tive online algorithms for multiclass problems. Jour-
+nal of Machine Learning Research, 3:951–991.
+Jin-Dong Kim, Sampo Pyysalo, Tomoko Ohta, Robert
+Bossy, and Jun’ichi Tsujii. 2011a. Overview
+of BioNLP Shared Task 2011. In Proceedings of
+the BioNLP 2011 Workshop Companion Volume for
+Shared Task, Portland, Oregon, June. Association for
+Computational Linguistics.
+Jin-Dong Kim, Yue Wang, Toshihisa Takagi, and Aki-
+nori Yonezawa. 2011b. Overview of the Genia Event
+task in BioNLP Shared Task 2011. In Proceedings
+of the BioNLP 2011 Workshop Companion Volume for
+Shared Task, Portland, Oregon, June. Association for
+Computational Linguistics.
+Nikos Komodakis, Nikos Paragios, and Georgios Tziri-
+tas. 2007. Mrf optimization via dual decomposition:
+Message-passing revisited. In In ICCV.
+Terry Koo, Alexander M. Rush, Michael Collins, Tommi
+Jaakkola, and David Sontag. 2010. Dual decompo-
+sition for parsing with non-projective head automata.
+In Proceedings of the 2010 Conference on Empirical
+Methods in Natural Language Processing (EMNLP).
+David McClosky and Eugene Charniak. 2008. Self-
+training for biomedical parsing. In Proceedings of the
+46rd Annual Meeting of the Association for Computa-
+tional Linguistics (ACL ’08).
+David McClosky, Mihai Surdeanu, and Chris Manning.
+2011a. Event extraction as dependency parsing. In
+Proceedings of the Association for Computational Lin-
+guistics: Human Language Technologies 2011 Con-
+ference (ACL-HLT’11), Main Conference (to appear),
+Portland, Oregon, June.
+David McClosky, Mihai Surdeanu, and Christopher D.
+Manning. 2011b. Event extraction as dependency
+parsing in BioNLP 2011. In BioNLP 2011 Shared
+Task.
+Makoto Miwa, Rune Saetre, Jin-Dong D. Kim, and
+Jun’ichi Tsujii. 2010. Event extraction with com-
+plex event classification using rich features. Journal of
+bioinformatics and computational biology, 8(1):131–
+146, February.
+Tomoko Ohta, Sampo Pyysalo, and Jun’ichi Tsujii. 2011.
+Overview of the Epigenetics and Post-translational
+Modifications (EPI) task of BioNLP Shared Task
+2011. In Proceedings of the BioNLP 2011 Workshop
+Companion Volume for Shared Task, Portland, Oregon,
+June. Association for Computational Linguistics.
+Hoifung Poon and Lucy Vanderwende. 2010. Joint Infer-
+ence for Knowledge Extraction from Biomedical Lit-
+erature. In Human Language Technologies: The 2010
+Annual Conference of the North American Chapter of
+the Association for Computational Linguistics, pages
+813–821, Los Angeles, California, June. Association
+for Computational Linguistics.
+Sampo Pyysalo, Tomoko Ohta, Rafal Rak, Dan Sul-
+livan, Chunhong Mao, Chunxia Wang, Bruno So-
+bral, Jun’ichi Tsujii, and Sophia Ananiadou. 2011.
+Overview of the Infectious Diseases (ID) task of
+BioNLP Shared Task 2011. In Proceedings of
+the BioNLP 2011 Workshop Companion Volume for
+Shared Task, Portland, Oregon, June. Association for
+Computational Linguistics.
+Sebastian Riedel, Hong-Woo Chun, Toshihisa Takagi,
+and Jun’ichi Tsujii. 2009. A markov logic approach to
+bio-molecular event extraction. In Proceedings of the
+Natural Language Processing in Biomedicine NAACL
+2009 Workshop (BioNLP ’09), pages 41–49.
+Sebastian Riedel, David McClosky, Mihai Surdeanu,
+Christopher D. Manning, and Andrew McCallum.
+2011. Model combination for event extraction in
+BioNLP 2011. In BioNLP 2011 Shared Task.
+Alexander M. Rush, David Sontag, Michael Collins, and
+Tommi Jaakkola. 2010. On dual decomposition and
+linear programming relaxations for natural language
+processing. In In Proc. EMNLP.
+</reference>
+<page confidence="0.99769">
+50
+</page>
+</variant>
+</algorithm>
+<algorithm name="ParsHed" version="110505">
+<variant no="0" confidence="0.982811">
+<title confidence="0.9989385">Robust Biomedical Event Extraction with Dual Decomposition and Domain Adaptation</title>
+<author confidence="0.999963">Sebastian Riedel Andrew McCallum</author>
+<affiliation confidence="0.9999865">Department of Computer University of Massachusetts,</affiliation>
+<email confidence="0.999875">riedel@cs.umass.edu</email>
+<email confidence="0.999875">mccallum@cs.umass.edu</email>
+<abstract confidence="0.998576">We present a joint model for biomedical event extraction and apply it to four tracks of the BioNLP 2011 Shared Task. Our model decomposes into three sub-models that concern (a) event triggers and outgoing arguments, (b) event triggers and incoming arguments and (c) protein-protein bindings. For efficient decoding we employ dual decomposition. Our results are very competitive: With minimal adaptation of our model we come in second for two of the tasks—right behind a version of the system presented here that includes predictions of the Stanford event extractor as features. We also show that for the Infectious Diseases task using data from the Genia track is a very effective way to improve accuracy.</abstract>
+</variant>
+</algorithm>
+<algorithm name="ParsCit" version="110505">
+<citationList>
+<citation valid="true">
+<authors>
+<author>Jari Björne</author>
+<author>Juho Heimonen</author>
+<author>Filip Ginter</author>
+<author>Antti Airola</author>
+<author>Tapio Pahikkala</author>
+<author>Tapio Salakoski</author>
+</authors>
+<title>Extracting complex biological events with rich graph-based feature sets.</title>
+<date>2009</date>
+<booktitle>In Proceedings of the Natural Language Processing in Biomedicine NAACL 2009 Workshop (BioNLP ’09),</booktitle>
+<pages>10--18</pages>
+<publisher>Association</publisher>
+<institution>for Computational Linguistics.</institution>
+<location>Morristown, NJ, USA.</location>
+<contexts>
+<context position="4773" citStr="Björne et al., 2009" startWordPosition="813" endWordPosition="816"> we have a set candidate trigger words Trig (x), and a set of candidate proteins Prot (x). We will generally use the indices i and l to denote members of Trig (x), the indices p, q for members of Prot (x) and the index j for members of Cand (x) def = Trig (x) U Prot (x). We label each candidate trigger i with an event Type t E T (with None E T), and use the binary variable ei,t to indicate this labeling. We use binary variables ai,l,r to indicate that between i and l there is an edge labelled r E R (with None E R). The representation so far has been used in previous work (Riedel et al., 2009; Björne et al., 2009). Its shortcoming is that it does not capture whether two proteins are arguments of the same binding event, or arguments of two binding events with the same trigger. To overcome this problem, we introduce binary “same Binding” variables bp,Q that are active whenever there is a binding event that has both p and q as arguments. Our inference algorithm will also need, for each trigger i and protein pair p, q, a binary variable ti,p,Q that indicates that at i there is a binding event with arguments p and q. All ti,p,Q are summarized in t. Constructing events from solutions (e, a, b) can be done al</context>
+</contexts>
+<marker>Björne, Heimonen, Ginter, Airola, Pahikkala, Salakoski, 2009</marker>
+<rawString>Jari Björne, Juho Heimonen, Filip Ginter, Antti Airola, Tapio Pahikkala, and Tapio Salakoski. 2009. Extracting complex biological events with rich graph-based feature sets. In Proceedings of the Natural Language Processing in Biomedicine NAACL 2009 Workshop (BioNLP ’09), pages 10–18, Morristown, NJ, USA. Association for Computational Linguistics.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Eugene Charniak</author>
+<author>Mark Johnson</author>
+</authors>
+<title>Coarse-tofine n-best parsing and maxent discriminative reranking.</title>
+<date>2005</date>
+<booktitle>In Proceedings of the 43rd Annual Meeting of the Association for Computational Linguistics (ACL ’05),</booktitle>
+<pages>173--180</pages>
+<contexts>
+<context position="10807" citStr="Charniak and Johnson, 2005" startWordPosition="1894" endWordPosition="1898">iables λ and µ. We set cout i,t (λ, µ)def � Ai,t + P �t,Bind p,q µtrig i,p,q; for the case that j ∈ Prot (x) we get cout i,j,r (λ, µ) def Ai,j,r + Pp µazgl + Pq µazq , otherwise cout i,j,r (λ, µ) def � Ai,j,r . For bestBind (c) we set cq_ —,,2P µiq µl,qµi,Pq. 3.3 Preprocessing After basic tokenization and sentence segmentation, we generate a set of protein head tokens Prot (x) for each sentence x based on protein span definitions from the shared task. To ensure tokens contain not more than one protein we split them at protein boundaries. Parsing is performed using the Charniak-Johnson parser (Charniak and Johnson, 2005) with the self-trained biomedical parsing 1We refer to Koo et al. (2010) for details on how to set αt. require: R: max. iteration, at: stepsizes t ← 0 λ ← 0 µ ← 0 repeat (e, a)← bestIncoming (−λ) (e, a)← bestOutgoing (cout (λ, µ)) (b, t)← bestBinding (cbind (µ)) Ai,t ← Ai,t − at (ei,t − ei,t) Ai,j,r ← Ai,j,r − at (ai,j,r − ai,j,r) µtrigk ←hµ gi,j,k − at (ei,B jind — ti,k)]+ µiargj k ← hµ&quot;&amp;apos; − at (ai,j,Theme − ti,j,k)i + µilk←hµarg2 − at (ai,k,Theme − ti,j,k)i+ t ← t + 1 until no λ, µ changed or t &amp;gt; R return(e, a, b) 48 SVT BIND REG TOT Task 1 Task 1 (abst.) Task 1 (full) Task 2 73.5 48.8 43.8 5</context>
+</contexts>
+<marker>Charniak, Johnson, 2005</marker>
+<rawString>Eugene Charniak and Mark Johnson. 2005. Coarse-tofine n-best parsing and maxent discriminative reranking. In Proceedings of the 43rd Annual Meeting of the Association for Computational Linguistics (ACL ’05), pages 173–180.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Koby Crammer</author>
+<author>Yoram Singer</author>
+</authors>
+<title>Ultraconservative online algorithms for multiclass problems.</title>
+<date>2003</date>
+<journal>Journal of Machine Learning Research,</journal>
+<pages>3--951</pages>
+<contexts>
+<context position="6618" citStr="Crammer and Singer, 2003" startWordPosition="1152" endWordPosition="1155">ast one active outgoing Theme argument”. The second type enforces consistency between trigger labels and their incoming edges. That is, if an incoming edge has a label that is not None, the trigger must not be labelled None either. The third type of constraints ensures that when two proteins p and q are part of the same binding (as indicated by bp,Q = 1), there needs to be a binding event at some trigger i that has p and q as arguments. We will denote the set of structures (e, a, b) that satisfy all above constraints as Y. To learn w we choose the passive-aggressive online learning algorithm (Crammer and Singer, 2003). As loss function we apply a weighted sum of false positives and false negative labels and edges. The weighting scheme penalizes false negatives 3.8 times more than false positives. 3.1 Features For feature vector fT (i, t) we use a collection of representations for the token i: word-form, lemma, POS tag, syntactic heads, syntactic children; membership in two dictionaries used by Riedel et al. (2009).For fR (a; i, j, r) we use representations of the token pair (i, j) inspired by Miwa et al. (2010) . They contain: labelled and unlabeled n-gram dependency paths; edge and vertex walk features (M</context>
+</contexts>
+<marker>Crammer, Singer, 2003</marker>
+<rawString>Koby Crammer and Yoram Singer. 2003. Ultraconservative online algorithms for multiclass problems. Journal of Machine Learning Research, 3:951–991.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Jin-Dong Kim</author>
+<author>Sampo Pyysalo</author>
+<author>Tomoko Ohta</author>
+<author>Robert Bossy</author>
+<author>Jun’ichi Tsujii</author>
+</authors>
+<date>2011</date>
+<journal>Overview of BioNLP Shared Task</journal>
+<booktitle>In Proceedings of the BioNLP 2011 Workshop Companion Volume for Shared Task,</booktitle>
+<publisher>Association</publisher>
+<institution>for Computational Linguistics.</institution>
+<location>Portland, Oregon,</location>
+<contexts>
+<context position="1035" citStr="Kim et al., 2011" startWordPosition="156" endWordPosition="159">rs and outgoing arguments, (b) event triggers and incoming arguments and (c) protein-protein bindings. For efficient decoding we employ dual decomposition. Our results are very competitive: With minimal adaptation of our model we come in second for two of the tasks—right behind a version of the system presented here that includes predictions of the Stanford event extractor as features. We also show that for the Infectious Diseases task using data from the Genia track is a very effective way to improve accuracy. 1 Introduction This paper presents the UMass entry to the BioNLP 2011 shared task (Kim et al., 2011a). We introduce a simple joint model for the extraction of biomedical events, and show competitive results for four tracks of the competition. Our model subsumes three tractable sub-models, one for extracting event triggers and outgoing edges, one for event triggers and incoming edges and one for protein-protein bindings. Fast and accurate joint inference is provided by combining optimizing methods for these three submodels via dual decomposition (Komodakis et al., 2007; Rush et al., 2010). Notably, our model constitutes the first joint approach that explicitly predicts which protein should s</context>
+</contexts>
+<marker>Kim, Pyysalo, Ohta, Bossy, Tsujii, 2011</marker>
+<rawString>Jin-Dong Kim, Sampo Pyysalo, Tomoko Ohta, Robert Bossy, and Jun’ichi Tsujii. 2011a. Overview of BioNLP Shared Task 2011. In Proceedings of the BioNLP 2011 Workshop Companion Volume for Shared Task, Portland, Oregon, June. Association for Computational Linguistics.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Jin-Dong Kim</author>
+<author>Yue Wang</author>
+<author>Toshihisa Takagi</author>
+<author>Akinori Yonezawa</author>
+</authors>
+<title>Overview of the Genia Event task in BioNLP Shared Task</title>
+<date>2011</date>
+<booktitle>In Proceedings of the BioNLP 2011 Workshop Companion Volume for Shared Task,</booktitle>
+<publisher>Association</publisher>
+<institution>for Computational Linguistics.</institution>
+<location>Portland, Oregon,</location>
+<contexts>
+<context position="1035" citStr="Kim et al., 2011" startWordPosition="156" endWordPosition="159">rs and outgoing arguments, (b) event triggers and incoming arguments and (c) protein-protein bindings. For efficient decoding we employ dual decomposition. Our results are very competitive: With minimal adaptation of our model we come in second for two of the tasks—right behind a version of the system presented here that includes predictions of the Stanford event extractor as features. We also show that for the Infectious Diseases task using data from the Genia track is a very effective way to improve accuracy. 1 Introduction This paper presents the UMass entry to the BioNLP 2011 shared task (Kim et al., 2011a). We introduce a simple joint model for the extraction of biomedical events, and show competitive results for four tracks of the competition. Our model subsumes three tractable sub-models, one for extracting event triggers and outgoing edges, one for event triggers and incoming edges and one for protein-protein bindings. Fast and accurate joint inference is provided by combining optimizing methods for these three submodels via dual decomposition (Komodakis et al., 2007; Rush et al., 2010). Notably, our model constitutes the first joint approach that explicitly predicts which protein should s</context>
+</contexts>
+<marker>Kim, Wang, Takagi, Yonezawa, 2011</marker>
+<rawString>Jin-Dong Kim, Yue Wang, Toshihisa Takagi, and Akinori Yonezawa. 2011b. Overview of the Genia Event task in BioNLP Shared Task 2011. In Proceedings of the BioNLP 2011 Workshop Companion Volume for Shared Task, Portland, Oregon, June. Association for Computational Linguistics.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Nikos Komodakis</author>
+<author>Nikos Paragios</author>
+<author>Georgios Tziritas</author>
+</authors>
+<title>Mrf optimization via dual decomposition: Message-passing revisited. In</title>
+<date>2007</date>
+<booktitle>In ICCV.</booktitle>
+<contexts>
+<context position="1510" citStr="Komodakis et al., 2007" startWordPosition="229" endWordPosition="232">ck is a very effective way to improve accuracy. 1 Introduction This paper presents the UMass entry to the BioNLP 2011 shared task (Kim et al., 2011a). We introduce a simple joint model for the extraction of biomedical events, and show competitive results for four tracks of the competition. Our model subsumes three tractable sub-models, one for extracting event triggers and outgoing edges, one for event triggers and incoming edges and one for protein-protein bindings. Fast and accurate joint inference is provided by combining optimizing methods for these three submodels via dual decomposition (Komodakis et al., 2007; Rush et al., 2010). Notably, our model constitutes the first joint approach that explicitly predicts which protein should share the same binding event. So far this has either been done through postprocessing heuristics (Bj6rne et al., 2009; Riedel et 46 al., 2009; Poon and Vanderwende, 2010), or through a local classifier at the end of a pipeline (Miwa et al., 2010). Our model is very competitive. For Genia (GE) Task 1 (Kim et al., 2011b) we achieve the secondbest results. In addition, the best-performing FAUST system (Riedel et al., 2011) is a variant of the model presented here. Its advant</context>
+<context position="7612" citStr="Komodakis et al., 2007" startWordPosition="1322" endWordPosition="1325">ies used by Riedel et al. (2009).For fR (a; i, j, r) we use representations of the token pair (i, j) inspired by Miwa et al. (2010) . They contain: labelled and unlabeled n-gram dependency paths; edge and vertex walk features (Miwa et al., 2010), argument and trigger modifiers and heads, words in between (for close distance i and j). For fB (b; p, q) we use a small subset of the token pair representations in fR. 47 Algorithm 1 Dual Decomposition. 3.2 Inference Inference in our model amounts to solving arg max s(e,a,b). (1) (e,a,b)EY Our approach to finding the maximizer is dual decomposition (Komodakis et al., 2007; Rush et al., 2010), a technique that allows us to exploit efficient search algorithms for tractable substructures of our problem. We divide the problem into three sub-problems: (1) finding the highest-scoring trigger labels and edges (e, a) such that constraints on triggers and their outgoing edges are fulfilled; (2) finding the highest-scoring trigger labels and edges (e, a) such that constraints on triggers and their incoming edges are fulfilled; (3) finding the highestscoring pairs of proteins b to appear in the same binding, and make binding event trigger decisions t for these. Due to sp</context>
+</contexts>
+<marker>Komodakis, Paragios, Tziritas, 2007</marker>
+<rawString>Nikos Komodakis, Nikos Paragios, and Georgios Tziritas. 2007. Mrf optimization via dual decomposition: Message-passing revisited. In In ICCV.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Terry Koo</author>
+<author>Alexander M Rush</author>
+<author>Michael Collins</author>
+<author>Tommi Jaakkola</author>
+<author>David Sontag</author>
+</authors>
+<title>Dual decomposition for parsing with non-projective head automata.</title>
+<date>2010</date>
+<booktitle>In Proceedings of the 2010 Conference on Empirical Methods in Natural Language Processing (EMNLP).</booktitle>
+<contexts>
+<context position="10879" citStr="Koo et al. (2010)" startWordPosition="1907" endWordPosition="1910">the case that j ∈ Prot (x) we get cout i,j,r (λ, µ) def Ai,j,r + Pp µazgl + Pq µazq , otherwise cout i,j,r (λ, µ) def � Ai,j,r . For bestBind (c) we set cq_ —,,2P µiq µl,qµi,Pq. 3.3 Preprocessing After basic tokenization and sentence segmentation, we generate a set of protein head tokens Prot (x) for each sentence x based on protein span definitions from the shared task. To ensure tokens contain not more than one protein we split them at protein boundaries. Parsing is performed using the Charniak-Johnson parser (Charniak and Johnson, 2005) with the self-trained biomedical parsing 1We refer to Koo et al. (2010) for details on how to set αt. require: R: max. iteration, at: stepsizes t ← 0 λ ← 0 µ ← 0 repeat (e, a)← bestIncoming (−λ) (e, a)← bestOutgoing (cout (λ, µ)) (b, t)← bestBinding (cbind (µ)) Ai,t ← Ai,t − at (ei,t − ei,t) Ai,j,r ← Ai,j,r − at (ai,j,r − ai,j,r) µtrigk ←hµ gi,j,k − at (ei,B jind — ti,k)]+ µiargj k ← hµ&quot;&amp;apos; − at (ai,j,Theme − ti,j,k)i + µilk←hµarg2 − at (ai,k,Theme − ti,j,k)i+ t ← t + 1 until no λ, µ changed or t &amp;gt; R return(e, a, b) 48 SVT BIND REG TOT Task 1 Task 1 (abst.) Task 1 (full) Task 2 73.5 48.8 43.8 55.2 71.5 50.8 45.5 56.1 79.2 44.4 40.1 53.1 71.4 38.6 39.1 51.0 Table 1:</context>
+</contexts>
+<marker>Koo, Rush, Collins, Jaakkola, Sontag, 2010</marker>
+<rawString>Terry Koo, Alexander M. Rush, Michael Collins, Tommi Jaakkola, and David Sontag. 2010. Dual decomposition for parsing with non-projective head automata. In Proceedings of the 2010 Conference on Empirical Methods in Natural Language Processing (EMNLP).</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>David McClosky</author>
+<author>Eugene Charniak</author>
+</authors>
+<title>Selftraining for biomedical parsing.</title>
+<date>2008</date>
+<booktitle>In Proceedings of the 46rd Annual Meeting of the Association for Computational Linguistics (ACL ’08).</booktitle>
+<contexts>
+<context position="11826" citStr="McClosky and Charniak (2008)" startWordPosition="2103" endWordPosition="2106">&amp;apos; − at (ai,j,Theme − ti,j,k)i + µilk←hµarg2 − at (ai,k,Theme − ti,j,k)i+ t ← t + 1 until no λ, µ changed or t &amp;gt; R return(e, a, b) 48 SVT BIND REG TOT Task 1 Task 1 (abst.) Task 1 (full) Task 2 73.5 48.8 43.8 55.2 71.5 50.8 45.5 56.1 79.2 44.4 40.1 53.1 71.4 38.6 39.1 51.0 Table 1: Results for the GE track, task 1 and 2; abst.=abstract; full=full text. I/G BIND REG PRO TOT DEV 1/0 18.6 27.1 34.3 41.5 DEV 0/1 18.2 26.8 0.00 35.5 DEV 1/1 20.0 33.1 49.3 47.2 DEV 2/1 20.0 34.5 52.0 48.5 TEST 2/1 34.6 46.4 62.3 53.4 Table 2: ID results for different amounts of ID (I) and (G) training data. model of McClosky and Charniak (2008). Finally, based on the set of trigger words in the training data, we generate a set of candidate triggers Trig (4 4 Results We apply the same model to the GE, ID and EPI tracks, with minor modifications in order to deal with the different event type sets T and role sets R of each track. Training and testing together took between 30 (EPI) to 120 (GE) minutes using a singlecore implementation. 4.1 Genia Our results for GE task 1 and 2 can be seen in table 1. We also show results for abstracts only (abst.), and for full text only (full). Note that binding events (BIND) and general regulation eve</context>
+</contexts>
+<marker>McClosky, Charniak, 2008</marker>
+<rawString>David McClosky and Eugene Charniak. 2008. Selftraining for biomedical parsing. In Proceedings of the 46rd Annual Meeting of the Association for Computational Linguistics (ACL ’08).</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>David McClosky</author>
+<author>Mihai Surdeanu</author>
+<author>Chris Manning</author>
+</authors>
+<title>Event extraction as dependency parsing.</title>
+<date>2011</date>
+<booktitle>In Proceedings of the Association for Computational Linguistics: Human Language Technologies 2011 Conference (ACL-HLT’11), Main Conference (to appear),</booktitle>
+<location>Portland, Oregon,</location>
+<contexts>
+<context position="2204" citStr="McClosky et al., 2011" startWordPosition="349" endWordPosition="353">oach that explicitly predicts which protein should share the same binding event. So far this has either been done through postprocessing heuristics (Bj6rne et al., 2009; Riedel et 46 al., 2009; Poon and Vanderwende, 2010), or through a local classifier at the end of a pipeline (Miwa et al., 2010). Our model is very competitive. For Genia (GE) Task 1 (Kim et al., 2011b) we achieve the secondbest results. In addition, the best-performing FAUST system (Riedel et al., 2011) is a variant of the model presented here. Its advantage stems from the fact that it uses predictions of the Stanford system (McClosky et al., 2011a; McClosky et al., 2011b), and hence performs model combination. The same holds for the Infectious Diseases (ID) track (Pyysalo et al., 2011), where we come in as second right behind the FAUST system. For the Epigenetics and Posttranslational Modifications (EPI) track (Ohta et al., 2011) we achieve the 4th rank, partly because we did not aim to extract speculations, negations or cellular locations. Finally, for Genia Task 2 we rank 3rd— with the 1st rank achieved by the FAUST system. In the following we will briefly describe our model and inference algorithm, as far as this is possible in lim</context>
+</contexts>
+<marker>McClosky, Surdeanu, Manning, 2011</marker>
+<rawString>David McClosky, Mihai Surdeanu, and Chris Manning. 2011a. Event extraction as dependency parsing. In Proceedings of the Association for Computational Linguistics: Human Language Technologies 2011 Conference (ACL-HLT’11), Main Conference (to appear), Portland, Oregon, June.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>David McClosky</author>
+<author>Mihai Surdeanu</author>
+<author>Christopher D Manning</author>
+</authors>
+<title>Event extraction as dependency parsing in BioNLP</title>
+<date>2011</date>
+<booktitle>In BioNLP</booktitle>
+<note>Shared Task.</note>
+<contexts>
+<context position="2204" citStr="McClosky et al., 2011" startWordPosition="349" endWordPosition="353">oach that explicitly predicts which protein should share the same binding event. So far this has either been done through postprocessing heuristics (Bj6rne et al., 2009; Riedel et 46 al., 2009; Poon and Vanderwende, 2010), or through a local classifier at the end of a pipeline (Miwa et al., 2010). Our model is very competitive. For Genia (GE) Task 1 (Kim et al., 2011b) we achieve the secondbest results. In addition, the best-performing FAUST system (Riedel et al., 2011) is a variant of the model presented here. Its advantage stems from the fact that it uses predictions of the Stanford system (McClosky et al., 2011a; McClosky et al., 2011b), and hence performs model combination. The same holds for the Infectious Diseases (ID) track (Pyysalo et al., 2011), where we come in as second right behind the FAUST system. For the Epigenetics and Posttranslational Modifications (EPI) track (Ohta et al., 2011) we achieve the 4th rank, partly because we did not aim to extract speculations, negations or cellular locations. Finally, for Genia Task 2 we rank 3rd— with the 1st rank achieved by the FAUST system. In the following we will briefly describe our model and inference algorithm, as far as this is possible in lim</context>
+</contexts>
+<marker>McClosky, Surdeanu, Manning, 2011</marker>
+<rawString>David McClosky, Mihai Surdeanu, and Christopher D. Manning. 2011b. Event extraction as dependency parsing in BioNLP 2011. In BioNLP 2011 Shared Task.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Makoto Miwa</author>
+<author>Rune Saetre</author>
+<author>Jin-Dong D Kim</author>
+<author>Jun’ichi Tsujii</author>
+</authors>
+<title>Event extraction with complex event classification using rich features.</title>
+<date>2010</date>
+<journal>Journal of bioinformatics and computational biology,</journal>
+<volume>8</volume>
+<issue>1</issue>
+<pages>146</pages>
+<contexts>
+<context position="1880" citStr="Miwa et al., 2010" startWordPosition="293" endWordPosition="296">d outgoing edges, one for event triggers and incoming edges and one for protein-protein bindings. Fast and accurate joint inference is provided by combining optimizing methods for these three submodels via dual decomposition (Komodakis et al., 2007; Rush et al., 2010). Notably, our model constitutes the first joint approach that explicitly predicts which protein should share the same binding event. So far this has either been done through postprocessing heuristics (Bj6rne et al., 2009; Riedel et 46 al., 2009; Poon and Vanderwende, 2010), or through a local classifier at the end of a pipeline (Miwa et al., 2010). Our model is very competitive. For Genia (GE) Task 1 (Kim et al., 2011b) we achieve the secondbest results. In addition, the best-performing FAUST system (Riedel et al., 2011) is a variant of the model presented here. Its advantage stems from the fact that it uses predictions of the Stanford system (McClosky et al., 2011a; McClosky et al., 2011b), and hence performs model combination. The same holds for the Infectious Diseases (ID) track (Pyysalo et al., 2011), where we come in as second right behind the FAUST system. For the Epigenetics and Posttranslational Modifications (EPI) track (Ohta </context>
+<context position="7121" citStr="Miwa et al. (2010)" startWordPosition="1238" endWordPosition="1241"> constraints as Y. To learn w we choose the passive-aggressive online learning algorithm (Crammer and Singer, 2003). As loss function we apply a weighted sum of false positives and false negative labels and edges. The weighting scheme penalizes false negatives 3.8 times more than false positives. 3.1 Features For feature vector fT (i, t) we use a collection of representations for the token i: word-form, lemma, POS tag, syntactic heads, syntactic children; membership in two dictionaries used by Riedel et al. (2009).For fR (a; i, j, r) we use representations of the token pair (i, j) inspired by Miwa et al. (2010) . They contain: labelled and unlabeled n-gram dependency paths; edge and vertex walk features (Miwa et al., 2010), argument and trigger modifiers and heads, words in between (for close distance i and j). For fB (b; p, q) we use a small subset of the token pair representations in fR. 47 Algorithm 1 Dual Decomposition. 3.2 Inference Inference in our model amounts to solving arg max s(e,a,b). (1) (e,a,b)EY Our approach to finding the maximizer is dual decomposition (Komodakis et al., 2007; Rush et al., 2010), a technique that allows us to exploit efficient search algorithms for tractable substru</context>
+</contexts>
+<marker>Miwa, Saetre, Kim, Tsujii, 2010</marker>
+<rawString>Makoto Miwa, Rune Saetre, Jin-Dong D. Kim, and Jun’ichi Tsujii. 2010. Event extraction with complex event classification using rich features. Journal of bioinformatics and computational biology, 8(1):131– 146, February.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Tomoko Ohta</author>
+<author>Sampo Pyysalo</author>
+<author>Jun’ichi Tsujii</author>
+</authors>
+<title>Overview of the Epigenetics and Post-translational Modifications (EPI) task of BioNLP Shared Task</title>
+<date>2011</date>
+<booktitle>In Proceedings of the BioNLP 2011 Workshop Companion Volume for Shared Task,</booktitle>
+<publisher>Association</publisher>
+<institution>for Computational Linguistics.</institution>
+<location>Portland, Oregon,</location>
+<contexts>
+<context position="2493" citStr="Ohta et al., 2011" startWordPosition="396" endWordPosition="399">2010). Our model is very competitive. For Genia (GE) Task 1 (Kim et al., 2011b) we achieve the secondbest results. In addition, the best-performing FAUST system (Riedel et al., 2011) is a variant of the model presented here. Its advantage stems from the fact that it uses predictions of the Stanford system (McClosky et al., 2011a; McClosky et al., 2011b), and hence performs model combination. The same holds for the Infectious Diseases (ID) track (Pyysalo et al., 2011), where we come in as second right behind the FAUST system. For the Epigenetics and Posttranslational Modifications (EPI) track (Ohta et al., 2011) we achieve the 4th rank, partly because we did not aim to extract speculations, negations or cellular locations. Finally, for Genia Task 2 we rank 3rd— with the 1st rank achieved by the FAUST system. In the following we will briefly describe our model and inference algorithm, as far as this is possible in limited space. Then we show our results on the three tasks and conclude. Note we will assume familiarity with the task, and refer the reader to the shared task overview paper for more details. 2 Biomedical Event Extraction Our goal is to extract biomedical events as shown in figure 1a). To f</context>
+</contexts>
+<marker>Ohta, Pyysalo, Tsujii, 2011</marker>
+<rawString>Tomoko Ohta, Sampo Pyysalo, and Jun’ichi Tsujii. 2011. Overview of the Epigenetics and Post-translational Modifications (EPI) task of BioNLP Shared Task 2011. In Proceedings of the BioNLP 2011 Workshop Companion Volume for Shared Task, Portland, Oregon, June. Association for Computational Linguistics.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Hoifung Poon</author>
+<author>Lucy Vanderwende</author>
+</authors>
+<title>Joint Inference for Knowledge Extraction from Biomedical Literature. In Human Language Technologies: The</title>
+<date>2010</date>
+<booktitle>Annual Conference of the North American Chapter of the Association for Computational Linguistics,</booktitle>
+<pages>813--821</pages>
+<publisher>Association</publisher>
+<institution>for Computational Linguistics.</institution>
+<location>Los Angeles, California,</location>
+<contexts>
+<context position="1804" citStr="Poon and Vanderwende, 2010" startWordPosition="278" endWordPosition="281">. Our model subsumes three tractable sub-models, one for extracting event triggers and outgoing edges, one for event triggers and incoming edges and one for protein-protein bindings. Fast and accurate joint inference is provided by combining optimizing methods for these three submodels via dual decomposition (Komodakis et al., 2007; Rush et al., 2010). Notably, our model constitutes the first joint approach that explicitly predicts which protein should share the same binding event. So far this has either been done through postprocessing heuristics (Bj6rne et al., 2009; Riedel et 46 al., 2009; Poon and Vanderwende, 2010), or through a local classifier at the end of a pipeline (Miwa et al., 2010). Our model is very competitive. For Genia (GE) Task 1 (Kim et al., 2011b) we achieve the secondbest results. In addition, the best-performing FAUST system (Riedel et al., 2011) is a variant of the model presented here. Its advantage stems from the fact that it uses predictions of the Stanford system (McClosky et al., 2011a; McClosky et al., 2011b), and hence performs model combination. The same holds for the Infectious Diseases (ID) track (Pyysalo et al., 2011), where we come in as second right behind the FAUST system</context>
+</contexts>
+<marker>Poon, Vanderwende, 2010</marker>
+<rawString>Hoifung Poon and Lucy Vanderwende. 2010. Joint Inference for Knowledge Extraction from Biomedical Literature. In Human Language Technologies: The 2010 Annual Conference of the North American Chapter of the Association for Computational Linguistics, pages 813–821, Los Angeles, California, June. Association for Computational Linguistics.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Sampo Pyysalo</author>
+<author>Tomoko Ohta</author>
+<author>Rafal Rak</author>
+<author>Dan Sullivan</author>
+<author>Chunhong Mao</author>
+<author>Chunxia Wang</author>
+<author>Bruno Sobral</author>
+<author>Jun’ichi Tsujii</author>
+<author>Sophia Ananiadou</author>
+</authors>
+<title>Overview of the Infectious Diseases (ID) task of BioNLP Shared Task</title>
+<date>2011</date>
+<booktitle>In Proceedings of the BioNLP 2011 Workshop Companion Volume for Shared Task,</booktitle>
+<publisher>Association</publisher>
+<institution>for Computational Linguistics.</institution>
+<location>Portland, Oregon,</location>
+<contexts>
+<context position="2346" citStr="Pyysalo et al., 2011" startWordPosition="372" endWordPosition="375">stics (Bj6rne et al., 2009; Riedel et 46 al., 2009; Poon and Vanderwende, 2010), or through a local classifier at the end of a pipeline (Miwa et al., 2010). Our model is very competitive. For Genia (GE) Task 1 (Kim et al., 2011b) we achieve the secondbest results. In addition, the best-performing FAUST system (Riedel et al., 2011) is a variant of the model presented here. Its advantage stems from the fact that it uses predictions of the Stanford system (McClosky et al., 2011a; McClosky et al., 2011b), and hence performs model combination. The same holds for the Infectious Diseases (ID) track (Pyysalo et al., 2011), where we come in as second right behind the FAUST system. For the Epigenetics and Posttranslational Modifications (EPI) track (Ohta et al., 2011) we achieve the 4th rank, partly because we did not aim to extract speculations, negations or cellular locations. Finally, for Genia Task 2 we rank 3rd— with the 1st rank achieved by the FAUST system. In the following we will briefly describe our model and inference algorithm, as far as this is possible in limited space. Then we show our results on the three tasks and conclude. Note we will assume familiarity with the task, and refer the reader to t</context>
+</contexts>
+<marker>Pyysalo, Ohta, Rak, Sullivan, Mao, Wang, Sobral, Tsujii, Ananiadou, 2011</marker>
+<rawString>Sampo Pyysalo, Tomoko Ohta, Rafal Rak, Dan Sullivan, Chunhong Mao, Chunxia Wang, Bruno Sobral, Jun’ichi Tsujii, and Sophia Ananiadou. 2011. Overview of the Infectious Diseases (ID) task of BioNLP Shared Task 2011. In Proceedings of the BioNLP 2011 Workshop Companion Volume for Shared Task, Portland, Oregon, June. Association for Computational Linguistics.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Sebastian Riedel</author>
+<author>Hong-Woo Chun</author>
+<author>Toshihisa Takagi</author>
+<author>Jun’ichi Tsujii</author>
+</authors>
+<title>A markov logic approach to bio-molecular event extraction.</title>
+<date>2009</date>
+<booktitle>In Proceedings of the Natural Language Processing in Biomedicine NAACL 2009 Workshop (BioNLP ’09),</booktitle>
+<pages>41--49</pages>
+<contexts>
+<context position="3288" citStr="Riedel et al., 2009" startWordPosition="533" endWordPosition="536">ved by the FAUST system. In the following we will briefly describe our model and inference algorithm, as far as this is possible in limited space. Then we show our results on the three tasks and conclude. Note we will assume familiarity with the task, and refer the reader to the shared task overview paper for more details. 2 Biomedical Event Extraction Our goal is to extract biomedical events as shown in figure 1a). To formulate the search for such structures as an optimization problem, we represent structures through a set of binary variables. Our representation is inspired by previous work (Riedel et al., 2009; Bj6rne et al., 2009) and based on a projection of events to a labelled graph over tokens in the Proceedings of BioNLP Shared Task 2011 Workshop, pages 46–50, Portland, Oregon, USA, 24 June, 2011. c�2011 Association for Computational Linguistics 3 Model We use the following objective to score the structures we like to extract: �s (e, a, b) def = sT (i, t) + � sR (i, j, r) + ei,t=1 ai,7,,=1 Regulation Cause Theme Phosphorylation Binding Theme Theme Theme 2 3 4 5 6 7 8 9 ... phosphorylation of TRAF2 inhibits binding to the CD40 ... Phosphorylation e2,Fn... Theme Cause Regulation Binding Theme T</context>
+<context position="4751" citStr="Riedel et al., 2009" startWordPosition="809" endWordPosition="812">. For each sentence x we have a set candidate trigger words Trig (x), and a set of candidate proteins Prot (x). We will generally use the indices i and l to denote members of Trig (x), the indices p, q for members of Prot (x) and the index j for members of Cand (x) def = Trig (x) U Prot (x). We label each candidate trigger i with an event Type t E T (with None E T), and use the binary variable ei,t to indicate this labeling. We use binary variables ai,l,r to indicate that between i and l there is an edge labelled r E R (with None E R). The representation so far has been used in previous work (Riedel et al., 2009; Björne et al., 2009). Its shortcoming is that it does not capture whether two proteins are arguments of the same binding event, or arguments of two binding events with the same trigger. To overcome this problem, we introduce binary “same Binding” variables bp,Q that are active whenever there is a binding event that has both p and q as arguments. Our inference algorithm will also need, for each trigger i and protein pair p, q, a binary variable ti,p,Q that indicates that at i there is a binding event with arguments p and q. All ti,p,Q are summarized in t. Constructing events from solutions (e</context>
+<context position="7022" citStr="Riedel et al. (2009)" startWordPosition="1218" endWordPosition="1221"> that has p and q as arguments. We will denote the set of structures (e, a, b) that satisfy all above constraints as Y. To learn w we choose the passive-aggressive online learning algorithm (Crammer and Singer, 2003). As loss function we apply a weighted sum of false positives and false negative labels and edges. The weighting scheme penalizes false negatives 3.8 times more than false positives. 3.1 Features For feature vector fT (i, t) we use a collection of representations for the token i: word-form, lemma, POS tag, syntactic heads, syntactic children; membership in two dictionaries used by Riedel et al. (2009).For fR (a; i, j, r) we use representations of the token pair (i, j) inspired by Miwa et al. (2010) . They contain: labelled and unlabeled n-gram dependency paths; edge and vertex walk features (Miwa et al., 2010), argument and trigger modifiers and heads, words in between (for close distance i and j). For fB (b; p, q) we use a small subset of the token pair representations in fR. 47 Algorithm 1 Dual Decomposition. 3.2 Inference Inference in our model amounts to solving arg max s(e,a,b). (1) (e,a,b)EY Our approach to finding the maximizer is dual decomposition (Komodakis et al., 2007; Rush et </context>
+</contexts>
+<marker>Riedel, Chun, Takagi, Tsujii, 2009</marker>
+<rawString>Sebastian Riedel, Hong-Woo Chun, Toshihisa Takagi, and Jun’ichi Tsujii. 2009. A markov logic approach to bio-molecular event extraction. In Proceedings of the Natural Language Processing in Biomedicine NAACL 2009 Workshop (BioNLP ’09), pages 41–49.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Sebastian Riedel</author>
+<author>David McClosky</author>
+<author>Mihai Surdeanu</author>
+<author>Christopher D Manning</author>
+<author>Andrew McCallum</author>
+</authors>
+<title>Model combination for event extraction in BioNLP</title>
+<date>2011</date>
+<booktitle>In BioNLP</booktitle>
+<note>Shared Task.</note>
+<contexts>
+<context position="2057" citStr="Riedel et al., 2011" startWordPosition="323" endWordPosition="326"> for these three submodels via dual decomposition (Komodakis et al., 2007; Rush et al., 2010). Notably, our model constitutes the first joint approach that explicitly predicts which protein should share the same binding event. So far this has either been done through postprocessing heuristics (Bj6rne et al., 2009; Riedel et 46 al., 2009; Poon and Vanderwende, 2010), or through a local classifier at the end of a pipeline (Miwa et al., 2010). Our model is very competitive. For Genia (GE) Task 1 (Kim et al., 2011b) we achieve the secondbest results. In addition, the best-performing FAUST system (Riedel et al., 2011) is a variant of the model presented here. Its advantage stems from the fact that it uses predictions of the Stanford system (McClosky et al., 2011a; McClosky et al., 2011b), and hence performs model combination. The same holds for the Infectious Diseases (ID) track (Pyysalo et al., 2011), where we come in as second right behind the FAUST system. For the Epigenetics and Posttranslational Modifications (EPI) track (Ohta et al., 2011) we achieve the 4th rank, partly because we did not aim to extract speculations, negations or cellular locations. Finally, for Genia Task 2 we rank 3rd— with the 1s</context>
+</contexts>
+<marker>Riedel, McClosky, Surdeanu, Manning, McCallum, 2011</marker>
+<rawString>Sebastian Riedel, David McClosky, Mihai Surdeanu, Christopher D. Manning, and Andrew McCallum. 2011. Model combination for event extraction in BioNLP 2011. In BioNLP 2011 Shared Task.</rawString>
+</citation>
+<citation valid="true">
+<authors>
+<author>Alexander M Rush</author>
+<author>David Sontag</author>
+<author>Michael Collins</author>
+<author>Tommi Jaakkola</author>
+</authors>
+<title>On dual decomposition and linear programming relaxations for natural language processing. In</title>
+<date>2010</date>
+<booktitle>In Proc. EMNLP.</booktitle>
+<contexts>
+<context position="1530" citStr="Rush et al., 2010" startWordPosition="233" endWordPosition="236">ay to improve accuracy. 1 Introduction This paper presents the UMass entry to the BioNLP 2011 shared task (Kim et al., 2011a). We introduce a simple joint model for the extraction of biomedical events, and show competitive results for four tracks of the competition. Our model subsumes three tractable sub-models, one for extracting event triggers and outgoing edges, one for event triggers and incoming edges and one for protein-protein bindings. Fast and accurate joint inference is provided by combining optimizing methods for these three submodels via dual decomposition (Komodakis et al., 2007; Rush et al., 2010). Notably, our model constitutes the first joint approach that explicitly predicts which protein should share the same binding event. So far this has either been done through postprocessing heuristics (Bj6rne et al., 2009; Riedel et 46 al., 2009; Poon and Vanderwende, 2010), or through a local classifier at the end of a pipeline (Miwa et al., 2010). Our model is very competitive. For Genia (GE) Task 1 (Kim et al., 2011b) we achieve the secondbest results. In addition, the best-performing FAUST system (Riedel et al., 2011) is a variant of the model presented here. Its advantage stems from the f</context>
+<context position="7632" citStr="Rush et al., 2010" startWordPosition="1326" endWordPosition="1329">. (2009).For fR (a; i, j, r) we use representations of the token pair (i, j) inspired by Miwa et al. (2010) . They contain: labelled and unlabeled n-gram dependency paths; edge and vertex walk features (Miwa et al., 2010), argument and trigger modifiers and heads, words in between (for close distance i and j). For fB (b; p, q) we use a small subset of the token pair representations in fR. 47 Algorithm 1 Dual Decomposition. 3.2 Inference Inference in our model amounts to solving arg max s(e,a,b). (1) (e,a,b)EY Our approach to finding the maximizer is dual decomposition (Komodakis et al., 2007; Rush et al., 2010), a technique that allows us to exploit efficient search algorithms for tractable substructures of our problem. We divide the problem into three sub-problems: (1) finding the highest-scoring trigger labels and edges (e, a) such that constraints on triggers and their outgoing edges are fulfilled; (2) finding the highest-scoring trigger labels and edges (e, a) such that constraints on triggers and their incoming edges are fulfilled; (3) finding the highestscoring pairs of proteins b to appear in the same binding, and make binding event trigger decisions t for these. Due to space constraints we o</context>
+</contexts>
+<marker>Rush, Sontag, Collins, Jaakkola, 2010</marker>
+<rawString>Alexander M. Rush, David Sontag, Michael Collins, and Tommi Jaakkola. 2010. On dual decomposition and linear programming relaxations for natural language processing. In In Proc. EMNLP.</rawString>
+</citation>
+</citationList>
+</algorithm>
+</algorithms>
