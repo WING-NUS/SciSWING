@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: UTF-8
 
-### Ankur
+### 20/05/2014 - Ankur
 
 require 'rubygems'
 require 'optparse'
@@ -47,6 +47,12 @@ def process_doc (source_file)
     end
   rescue StopIteration
   end
+
+  # Note that the last section has not been included in the array 'sections'.
+  # Ths is done assuming that the last section would be the References seciton
+  # and hence is not required.
+  # This can be more robust by including it in the 'rescue' part of the code
+  # and then filtering the array sections of the referecens.
 
   return sections
 end

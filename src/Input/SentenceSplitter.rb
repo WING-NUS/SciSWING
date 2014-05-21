@@ -1,7 +1,8 @@
 #/usr/bin/ruby
 # encoding: UTF-8
 
-### Ankur
+### Praveen
+### 20/05/2014 - Ankur : Modified to run for ScidocSum
 
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/..')
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../..')
@@ -22,22 +23,20 @@ $project_dir = "/home/ankur/devbench/scientific/SciSWING"
 # with the splitted sentences.
 
 def sentence_breaker(text)
-    temp_file = '/tmp/temp.'+rand.to_s
-    File.open(temp_file, 'w') do |f|
-    f.puts text
-    end
-    `#{$project_dir}/lib/duc2003.breakSent/breakSent-multi.pl #{temp_file}`
-    lines=File.readlines temp_file
-    FileUtils.rm(temp_file)
-    return lines
-
+  temp_file = '/tmp/temp.'+rand.to_s
+  File.open(temp_file, 'w') do |f|
+  f.puts text
+  end
+  `#{$project_dir}/lib/duc2003.breakSent/breakSent-multi.pl #{temp_file}`
+  lines=File.readlines temp_file
+  FileUtils.rm(temp_file)
+  return lines
 end
 
 
 ARGF.each do |l_JSN|
 
   $g_JSON = JSON.parse l_JSN
-  $g_docArray = []
 
   doc_num=0
   $g_JSON["corpus"].each do |l_Article|
@@ -60,4 +59,4 @@ ARGF.each do |l_JSN|
   end
 end
 
-puts JSON.pretty_generate $g_JSON
+puts JSON.generate $g_JSON
