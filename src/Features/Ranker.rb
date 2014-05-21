@@ -1,7 +1,7 @@
 #/usr/bin/ruby
 # encoding: UTF-8
 
-### 20/05/2014 - Ankur : Modified to run for ScidocSum
+### 20/05/2014 - Ankur
 
 require 'graph-rank'
 require 'treat'
