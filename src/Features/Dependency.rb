@@ -37,11 +37,14 @@ if __FILE__ == $0 then
   serverlog = "#{parserdir}/ParseServer1.log"
   classpath = "#{parserdir}:#{parserdir}/*"
   parser = "ParseServer"
-  #server_job = Daemons.call do
-  server_job = fork do
+  server_job = Daemons.call do
+  #server_job = fork do
     `java -classpath "#{classpath}" #{parser} >#{serverlog}`
   end
-  Process.detach(server_job)
+  #Process.detach(server_job)
+
+  #Wait for a sec while the socket is properly initialized.
+  sleep 1
 
   begin
     client_socket = hand_shake
@@ -56,8 +59,8 @@ if __FILE__ == $0 then
   rescue
     raise
   ensure
-    #server_job.stop
+    server_job.stop
   end
 
-  #server_job.stop
+  server_job.stop
 end
