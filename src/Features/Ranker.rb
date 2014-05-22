@@ -89,10 +89,10 @@ ARGF.each do |l_JSN|
     puts "Time taken to rank the graph : #{(etime - stime)}"
     l_Article["top_sentences"] = Hash.new
     summary.each_with_index { |item, index|
-      l_Article["top_sentences"][index] = item
+      l_Article["top_sentences"][index + 1] = item
     }
 
   end
 
-  puts JSON.generate $g_JSON
+  puts JSON.pretty_generate $g_JSON
 end

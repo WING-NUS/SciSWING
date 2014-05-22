@@ -30,6 +30,10 @@ import edu.stanford.nlp.semgraph.*;
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.util.Generics;
 
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.JSONArray;
+
 class ParseServer {
     public static void main(String argv[]) throws Exception {
 
@@ -60,9 +64,11 @@ class ParseServer {
                 TreebankLanguagePack tlp = new PennTreebankLanguagePack();
                 GrammaticalStructureFactory gsf = tlp.grammaticalStructureFactory();
                 outToClient.println("Parser Loaded...Ready to accept sentences...");
+                System.out.println("Parser Loaded...Ready to accept sentences...");
                 while ( true ) {
                     fromclient = inFromClient.readLine();
                     if ( fromclient.equals("q") || fromclient.equals("Q") ) {
+                        System.out.println("Client wants to quit.");
                         connected.close();
                         break;
                     }
@@ -76,7 +82,7 @@ class ParseServer {
                         GrammaticalStructure gs = gsf.newGrammaticalStructure(parse);
                         Collection<TypedDependency> tdl = gs.typedDependenciesCCprocessed();
                         SemanticGraph graph = new SemanticGraph(tdl);
-                        output.append(toString(graph));
+                        output.append(serialize(graph));
                         output.append("\n");
                     }
                     toclient = output.toString();
@@ -88,47 +94,78 @@ class ParseServer {
                 System.exit(0);
             }
         }
+        System.out.println("Client serviced. Going down gracefully.");
         connected.close();
     }
 
-    // This takes in a Semantic graph and is only for display purposes.
-    public static String toString(SemanticGraph graph) {
+    public static String serialize(SemanticGraph graph) {
         Collection<IndexedWord> rootNodes = graph.getRoots();
         if (rootNodes.isEmpty()) {
             // Shouldn't happen, but return something!
             return("No Tree Found");
         }
 
-        StringBuilder sb = new StringBuilder();
+        JSONObject parsetree = new JSONObject();
+        JSONArray rootlist = new JSONArray();
         Set<IndexedWord> used = Generics.newHashSet();
         for (IndexedWord root : rootNodes) {
-            sb.append("0->").append(root).append(" (root)\n");
-            recToString(graph, root, sb, 1, used);
+            JSONObject cur_root = new JSONObject();
+            cur_root.put("level", new Integer(0));
+            cur_root.put("word", root.word());
+            cur_root.put("pos", root.tag());
+            cur_root.put("dep", "root");
+            recSerialize(graph, root, 1, used, cur_root);
+            rootlist.add(cur_root);
         }
+        parsetree.put("parse", rootlist);
+
         Set<IndexedWord> nodes = Generics.newHashSet(graph.vertexSet());
         nodes.removeAll(used);
-        while (!nodes.isEmpty()) {
-            IndexedWord node = nodes.iterator().next();
-            sb.append(node);
-            recToString(graph, node, sb, 1, used);
-            nodes.removeAll(used);
+        if (!nodes.isEmpty()) {
+            JSONArray orphans = new JSONArray();
+            while (!nodes.isEmpty()) {
+                IndexedWord node = nodes.iterator().next();
+                JSONObject orphan = new JSONObject();
+                orphan.put("level", new Integer(0));
+                orphan.put("word", node.word());
+                orphan.put("pos", node.tag());
+                orphan.put("dep", "root");
+                recSerialize(graph, node, 1, used, orphan);
+                nodes.removeAll(used);
+            }
+            parsetree.put("orphans", orphans);
         }
-        //sb.append(")");
-        return sb.toString();
+        try {
+            StringWriter out = new StringWriter();
+            parsetree.writeJSONString(out);
+            String jsonText = out.toString();
+            return jsonText;
+        } catch (IOException ioe) {
+          System.out.println("Could use StringWriter for JSON string conversion.");
+          return JSONValue.toJSONString(parsetree);
+        }
     }
 
-    // helper for toString()
-    private static void recToString(SemanticGraph graph, IndexedWord curr, StringBuilder sb, int offset, Set<IndexedWord> used) {
+    // helper for serialize()
+    private static void recSerialize(SemanticGraph graph, IndexedWord curr, int offset, Set<IndexedWord> used, JSONObject cur_node) {
         used.add(curr);
         List<SemanticGraphEdge> edges = graph.outgoingEdgeList(curr);
         Collections.sort(edges);
-        for (SemanticGraphEdge edge : edges) {
-            IndexedWord target = edge.getTarget();
-            sb.append(space(2*offset)).append(offset + "->").append(target).append(" (").append(edge.getRelation()).append(")\n");
-            if (!used.contains(target)) { // recurse
-                recToString(graph, target, sb, offset + 1, used);
+        if (!edges.isEmpty()){
+            JSONArray children = new JSONArray();
+            for (SemanticGraphEdge edge : edges) {
+                JSONObject child = new JSONObject();
+                IndexedWord target = edge.getTarget();
+                child.put("level", new Integer(offset));
+                child.put("word", target.word());
+                child.put("pos", target.tag());
+                child.put("dep", edge.getRelation().toString());
+                if (!used.contains(target)) {
+                    recSerialize(graph, target, offset + 1, used, child);
+                }
+                children.add(child);
             }
-            //sb.append(space(2*offset)).append(")\n");
+            cur_node.put("children", children);
         }
     }
 

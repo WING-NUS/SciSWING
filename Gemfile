@@ -5,4 +5,4 @@ gem 'parseconfig'
 gem 'nokogiri'
 gem 'treat'
 gem 'graph-rank'
-
+gem 'daemons'
