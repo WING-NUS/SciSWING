@@ -72,6 +72,7 @@ if __FILE__ == $0 then
         l_Article["top_sentences"].each do |rank, sentence|
           client_socket.puts(sentence)
           dep_parse = JSON.parse client_socket.recv(4096)
+          puts JSON.pretty_generate dep_parse
 
     client_socket.puts "q\n"
     client_socket.close
