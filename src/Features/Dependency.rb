@@ -3,10 +3,18 @@
 
 ### 20/05/2014 - Ankur
 
-#TODO Description of what this script does.
+# This script takes as input a json which should ideally be the output of the
+# module Ranker.rb. It searches for the top sentences, and then for each of
+# these sentences, it creates the dependency parse and attaches it to the same
+# json as output.
+# To create the dependency parse, first the UNIX socket server, located in
+# $project_dir/lib/Stanford-Parser/ParseServer.java, is cranked up and it
+# starts listening on the same host on port 5000. Then its a matter of passing
+# the sentences to it on the same port.
 
 require 'socket'
 require 'daemons'
+require 'json'
 
 $project_dir = "/home/ankur/devbench/scientific/SciSWING"
 
@@ -40,10 +48,8 @@ if __FILE__ == $0 then
   classpath = "#{parserdir}:#{parserdir}/*"
   parser = "ParseServer"
   server_job = Daemons.call do
-  #server_job = fork do
     `java -classpath "#{classpath}" #{parser} >#{serverlog}`
   end
-  #Process.detach(server_job)
 
   # Wait for a sec while the socket is properly initialized.
   # Ankur: On my dev machine (P4 2.6 GHz, 2 cores, 512 K cache), it took around
@@ -55,14 +61,8 @@ if __FILE__ == $0 then
   # block so that if something happens, the socket is closed and the daemon is
   # stopped lest it is orphaned and runs amuck.
   begin
-    #client_socket = hand_shake
-    #['Samantha killed the dog in the park.',
-    #'Gabriele has a thick Italian accent.',
-    #'Where will we go for dinner?'].each do |sent|
-    #  client_socket.puts(sent)
-    #  puts client_socket.recv(4096)
-    #end
 
+    # Initiate communication with the parse-server
     client_socket = hand_shake
 
     ARGF.each do |l_JSN|
@@ -72,16 +72,21 @@ if __FILE__ == $0 then
         l_Article["top_sentences"].each do |rank, sentence|
           client_socket.puts(sentence)
           dep_parse = JSON.parse client_socket.recv(4096)
-          puts JSON.pretty_generate dep_parse
+          l_Article["top_sentences"][rank] = { :sentence => sentence, :dep_parse => dep_parse["parse"] }
+        end
+      end
+      puts JSON.generate $g_JSON
+
+    end
 
     client_socket.puts "q\n"
     client_socket.close
   rescue
     raise
   ensure
-    puts "Stopping Parser Server"
+    # Stopping parse-server
     server_job.stop
   end
-
+  # This is redundant
   server_job.stop
 end

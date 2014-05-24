@@ -79,14 +79,14 @@ ARGF.each do |l_JSN|
     doc.apply(:chunk, :segment, :tokenize)
 
     #Initialize Ranking module
-    stime = Time.now
+    #stime = Time.now
     text_rank = SentenceRanker.new
-    etime = Time.now
-    puts "Time taken to build the graph : #{(etime - stime)}"
-    stime = Time.now
+    #etime = Time.now
+    #puts "Time taken to build the graph : #{(etime - stime)}"
+    #stime = Time.now
     summary = text_rank.run(doc, 15)
-    etime = Time.now
-    puts "Time taken to rank the graph : #{(etime - stime)}"
+    #etime = Time.now
+    #puts "Time taken to rank the graph : #{(etime - stime)}"
     l_Article["top_sentences"] = Hash.new
     summary.each_with_index { |item, index|
       l_Article["top_sentences"][index + 1] = item
