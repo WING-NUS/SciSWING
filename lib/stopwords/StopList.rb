@@ -4,8 +4,7 @@ class StopList
     attr_accessor :stopwords, :punctuations
 
     def initialize
-        #file = "../lib/stopwordLists/searchEngineWorld.txt"
-        file = "../lib/stopwordLists/dvlVerity.txt"
+        file = "/home/ankur/devbench/scientific/SciSWING/lib/stopwords/stopwords.txt"
         @stopwords = File.readlines(file).map {|l| l.strip}
         @punctuations = %w/! " # $ % & \ ' '' ( ) * + , - -- . ... \/ : ; < = > ? @ [ \ ] ^ _ ` `` { | } ~/
     end
@@ -34,4 +33,3 @@ class StopList
         (str.split - @punctuations).join(' ')
     end
 end
-    
