@@ -31,7 +31,7 @@ def process_doc (source_file)
       sec = block.next
       if sec.name == 'sectionHeader'
         # If a new section is encoutered, then push the variables of the
-        # previous section into the array 'sections'. Te 'first' flag is used
+        # previous section into the array 'sections'. The 'first' flag is used
         # to prevent this from happening at the first instance of section.
         if first
           first = false
@@ -51,7 +51,7 @@ def process_doc (source_file)
   # Note that the last section has not been included in the array 'sections'.
   # Ths is done assuming that the last section would be the References seciton
   # and hence is not required.
-  # This can be more robust by including it in the 'rescue' part of the code
+  # This could have been done by including it in the 'rescue' part of the code
   # and then filtering the array sections of the referecens.
 
   return sections

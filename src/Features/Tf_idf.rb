@@ -62,6 +62,8 @@ def extract_features document
       raise "#{error_msg}"
     else
       verb = sentence["dep_parse"][0]
+    end
+  end
 
 end
 
