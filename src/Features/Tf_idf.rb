@@ -54,17 +54,53 @@ def extract_features document
   # compute the tf_idf statistics for each.
   document["top_sentences"].each do |rank, sentence|
     # the sentence variable is a hash by iteslf with "sentence" and "dep_parse"
-    # keys
+    # and "id" keys
     if sentence["dep_parse"].length > 1
       # Hopefully it will never come to this
       error_msg = "There seem to be multiple root nodes (or orphaned nodes) "\
-        "in doc: #{document["actual_doc_id"]}, sentence-rank : #{rank}"
-      raise "#{error_msg}"
+        "in doc: #{document["actual_doc_id"]}, sentence-id : #{sentence["id"]}"
+      puts "WARNING : #{error_msg}"
     else
-      verb = sentence["dep_parse"][0]
+      verb = sentence["dep_parse"][0]["word"]
+      subj_node = find_node(sentence, "subj")
+      obj_node = find_node(sentence, "obj")
+      puts "#{sentence["sentence"]}\nVerb: #{verb}"
+      if subj_node
+        freq = document["term_freq"][subj_node["word"]]
+        puts "Subject: #{subj_node["word"]}\ttf=#{freq}"
+      else
+        puts "Subject : <none>"
+      end
+      if obj_node
+        freq = document["term_freq"][obj_node["word"]]
+        puts "Oject: #{obj_node["word"]}\ttf=#{freq}"
+      else
+        puts "Object : <none>"
+      end
     end
   end
 
+end
+
+def find_node(sentence, pattern)
+  root = sentence["dep_parse"][0]
+  if /#{pattern}/.match(root["dep"])
+    return root
+  end
+  queue = root["children"]
+  while queue.length > 0
+    child = queue.shift
+    if /#{pattern}/.match(child["dep"])
+      return child
+    else
+      if child.has_key?("children")
+        child["children"].each do |small_child|
+          queue.push(small_child)
+        end
+      end
+    end
+  end
+  return nil
 end
 
 ARGF.each do |l_JSN|
@@ -74,7 +110,8 @@ ARGF.each do |l_JSN|
   # Compute all the word frequencies and document (section) frequencies.
   $g_JSON["corpus"].each do |l_Article|
     compute_word_counts l_Article
+    extract_features l_Article
   end
 
-  puts JSON.pretty_generate $g_JSON
+  #puts JSON.pretty_generate $g_JSON
 end

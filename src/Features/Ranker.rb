@@ -80,5 +80,5 @@ ARGF.each do |l_JSN|
 
   end
 
-  puts JSON.pretty_generate $g_JSON
+  puts JSON.generate $g_JSON
 end

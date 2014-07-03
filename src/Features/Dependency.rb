@@ -69,10 +69,12 @@ if __FILE__ == $0 then
 
       $g_JSON = JSON.parse l_JSN
       $g_JSON["corpus"].each do |l_Article|
-        l_Article["top_sentences"].each do |rank, sentence|
-          client_socket.puts(sentence)
+        l_Article["top_sentences"].each do |rank, sent_data|
+          client_socket.puts(sent_data["sentence"])
           dep_parse = JSON.parse client_socket.recv(4096)
-          l_Article["top_sentences"][rank] = { :sentence => sentence, :dep_parse => dep_parse["parse"] }
+          l_Article["top_sentences"][rank] = { :id => sent_data["id"],
+                                               :sentence => sent_data["sentence"],
+                                               :dep_parse => dep_parse["parse"] }
         end
       end
       puts JSON.generate $g_JSON
